@@ -19,7 +19,7 @@ const heroImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?
 
 function HomePage() {
   const { t } = useI18n();
-  const featured = vehicles.slice(0, 3);
+  const featured = vehicles;
   const numerals = ["I", "II", "III"];
 
   return (

@@ -29,7 +29,7 @@ export const vehicles: Vehicle[] = [
     year: 2022,
     color: "Grau",
     pricePerDay: 349,
-    image: "https://images.unsplash.com/photo-1544378382-5e4e9b1d2e8e?auto=format&fit=crop&w=1600&q=80",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Porsche_Cayenne_%28PO536%29_GTS_IMG_3952.jpg/1600px-Porsche_Cayenne_%28PO536%29_GTS_IMG_3952.jpg",
     tagline:
       "Der Porsche Cayenne vereint sportliche Dynamik mit luxuriösem Komfort — ein SUV der Extraklasse für jeden Anlass.",
     specs: {
@@ -49,7 +49,7 @@ export const vehicles: Vehicle[] = [
     year: 2022,
     color: "Schwarz",
     pricePerDay: 399,
-    image: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1600&q=80",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Porsche_971_Panamera_Turbo_S_E-Hybrid_Sport_Turismo_Classic-Gala_2021_1X7A0234.jpg/1600px-Porsche_971_Panamera_Turbo_S_E-Hybrid_Sport_Turismo_Classic-Gala_2021_1X7A0234.jpg",
     tagline:
       "Die Porsche Panamera ist die perfekte Verbindung aus Sportwagen-DNA und exklusiver Limousine — für höchste Ansprüche.",
     specs: {
@@ -69,7 +69,7 @@ export const vehicles: Vehicle[] = [
     year: 2025,
     color: "Grau",
     pricePerDay: 449,
-    image: "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?auto=format&fit=crop&w=1600&q=80",
+    image: "https://upload.wikimedia.org/wikipedia/commons/0/06/25_BMW_X5_M60i.jpg",
     tagline:
       "Der BMW X5 M60i ist pure Kraft in eleganter Form — 530 PS, Allradantrieb und modernste Technik aus dem Jahr 2025.",
     specs: {
@@ -89,7 +89,7 @@ export const vehicles: Vehicle[] = [
     year: 2018,
     color: "Schwarz",
     pricePerDay: 349,
-    image: "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?auto=format&fit=crop&w=1600&q=80",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/2019_BMW_X5_M50d_3.0_Front.jpg/1600px-2019_BMW_X5_M50d_3.0_Front.jpg",
     tagline:
       "Der BMW X5 M50d überzeugt mit kraftvollem Diesel-Triebwerk, Allradantrieb und dem unverkennbaren M-Sportcharakter.",
     specs: {
@@ -109,7 +109,7 @@ export const vehicles: Vehicle[] = [
     year: 2023,
     color: "Schwarz",
     pricePerDay: 329,
-    image: "https://images.unsplash.com/photo-1617814086367-b1d2a1d6f0a5?auto=format&fit=crop&w=1600&q=80",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/21_BMW_X4_M40i.jpg/1600px-21_BMW_X4_M40i.jpg",
     tagline:
       "Der BMW X4 M40i kombiniert das dynamische Coupé-Design mit SUV-Funktionalität — sportlich, kompromisslos, begehrenswert.",
     specs: {
@@ -129,7 +129,7 @@ export const vehicles: Vehicle[] = [
     year: 2020,
     color: "Weiß",
     pricePerDay: 429,
-    image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1600&q=80",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Audi_RS6_Avant_C8_1X7A0305.jpg/1600px-Audi_RS6_Avant_C8_1X7A0305.jpg",
     tagline:
       "Der Audi RS6 Avant ist die Legende unter den Super-Kombis — 600 PS, quattro-Allrad und ein Design, das keine Wünsche offen lässt.",
     specs: {
