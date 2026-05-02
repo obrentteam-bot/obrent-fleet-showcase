@@ -53,8 +53,8 @@ function AdminLogin() {
         <div className="absolute top-6 right-8">
           <LanguageSwitcher />
         </div>
-        <Link to="/" className="lg:hidden font-display text-2xl tracking-[0.18em] text-cream mb-12">
-          OB<span className="text-gold">RENT</span>
+        <Link to="/" className="lg:hidden mb-12" aria-label="OBRENT">
+          <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-14 w-auto" />
         </Link>
         <div className="max-w-md w-full">
           <div className="flex items-center gap-4 mb-6">
