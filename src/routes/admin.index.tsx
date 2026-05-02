@@ -36,8 +36,8 @@ function AdminLogin() {
         />
         <div className="absolute inset-0 bg-onyx/70" />
         <div className="relative z-10 p-16 flex flex-col justify-between w-full">
-          <Link to="/" className="font-display text-2xl tracking-[0.18em] text-cream">
-            OB<span className="text-gold">RENT</span>
+          <Link to="/" aria-label="OBRENT">
+            <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-16 w-auto" />
           </Link>
           <div>
             <div className="eyebrow mb-4">{t.nav.concierge}</div>
