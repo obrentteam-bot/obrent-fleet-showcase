@@ -242,7 +242,9 @@ export const translations = {
     },
     categories: {
       Sedan: "Sedan",
+      Limousine: "Saloon",
       SUV: "SUV",
+      Kombi: "Estate",
       Sports: "Sports",
       Convertible: "Convertible",
     },
