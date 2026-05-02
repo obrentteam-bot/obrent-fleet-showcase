@@ -3,6 +3,7 @@ import { useState } from "react";
 import { formatPrice } from "@/lib/vehicles";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import logo from "@/assets/obrent-logo.png";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
