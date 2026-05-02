@@ -33,7 +33,7 @@ export function SiteHeader() {
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center group" aria-label="OBRENT">
-          <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-12 md:h-14 w-auto" />
+          <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-20 md:h-28 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-12">
