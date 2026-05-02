@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import logo from "@/assets/obrent-logo.png";
+import logo from "@/assets/obrent-logo-header.png";
 
 export function SiteHeader() {
   const { t } = useI18n();
