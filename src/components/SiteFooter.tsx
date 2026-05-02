@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import logo from "@/assets/obrent-logo.png";
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -9,9 +10,7 @@ export function SiteFooter() {
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-1">
-            <div className="font-display text-2xl tracking-[0.18em] text-cream mb-6">
-              OB<span className="text-gold">RENT</span>
-            </div>
+            <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-20 w-auto mb-6 -ml-2" />
             <p className="text-sm text-cream/55 leading-relaxed font-light">
               {t.footer.slogan}
             </p>

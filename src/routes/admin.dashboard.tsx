@@ -3,6 +3,7 @@ import { useState } from "react";
 import { formatPrice } from "@/lib/vehicles";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import logo from "@/assets/obrent-logo.png";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
@@ -86,8 +87,8 @@ function AdminDashboard() {
       {/* Sidebar */}
       <aside className="hidden lg:flex w-64 shrink-0 bg-jet border-r border-border flex-col">
         <div className="p-8 border-b border-border">
-          <Link to="/" className="font-display text-xl tracking-[0.18em] text-cream">
-            OB<span className="text-gold">RENT</span>
+          <Link to="/" aria-label="OBRENT">
+            <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-12 w-auto" />
           </Link>
           <div className="text-[0.6rem] tracking-[0.3em] uppercase text-gold/70 mt-1">{t.nav.concierge}</div>
         </div>

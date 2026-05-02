@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import logo from "@/assets/obrent-logo.png";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -35,8 +36,8 @@ function AdminLogin() {
         />
         <div className="absolute inset-0 bg-onyx/70" />
         <div className="relative z-10 p-16 flex flex-col justify-between w-full">
-          <Link to="/" className="font-display text-2xl tracking-[0.18em] text-cream">
-            OB<span className="text-gold">RENT</span>
+          <Link to="/" aria-label="OBRENT">
+            <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-16 w-auto" />
           </Link>
           <div>
             <div className="eyebrow mb-4">{t.nav.concierge}</div>
@@ -52,8 +53,8 @@ function AdminLogin() {
         <div className="absolute top-6 right-8">
           <LanguageSwitcher />
         </div>
-        <Link to="/" className="lg:hidden font-display text-2xl tracking-[0.18em] text-cream mb-12">
-          OB<span className="text-gold">RENT</span>
+        <Link to="/" className="lg:hidden mb-12" aria-label="OBRENT">
+          <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-14 w-auto" />
         </Link>
         <div className="max-w-md w-full">
           <div className="flex items-center gap-4 mb-6">

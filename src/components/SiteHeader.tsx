@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import logo from "@/assets/obrent-logo.png";
 
 export function SiteHeader() {
   const { t } = useI18n();
@@ -31,10 +32,8 @@ export function SiteHeader() {
       }`}
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
-        <Link to="/" className="flex items-baseline gap-2 group">
-          <span className="font-display text-2xl tracking-[0.18em] text-cream">
-            OB<span className="text-gold">RENT</span>
-          </span>
+        <Link to="/" className="flex items-center group" aria-label="OBRENT">
+          <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-12 md:h-14 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-12">
