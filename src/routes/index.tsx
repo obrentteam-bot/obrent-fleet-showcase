@@ -1,14 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { vehicles, formatPrice } from "@/lib/vehicles";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "OBRENT — Curated Luxury Motoring" },
-      { name: "description", content: "OBRENT offers a discreet, hand-selected fleet of the world's most exceptional automobiles, available by appointment in Monaco, Paris and Dubai." },
-      { property: "og:title", content: "OBRENT — Curated Luxury Motoring" },
-      { property: "og:description", content: "An invitation to the extraordinary. Hand-selected motorcars, delivered to you." },
+      { title: "OBRENT — Kuratierte Luxus-Mobilität" },
+      { name: "description", content: "OBRENT bietet eine diskrete, handverlesene Flotte der außergewöhnlichsten Automobile der Welt — auf Termin in Monaco, Paris und Dubai." },
+      { property: "og:title", content: "OBRENT — Kuratierte Luxus-Mobilität" },
+      { property: "og:description", content: "Eine Einladung zum Außergewöhnlichen. Handverlesene Fahrzeuge, zu Ihnen geliefert." },
     ],
   }),
   component: HomePage,
@@ -16,26 +17,10 @@ export const Route = createFileRoute("/")({
 
 const heroImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=2400&q=85";
 
-const usps = [
-  {
-    title: "Concierge Delivery",
-    body: "Your motorcar arrives at your residence, hotel, or private terminal — fully prepared and impeccably presented.",
-    numeral: "I",
-  },
-  {
-    title: "Hand-Selected Fleet",
-    body: "Every vehicle is privately curated, maintained by marque specialists, and reserved for a discerning few.",
-    numeral: "II",
-  },
-  {
-    title: "Discretion Assured",
-    body: "Your reservation, your itinerary, your privacy — protected by an unwritten code we have observed for decades.",
-    numeral: "III",
-  },
-];
-
 function HomePage() {
+  const { t } = useI18n();
   const featured = vehicles.slice(0, 3);
+  const numerals = ["I", "II", "III"];
 
   return (
     <SiteLayout>
@@ -52,22 +37,22 @@ function HomePage() {
           <div className="max-w-3xl fade-up">
             <div className="flex items-center gap-4 mb-8">
               <span className="gold-rule" />
-              <span className="eyebrow">Est. Monaco · MMXII</span>
+              <span className="eyebrow">{t.home.eyebrow}</span>
             </div>
             <h1 className="font-display text-[15vw] md:text-[10rem] leading-[0.9] text-cream tracking-tight">
               OB<span className="text-gold italic font-light">rent</span>
             </h1>
             <p className="mt-10 text-lg md:text-xl text-cream/75 font-light max-w-xl leading-relaxed">
-              An assembly of the world's most extraordinary motorcars — offered, by invitation, to those who recognise the difference.
+              {t.home.heroLead}
             </p>
             <div className="mt-12 flex flex-col sm:flex-row gap-4">
-              <Link to="/fleet" className="btn-gold">Discover Our Fleet</Link>
-              <Link to="/contact" className="btn-ghost">Private Appointment</Link>
+              <Link to="/fleet" className="btn-gold">{t.home.ctaFleet}</Link>
+              <Link to="/contact" className="btn-ghost">{t.home.ctaAppointment}</Link>
             </div>
           </div>
 
           <div className="absolute bottom-10 left-6 md:left-12 right-6 md:right-12 flex items-end justify-between text-cream/50">
-            <div className="text-xs tracking-[0.3em] uppercase">Scroll</div>
+            <div className="text-xs tracking-[0.3em] uppercase">{t.home.scroll}</div>
             <div className="hidden md:block text-xs tracking-[0.3em] uppercase">
               43.7384° N · 7.4246° E
             </div>
@@ -82,14 +67,14 @@ function HomePage() {
             <div>
               <div className="flex items-center gap-4 mb-6">
                 <span className="gold-rule" />
-                <span className="eyebrow">The Collection</span>
+                <span className="eyebrow">{t.home.collectionEyebrow}</span>
               </div>
               <h2 className="font-display text-5xl md:text-7xl text-cream leading-[1] max-w-2xl">
-                Featured <span className="italic text-gold/90 font-light">motorcars</span>
+                {t.home.featuredTitle} <span className="italic text-gold/90 font-light">{t.home.featuredItalic}</span>
               </h2>
             </div>
             <Link to="/fleet" className="text-[0.7rem] tracking-[0.3em] uppercase text-gold border-b border-gold/40 pb-1 hover:border-gold transition self-start md:self-auto">
-              View Entire Fleet →
+              {t.common.viewAll}
             </Link>
           </div>
 
@@ -109,7 +94,7 @@ function HomePage() {
                     loading={i === 0 ? "eager" : "lazy"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
-                  <div className="absolute top-5 left-5 eyebrow text-cream/70">{v.category}</div>
+                  <div className="absolute top-5 left-5 eyebrow text-cream/70">{t.categories[v.category]}</div>
                 </div>
                 <div className="p-8">
                   <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
@@ -117,10 +102,10 @@ function HomePage() {
                   <p className="text-sm text-cream/55 font-light italic mb-6">{v.tagline}</p>
                   <div className="flex items-end justify-between pt-6 border-t border-border">
                     <div>
-                      <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">From</div>
-                      <div className="font-display text-2xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">/day</span></div>
+                      <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
+                      <div className="font-display text-2xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">{t.common.perDay}</span></div>
                     </div>
-                    <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">Reserve →</span>
+                    <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{t.common.reserve} →</span>
                   </div>
                 </div>
               </Link>
@@ -135,18 +120,18 @@ function HomePage() {
           <div className="text-center mb-20">
             <div className="flex items-center justify-center gap-4 mb-6">
               <span className="gold-rule" />
-              <span className="eyebrow">The OBRENT Standard</span>
+              <span className="eyebrow">{t.home.standardEyebrow}</span>
               <span className="gold-rule" />
             </div>
             <h2 className="font-display text-4xl md:text-6xl text-cream max-w-3xl mx-auto leading-tight">
-              Three <span className="italic text-gold/90 font-light">tenets</span>, observed without compromise.
+              {t.home.tenetsTitle} <span className="italic text-gold/90 font-light">{t.home.tenetsItalic}</span>{t.home.tenetsRest}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
-            {usps.map((u) => (
-              <div key={u.numeral} className="bg-onyx p-12 md:p-14">
-                <div className="font-display text-7xl text-gold/60 italic mb-8">{u.numeral}</div>
+            {t.home.usps.map((u, i) => (
+              <div key={numerals[i]} className="bg-onyx p-12 md:p-14">
+                <div className="font-display text-7xl text-gold/60 italic mb-8">{numerals[i]}</div>
                 <h3 className="font-display text-2xl text-cream mb-4">{u.title}</h3>
                 <p className="text-sm text-cream/60 font-light leading-relaxed">{u.body}</p>
               </div>
@@ -158,14 +143,14 @@ function HomePage() {
       {/* INVITATION */}
       <section className="py-32 md:py-40 px-6 md:px-12">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="eyebrow mb-8">By Invitation</div>
+          <div className="eyebrow mb-8">{t.home.invitationEyebrow}</div>
           <h2 className="font-display text-4xl md:text-6xl text-cream leading-[1.1] mb-10">
-            Some journeys deserve <span className="italic text-gold/90 font-light">more than a vehicle</span>.
+            {t.home.invitationTitle} <span className="italic text-gold/90 font-light">{t.home.invitationItalic}</span>.
           </h2>
           <p className="text-lg text-cream/60 font-light mb-12 leading-relaxed">
-            Speak with our concierge to compose a motoring experience tailored to your itinerary, your taste, and your timetable.
+            {t.home.invitationLead}
           </p>
-          <Link to="/contact" className="btn-gold">Begin a Conversation</Link>
+          <Link to="/contact" className="btn-gold">{t.home.invitationCta}</Link>
         </div>
       </section>
     </SiteLayout>

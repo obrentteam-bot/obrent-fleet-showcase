@@ -1,16 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-
-const navItems = [
-  { to: "/", label: "Home" },
-  { to: "/fleet", label: "Fleet" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
-] as const;
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function SiteHeader() {
+  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const navItems = [
+    { to: "/" as const, label: t.nav.home },
+    { to: "/fleet" as const, label: t.nav.fleet },
+    { to: "/about" as const, label: t.nav.about },
+    { to: "/contact" as const, label: t.nav.contact },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -53,15 +56,17 @@ export function SiteHeader() {
             to="/fleet"
             className="text-[0.7rem] tracking-[0.28em] uppercase text-cream hover:text-gold transition-colors"
           >
-            Reserve
+            {t.nav.reserve}
           </Link>
           <span className="h-4 w-px bg-cream/20" />
           <Link
             to="/admin"
             className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/50 hover:text-gold transition-colors"
           >
-            Concierge
+            {t.nav.concierge}
           </Link>
+          <span className="h-4 w-px bg-cream/20" />
+          <LanguageSwitcher />
         </div>
 
         <button
@@ -95,8 +100,11 @@ export function SiteHeader() {
               onClick={() => setOpen(false)}
               className="text-sm tracking-[0.28em] uppercase text-cream/50"
             >
-              Concierge
+              {t.nav.concierge}
             </Link>
+            <div className="pt-4 border-t border-border">
+              <LanguageSwitcher />
+            </div>
           </nav>
         </div>
       )}

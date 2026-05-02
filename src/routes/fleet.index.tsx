@@ -1,21 +1,24 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Link } from "@tanstack/react-router";
 import { vehicles, categories, formatPrice, VehicleCategory } from "@/lib/vehicles";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/fleet/")({
   head: () => ({
     meta: [
-      { title: "The Fleet — OBRENT" },
-      { name: "description", content: "Browse the OBRENT collection of luxury sedans, SUVs, sports cars, and convertibles available by reservation." },
-      { property: "og:title", content: "The Fleet — OBRENT" },
-      { property: "og:description", content: "Sedans, SUVs, sports cars, and convertibles — privately curated for discerning travellers." },
+      { title: "Die Flotte — OBRENT" },
+      { name: "description", content: "Entdecken Sie die OBRENT-Kollektion aus Luxuslimousinen, SUVs, Sportwagen und Cabriolets — auf Reservierung verfügbar." },
+      { property: "og:title", content: "Die Flotte — OBRENT" },
+      { property: "og:description", content: "Limousinen, SUVs, Sportwagen und Cabriolets — privat kuratiert für anspruchsvolle Reisende." },
     ],
   }),
   component: FleetPage,
 });
 
 function FleetPage() {
+  const { t } = useI18n();
   const [active, setActive] = useState<VehicleCategory | "All">("All");
 
   const filtered = active === "All" ? vehicles : vehicles.filter((v) => v.category === active);
@@ -26,13 +29,13 @@ function FleetPage() {
         <div className="max-w-[1440px] mx-auto">
           <div className="flex items-center gap-4 mb-6">
             <span className="gold-rule" />
-            <span className="eyebrow">The Collection</span>
+            <span className="eyebrow">{t.fleet.eyebrow}</span>
           </div>
           <h1 className="font-display text-5xl md:text-8xl text-cream leading-[0.95] max-w-4xl">
-            Our <span className="italic text-gold/90 font-light">fleet</span>
+            {t.fleet.title} <span className="italic text-gold/90 font-light">{t.fleet.titleItalic}</span>
           </h1>
           <p className="mt-8 text-lg text-cream/60 font-light max-w-2xl leading-relaxed">
-            Each motorcar is reserved exclusively for OBRENT clientele — maintained, prepared, and presented to a standard the marque itself would recognise.
+            {t.fleet.lead}
           </p>
         </div>
       </section>
@@ -40,7 +43,7 @@ function FleetPage() {
       {/* Filter */}
       <section className="px-6 md:px-12 sticky top-20 z-30 bg-onyx/85 backdrop-blur-xl border-y border-border">
         <div className="max-w-[1440px] mx-auto py-5 flex items-center gap-2 md:gap-8 overflow-x-auto">
-          <span className="eyebrow shrink-0 hidden md:inline">Filter</span>
+          <span className="eyebrow shrink-0 hidden md:inline">{t.common.filter}</span>
           {(["All", ...categories] as const).map((c) => (
             <button
               key={c}
@@ -51,10 +54,10 @@ function FleetPage() {
                   : "text-cream/55 border-transparent hover:text-cream"
               }`}
             >
-              {c}
+              {c === "All" ? t.common.all : t.categories[c]}
             </button>
           ))}
-          <span className="ml-auto eyebrow text-cream/40 hidden md:inline">{filtered.length} motorcars</span>
+          <span className="ml-auto eyebrow text-cream/40 hidden md:inline">{filtered.length} {t.common.motorcars}</span>
         </div>
       </section>
 
@@ -74,7 +77,7 @@ function FleetPage() {
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-onyx/70 via-transparent" />
-                <div className="absolute top-5 left-5 eyebrow text-cream/70">{v.category}</div>
+                <div className="absolute top-5 left-5 eyebrow text-cream/70">{t.categories[v.category]}</div>
               </Link>
               <div className="p-8 flex flex-col flex-1">
                 <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
@@ -82,15 +85,15 @@ function FleetPage() {
                 <p className="text-sm text-cream/55 font-light italic mb-6 flex-1">{v.tagline}</p>
                 <div className="flex items-end justify-between pt-6 border-t border-border">
                   <div>
-                    <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">From</div>
-                    <div className="font-display text-xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">/day</span></div>
+                    <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
+                    <div className="font-display text-xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">{t.common.perDay}</span></div>
                   </div>
                   <Link
                     to="/fleet/$vehicleId"
                     params={{ vehicleId: v.id }}
                     className="text-xs tracking-[0.28em] uppercase text-cream hover:text-gold transition border-b border-cream/40 hover:border-gold pb-1"
                   >
-                    Reserve
+                    {t.common.reserve}
                   </Link>
                 </div>
               </div>
