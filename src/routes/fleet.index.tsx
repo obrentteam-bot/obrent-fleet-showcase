@@ -83,6 +83,24 @@ function FleetPage() {
                 <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
                 <h3 className="font-display text-2xl text-cream mb-3">{v.name}</h3>
                 <p className="text-sm text-cream/55 font-light italic mb-6 flex-1">{v.tagline}</p>
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mb-6">
+                  <div>
+                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Motor</dt>
+                    <dd className="text-cream/80 font-light mt-0.5">{v.specs.engine}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Leistung</dt>
+                    <dd className="text-cream/80 font-light mt-0.5">{v.specs.power}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Baujahr</dt>
+                    <dd className="text-cream/80 font-light mt-0.5">{v.year}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Farbe</dt>
+                    <dd className="text-cream/80 font-light mt-0.5">{v.color}</dd>
+                  </div>
+                </dl>
                 <div className="flex items-end justify-between pt-6 border-t border-border">
                   <div>
                     <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
