@@ -31,7 +31,7 @@ export function SiteHeader() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-24 md:h-32 flex items-center justify-between">
         <Link to="/" className="flex items-center group" aria-label="OBRENT">
           <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-20 md:h-28 w-auto" />
         </Link>
