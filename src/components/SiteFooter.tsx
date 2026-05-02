@@ -10,7 +10,7 @@ export function SiteFooter() {
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-1">
-            <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-20 w-auto mb-6 -ml-2" />
+            <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-36 md:h-44 w-auto mb-6 -ml-3" />
             <p className="text-sm text-cream/55 leading-relaxed font-light">
               {t.footer.slogan}
             </p>
