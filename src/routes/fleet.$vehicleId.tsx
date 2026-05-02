@@ -43,8 +43,8 @@ export const Route = createFileRoute("/fleet/$vehicleId")({
 });
 
 function VehicleDetailPage() {
-  const data = Route.useLoaderData();
-  const v = data.vehicle;
+  const { vehicleId } = Route.useParams();
+  const v = vehicles.find((x) => x.id === vehicleId)!;
 
   const specRows: { label: string; value: string }[] = [
     { label: "Engine", value: v.specs.engine },
