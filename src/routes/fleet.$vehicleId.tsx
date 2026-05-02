@@ -43,7 +43,8 @@ export const Route = createFileRoute("/fleet/$vehicleId")({
 });
 
 function VehicleDetailPage() {
-  const { vehicle: v } = Route.useLoaderData();
+  const data = Route.useLoaderData();
+  const v = data.vehicle;
 
   const specRows: { label: string; value: string }[] = [
     { label: "Engine", value: v.specs.engine },
