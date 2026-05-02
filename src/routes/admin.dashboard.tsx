@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { formatPrice } from "@/lib/vehicles";
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
@@ -26,41 +28,58 @@ interface Booking {
 }
 
 const bookings: Booking[] = [
-  { ref: "OBR-24081", client: "J. Beaumont",     vehicle: "Phantom VIII",         city: "Monaco", start: "12 May",  end: "14 May",  total: 4800, status: "confirmed" },
-  { ref: "OBR-24082", client: "A. Khalid",       vehicle: "Cullinan Black Badge", city: "Dubai",  start: "15 May",  end: "20 May",  total: 10750, status: "pending" },
-  { ref: "OBR-24083", client: "S. Marchetti",    vehicle: "812 Superfast",        city: "Monaco", start: "16 May",  end: "17 May",  total: 1850, status: "confirmed" },
-  { ref: "OBR-24084", client: "Mme. Dubois",     vehicle: "Dawn",                 city: "Paris",  start: "18 May",  end: "21 May",  total: 5850, status: "pending" },
-  { ref: "OBR-24085", client: "Lord Ashcombe",   vehicle: "Continental GT Speed", city: "Paris",  start: "20 May",  end: "27 May",  total: 10150, status: "confirmed" },
-  { ref: "OBR-24086", client: "R. Nakamura",     vehicle: "Huracán Tecnica",      city: "Monaco", start: "22 May",  end: "23 May",  total: 1750, status: "rejected" },
-  { ref: "OBR-24087", client: "Mme. Albright",   vehicle: "Bentayga EWB",         city: "Dubai",  start: "25 May",  end: "29 May",  total: 6600, status: "pending" },
-  { ref: "OBR-24088", client: "F. Castellanos",  vehicle: "DB12 Volante",         city: "Monaco", start: "27 May",  end: "30 May",  total: 4650, status: "confirmed" },
+  { ref: "OBR-24081", client: "J. Beaumont",     vehicle: "Phantom VIII",         city: "Monaco", start: "12. Mai", end: "14. Mai", total: 4800, status: "confirmed" },
+  { ref: "OBR-24082", client: "A. Khalid",       vehicle: "Cullinan Black Badge", city: "Dubai",  start: "15. Mai", end: "20. Mai", total: 10750, status: "pending" },
+  { ref: "OBR-24083", client: "S. Marchetti",    vehicle: "812 Superfast",        city: "Monaco", start: "16. Mai", end: "17. Mai", total: 1850, status: "confirmed" },
+  { ref: "OBR-24084", client: "Mme. Dubois",     vehicle: "Dawn",                 city: "Paris",  start: "18. Mai", end: "21. Mai", total: 5850, status: "pending" },
+  { ref: "OBR-24085", client: "Lord Ashcombe",   vehicle: "Continental GT Speed", city: "Paris",  start: "20. Mai", end: "27. Mai", total: 10150, status: "confirmed" },
+  { ref: "OBR-24086", client: "R. Nakamura",     vehicle: "Huracán Tecnica",      city: "Monaco", start: "22. Mai", end: "23. Mai", total: 1750, status: "rejected" },
+  { ref: "OBR-24087", client: "Mme. Albright",   vehicle: "Bentayga EWB",         city: "Dubai",  start: "25. Mai", end: "29. Mai", total: 6600, status: "pending" },
+  { ref: "OBR-24088", client: "F. Castellanos",  vehicle: "DB12 Volante",         city: "Monaco", start: "27. Mai", end: "30. Mai", total: 4650, status: "confirmed" },
 ];
 
-const stats = [
-  { label: "Active Reservations", value: "12" },
-  { label: "Pending Approval", value: "3" },
-  { label: "Revenue · May", value: formatPrice(186400) },
-  { label: "Fleet Utilisation", value: "78%" },
-];
-
-function StatusBadge({ s }: { s: Status }) {
-  const map: Record<Status, { bg: string; dot: string; label: string; text: string }> = {
-    pending:   { bg: "bg-status-pending/10",   dot: "bg-status-pending",   text: "text-status-pending",   label: "Pending"   },
-    confirmed: { bg: "bg-status-confirmed/10", dot: "bg-status-confirmed", text: "text-status-confirmed", label: "Confirmed" },
-    rejected:  { bg: "bg-status-rejected/10",  dot: "bg-status-rejected",  text: "text-status-rejected",  label: "Rejected"  },
+function StatusBadge({ s, label }: { s: Status; label: string }) {
+  const map: Record<Status, { bg: string; dot: string; text: string }> = {
+    pending:   { bg: "bg-status-pending/10",   dot: "bg-status-pending",   text: "text-status-pending"   },
+    confirmed: { bg: "bg-status-confirmed/10", dot: "bg-status-confirmed", text: "text-status-confirmed" },
+    rejected:  { bg: "bg-status-rejected/10",  dot: "bg-status-rejected",  text: "text-status-rejected"  },
   };
   const c = map[s];
   return (
     <span className={`inline-flex items-center gap-2 px-3 py-1.5 ${c.bg} ${c.text} border border-current/20`}>
       <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
-      <span className="text-[0.65rem] tracking-[0.22em] uppercase font-medium">{c.label}</span>
+      <span className="text-[0.65rem] tracking-[0.22em] uppercase font-medium">{label}</span>
     </span>
   );
 }
 
 function AdminDashboard() {
+  const { t } = useI18n();
   const [filter, setFilter] = useState<Status | "all">("all");
   const filtered = filter === "all" ? bookings : bookings.filter((b) => b.status === filter);
+
+  const stats = [
+    { label: t.admin.stats.active, value: "12" },
+    { label: t.admin.stats.pending, value: "3" },
+    { label: t.admin.stats.revenue, value: formatPrice(186400) },
+    { label: t.admin.stats.utilisation, value: "78%" },
+  ];
+
+  const sidebar = [
+    { label: t.admin.sidebar.reservations, active: true },
+    { label: t.admin.sidebar.fleet },
+    { label: t.admin.sidebar.clients },
+    { label: t.admin.sidebar.calendar },
+    { label: t.admin.sidebar.reports },
+    { label: t.admin.sidebar.settings },
+  ];
+
+  const filterLabels: Record<Status | "all", string> = {
+    all: t.admin.status.all,
+    pending: t.admin.status.pending,
+    confirmed: t.admin.status.confirmed,
+    rejected: t.admin.status.rejected,
+  };
 
   return (
     <div className="min-h-screen bg-onyx flex">
@@ -70,17 +89,10 @@ function AdminDashboard() {
           <Link to="/" className="font-display text-xl tracking-[0.18em] text-cream">
             OB<span className="text-gold">RENT</span>
           </Link>
-          <div className="text-[0.6rem] tracking-[0.3em] uppercase text-gold/70 mt-1">Concierge</div>
+          <div className="text-[0.6rem] tracking-[0.3em] uppercase text-gold/70 mt-1">{t.nav.concierge}</div>
         </div>
         <nav className="flex-1 p-6 space-y-1">
-          {[
-            { label: "Reservations", active: true },
-            { label: "Fleet" },
-            { label: "Clients" },
-            { label: "Calendar" },
-            { label: "Reports" },
-            { label: "Settings" },
-          ].map((i) => (
+          {sidebar.map((i) => (
             <a
               key={i.label}
               href="#"
@@ -92,10 +104,11 @@ function AdminDashboard() {
             </a>
           ))}
         </nav>
-        <div className="p-6 border-t border-border">
+        <div className="p-6 border-t border-border flex items-center justify-between gap-4">
           <Link to="/admin" className="text-xs tracking-[0.24em] uppercase text-cream/45 hover:text-gold">
-            ← Sign Out
+            {t.admin.sidebar.signOut}
           </Link>
+          <LanguageSwitcher />
         </div>
       </aside>
 
@@ -103,12 +116,12 @@ function AdminDashboard() {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="border-b border-border px-6 md:px-12 py-6 flex items-center justify-between">
           <div>
-            <div className="text-[0.6rem] tracking-[0.3em] uppercase text-cream/40 mb-1">Tuesday, 14 May</div>
-            <h1 className="font-display text-3xl text-cream">Reservations</h1>
+            <div className="text-[0.6rem] tracking-[0.3em] uppercase text-cream/40 mb-1">{t.admin.dateLabel}</div>
+            <h1 className="font-display text-3xl text-cream">{t.admin.reservations}</h1>
           </div>
           <div className="flex items-center gap-4">
-            <button className="btn-ghost text-[0.65rem] py-3 px-5">Export</button>
-            <button className="btn-gold text-[0.65rem] py-3 px-5">New Reservation</button>
+            <button className="btn-ghost text-[0.65rem] py-3 px-5">{t.admin.export}</button>
+            <button className="btn-gold text-[0.65rem] py-3 px-5">{t.admin.newReservation}</button>
           </div>
         </header>
 
@@ -133,10 +146,10 @@ function AdminDashboard() {
                   filter === f ? "text-gold border-gold" : "text-cream/55 border-transparent hover:text-cream"
                 }`}
               >
-                {f === "all" ? "All" : f}
+                {filterLabels[f]}
               </button>
             ))}
-            <span className="ml-auto text-[0.65rem] tracking-[0.28em] uppercase text-cream/40">{filtered.length} entries</span>
+            <span className="ml-auto text-[0.65rem] tracking-[0.28em] uppercase text-cream/40">{filtered.length} {t.admin.table.entries}</span>
           </section>
 
           {/* Bookings table */}
@@ -144,8 +157,8 @@ function AdminDashboard() {
             <table className="w-full text-sm min-w-[900px]">
               <thead>
                 <tr className="border-b border-border">
-                  {["Reference", "Client", "Motorcar", "City", "Dates", "Total", "Status", ""].map((h) => (
-                    <th key={h} className="text-left px-6 py-5 text-[0.6rem] tracking-[0.28em] uppercase text-cream/45 font-medium">
+                  {[t.admin.table.reference, t.admin.table.client, t.admin.table.vehicle, t.admin.table.city, t.admin.table.dates, t.admin.table.total, t.admin.table.status, ""].map((h, i) => (
+                    <th key={i} className="text-left px-6 py-5 text-[0.6rem] tracking-[0.28em] uppercase text-cream/45 font-medium">
                       {h}
                     </th>
                   ))}
@@ -160,9 +173,9 @@ function AdminDashboard() {
                     <td className="px-6 py-5 text-cream/60">{b.city}</td>
                     <td className="px-6 py-5 text-cream/60">{b.start} — {b.end}</td>
                     <td className="px-6 py-5 font-display text-base text-cream">{formatPrice(b.total)}</td>
-                    <td className="px-6 py-5"><StatusBadge s={b.status} /></td>
+                    <td className="px-6 py-5"><StatusBadge s={b.status} label={filterLabels[b.status]} /></td>
                     <td className="px-6 py-5 text-right">
-                      <button className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/55 hover:text-gold transition">View →</button>
+                      <button className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/55 hover:text-gold transition">{t.admin.table.view}</button>
                     </td>
                   </tr>
                 ))}
