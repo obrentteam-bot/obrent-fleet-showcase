@@ -9,6 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -34,6 +41,8 @@ function ContactPage() {
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
+  const [salutation, setSalutation] = useState<string>("");
+  const [titleVal, setTitleVal] = useState<string>("none");
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
@@ -70,9 +79,32 @@ function ContactPage() {
             >
               <div>
                 <label className="lux-label">{f.salutation}</label>
-                <input className="lux-input" type="text" placeholder={f.salutationPlaceholder} />
+                <Select value={salutation} onValueChange={setSalutation}>
+                  <SelectTrigger className="lux-input h-auto">
+                    <SelectValue placeholder={f.salutationPlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mr">{f.salutationOptions.mr}</SelectItem>
+                    <SelectItem value="ms">{f.salutationOptions.ms}</SelectItem>
+                    <SelectItem value="divers">{f.salutationOptions.divers}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
+                <label className="lux-label">{f.title}</label>
+                <Select value={titleVal} onValueChange={setTitleVal}>
+                  <SelectTrigger className="lux-input h-auto">
+                    <SelectValue placeholder={f.titlePlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{f.titleOptions.none}</SelectItem>
+                    <SelectItem value="dr">{f.titleOptions.dr}</SelectItem>
+                    <SelectItem value="profDr">{f.titleOptions.profDr}</SelectItem>
+                    <SelectItem value="prof">{f.titleOptions.prof}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
                 <label className="lux-label">{f.name}</label>
                 <input className="lux-input" type="text" placeholder="Jonathan Beaumont" />
               </div>
