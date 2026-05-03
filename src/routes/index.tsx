@@ -6,10 +6,10 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "OBRENT — Kuratierte Luxus-Mobilität" },
-      { name: "description", content: "OBRENT bietet eine diskrete, handverlesene Flotte der außergewöhnlichsten Automobile der Welt — auf Termin in Monaco, Paris und Dubai." },
-      { property: "og:title", content: "OBRENT — Kuratierte Luxus-Mobilität" },
-      { property: "og:description", content: "Eine Einladung zum Außergewöhnlichen. Handverlesene Fahrzeuge, zu Ihnen geliefert." },
+      { title: "OBRENT — Luxus Autovermietung Mannheim" },
+      { name: "description", content: "OBRENT vermietet Premium-Fahrzeuge von Porsche, BMW und Audi in Mannheim — fair, schnell verfügbar und persönlich übergeben." },
+      { property: "og:title", content: "OBRENT — Luxus Autovermietung Mannheim" },
+      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Mannheim — Porsche, BMW, Audi." },
     ],
   }),
   component: HomePage,
@@ -39,8 +39,8 @@ function HomePage() {
               <span className="gold-rule" />
               <span className="eyebrow">{t.home.eyebrow}</span>
             </div>
-            <h1 className="font-display text-[15vw] md:text-[10rem] leading-[0.9] text-cream tracking-tight">
-              OB<span className="text-gold italic font-light">rent</span>
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[1] text-cream tracking-tight max-w-3xl">
+              {t.home.heroTitle} <span className="text-gold italic font-light">{t.home.heroTitleItalic}</span>{t.home.heroTitleRest}
             </h1>
             <p className="mt-10 text-lg md:text-xl text-cream/75 font-light max-w-xl leading-relaxed">
               {t.home.heroLead}
@@ -54,7 +54,7 @@ function HomePage() {
           <div className="absolute bottom-10 left-6 md:left-12 right-6 md:right-12 flex items-end justify-between text-cream/50">
             <div className="text-xs tracking-[0.3em] uppercase">{t.home.scroll}</div>
             <div className="hidden md:block text-xs tracking-[0.3em] uppercase">
-              43.7384° N · 7.4246° E
+              Mannheim · Deutschland
             </div>
           </div>
         </div>
