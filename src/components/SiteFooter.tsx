@@ -30,7 +30,6 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow text-cream/50 mb-6">{t.footer.atelier}</div>
             <ul className="space-y-3 text-sm text-cream/70 font-light">
-              <li>Mannheim</li>
               <li>Käferthaler Straße 40</li>
               <li>68167 Mannheim</li>
               <li>concierge@obrent.com</li>
