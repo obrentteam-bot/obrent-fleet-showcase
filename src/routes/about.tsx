@@ -55,9 +55,8 @@ function AboutPage() {
         {/* Giant transparent overlay title */}
         <div className="relative z-10 px-6 md:px-12 mt-12 md:mt-20">
           <div className="max-w-[1440px] mx-auto">
-            <h1 className="font-display text-7xl sm:text-8xl md:text-[10rem] lg:text-[14rem] xl:text-[17rem] leading-[0.85] tracking-tight text-cream/95 mix-blend-screen drop-shadow-[0_8px_40px_oklch(0_0_0/0.6)]">
-              {t.about.title}
-              <br />
+            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tight text-cream drop-shadow-[0_8px_40px_oklch(0_0_0/0.7)]">
+              {t.about.title}{" "}
               <span className="italic font-light text-gold">
                 {t.about.titleItalic}.
               </span>
