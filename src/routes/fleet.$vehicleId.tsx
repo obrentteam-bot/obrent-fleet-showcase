@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
   head: ({ params }) => {
@@ -291,6 +292,7 @@ function VehicleDetailPage() {
               </div>
               <p className="mt-2 text-xs text-cream/40">{cf.chauffeurHint}</p>
             </div>
+            {chauffeur === "yes" && <ChauffeurDetails />}
             <div className="md:col-span-2">
               <label className="lux-label">{cf.delivery}</label>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">

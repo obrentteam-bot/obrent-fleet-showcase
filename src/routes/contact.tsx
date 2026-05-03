@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import {
   Select,
   SelectContent,
@@ -39,6 +40,7 @@ function ContactPage() {
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
+  const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
   const [salutation, setSalutation] = useState<string>("");
@@ -185,16 +187,31 @@ function ContactPage() {
                 <label className="lux-label">{f.chauffeur}</label>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
                   <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                    <input type="radio" name="chauffeur" value="yes" className="accent-gold" />
+                    <input
+                      type="radio"
+                      name="chauffeur"
+                      value="yes"
+                      checked={chauffeur === "yes"}
+                      onChange={() => setChauffeur("yes")}
+                      className="accent-gold"
+                    />
                     <span className="text-sm">{f.chauffeurYes}</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                    <input type="radio" name="chauffeur" value="no" defaultChecked className="accent-gold" />
+                    <input
+                      type="radio"
+                      name="chauffeur"
+                      value="no"
+                      checked={chauffeur === "no"}
+                      onChange={() => setChauffeur("no")}
+                      className="accent-gold"
+                    />
                     <span className="text-sm">{f.chauffeurNo}</span>
                   </label>
                 </div>
                 <p className="mt-2 text-xs text-cream/40">{f.chauffeurHint}</p>
               </div>
+              {chauffeur === "yes" && <ChauffeurDetails />}
               <div className="md:col-span-2">
                 <label className="lux-label">{f.delivery}</label>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
