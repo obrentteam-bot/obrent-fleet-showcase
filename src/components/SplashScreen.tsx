@@ -17,11 +17,11 @@ export function SplashScreen() {
     setFadeOut(false);
 
     // Bounce duration ~1.5s, then fade out
-    const tOut = setTimeout(() => setFadeOut(true), 2000);
+    const tOut = setTimeout(() => setFadeOut(true), 3500);
     const tDone = setTimeout(() => {
       setHidden(true);
       setActive(false);
-    }, 2800);
+    }, 4300);
 
     return () => {
       clearTimeout(tOut);
