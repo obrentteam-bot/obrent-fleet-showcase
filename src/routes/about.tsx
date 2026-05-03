@@ -21,119 +21,117 @@ function AboutPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-40 pb-24 px-6 md:px-12">
-        <div className="max-w-[1100px] mx-auto">
-          <div className="flex items-center gap-4 mb-8">
+      {/* CINEMATIC HERO with full-bleed Wasserturm */}
+      <section className="relative min-h-[100svh] w-full overflow-hidden">
+        {/* Background image */}
+        <img
+          src={aboutImage}
+          alt="Mannheimer Wasserturm zur blauen Stunde"
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+        />
+        {/* Cinematic overlays */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,transparent_0%,oklch(0.10_0_0/0.55)_50%,oklch(0.08_0_0/0.92)_100%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.08_0_0/0.85)_0%,transparent_25%,transparent_60%,oklch(0.08_0_0/0.95)_100%)]"
+        />
+        {/* Subtle grain / vignette */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,oklch(0_0_0/0.6)_100%)]"
+        />
+
+        {/* Top eyebrow row */}
+        <div className="relative z-10 pt-40 px-6 md:px-12">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-4">
             <span className="gold-rule" />
             <span className="eyebrow">{t.about.eyebrowHouse}</span>
           </div>
-          <h1 className="font-display text-5xl md:text-8xl text-cream leading-[0.95]">
-            {t.about.title} <span className="italic text-gold/90 font-light">{t.about.titleItalic}</span>.
-          </h1>
         </div>
-      </section>
 
-      <section className="px-6 md:px-12 pb-32 relative">
-        {/* decorative giant numeral */}
+        {/* Giant transparent overlay title */}
+        <div className="relative z-10 px-6 md:px-12 mt-12 md:mt-20">
+          <div className="max-w-[1440px] mx-auto">
+            <h1 className="font-display text-7xl sm:text-8xl md:text-[10rem] lg:text-[14rem] xl:text-[17rem] leading-[0.85] tracking-tight text-cream/95 mix-blend-screen drop-shadow-[0_8px_40px_oklch(0_0_0/0.6)]">
+              {t.about.title}
+              <br />
+              <span className="italic font-light text-gold">
+                {t.about.titleItalic}.
+              </span>
+            </h1>
+          </div>
+        </div>
+
+        {/* Vertical side caption */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-10 right-4 md:right-12 font-display text-[14rem] md:text-[22rem] leading-none text-gold/[0.04] select-none"
+          className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-10 flex-col items-center gap-6 text-[10px] tracking-[0.5em] uppercase text-cream/50"
         >
-          01
+          <span>49°29′N</span>
+          <span className="h-24 w-px bg-cream/30" />
+          <span className="[writing-mode:vertical-rl] rotate-180">
+            Mannheim · Est MMXXVI
+          </span>
+          <span className="h-24 w-px bg-cream/30" />
+          <span>08°28′E</span>
         </div>
 
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center relative">
-          {/* IMAGE COLUMN */}
-          <div className="lg:col-span-6 relative">
-            {/* vertical caption */}
-            <div
-              aria-hidden
-              className="hidden lg:flex absolute -left-10 top-0 bottom-0 flex-col items-center justify-between text-[10px] tracking-[0.4em] uppercase text-cream/30"
-            >
-              <span>Mannheim</span>
-              <span className="rotate-180 [writing-mode:vertical-rl]">Est · MMXXVI</span>
-              <span>49°29′N</span>
+        {/* Bottom: image credit / scroll cue */}
+        <div className="absolute bottom-8 left-0 right-0 z-10 px-6 md:px-12">
+          <div className="max-w-[1440px] mx-auto flex items-end justify-between gap-6">
+            <div className="text-[10px] tracking-[0.4em] uppercase text-cream/55">
+              Wasserturm <span className="text-gold/80">·</span> Heimat von OBRENT
             </div>
-
-            {/* gold offset frame */}
-            <div className="relative">
-              <div
-                aria-hidden
-                className="absolute -inset-3 md:-inset-5 border border-gold/40 translate-x-3 translate-y-3 md:translate-x-5 md:translate-y-5 pointer-events-none"
-              />
-              <div
-                aria-hidden
-                className="absolute -inset-3 md:-inset-5 -translate-x-3 -translate-y-3 md:-translate-x-5 md:-translate-y-5 bg-[linear-gradient(135deg,oklch(0.78_0.12_85/0.18),transparent_60%)] pointer-events-none"
-              />
-
-              <div className="relative aspect-[4/5] overflow-hidden bg-jet group">
-                <img
-                  src={aboutImage}
-                  alt="Mannheimer Wasserturm zur blauen Stunde"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
-                />
-                {/* cinematic gradient overlay */}
-                <div
-                  aria-hidden
-                  className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,oklch(0.10_0_0/0.55)_85%,oklch(0.10_0_0/0.85)_100%)]"
-                />
-                {/* corner accents */}
-                <span aria-hidden className="absolute top-0 left-0 w-10 h-px bg-gold" />
-                <span aria-hidden className="absolute top-0 left-0 w-px h-10 bg-gold" />
-                <span aria-hidden className="absolute bottom-0 right-0 w-10 h-px bg-gold" />
-                <span aria-hidden className="absolute bottom-0 right-0 w-px h-10 bg-gold" />
-
-                {/* image caption inside */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex items-end justify-between gap-4">
-                  <div>
-                    <div className="text-[10px] tracking-[0.4em] uppercase text-gold/80 mb-1">
-                      Heimat
-                    </div>
-                    <div className="font-display text-2xl md:text-3xl text-cream">
-                      Wasserturm<span className="text-gold/80"> · </span>Mannheim
-                    </div>
-                  </div>
-                  <div className="hidden md:flex flex-col items-end text-right">
-                    <span className="text-[10px] tracking-[0.4em] uppercase text-cream/50">Seit</span>
-                    <span className="font-display text-3xl text-gold">2026</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* floating stats card */}
-              <div className="hidden md:flex absolute -bottom-10 -right-6 lg:-right-12 w-56 bg-jet border border-gold/30 px-6 py-5 flex-col gap-3 shadow-[0_30px_60px_-20px_oklch(0_0_0/0.8)]">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-display text-4xl text-gold leading-none">100%</span>
-                </div>
-                <div className="text-[10px] tracking-[0.3em] uppercase text-cream/55 leading-relaxed">
-                  Persönliche<br />Übergabe in Mannheim
-                </div>
-                <span aria-hidden className="h-px w-8 bg-gold/60" />
-              </div>
-            </div>
-          </div>
-
-          {/* TEXT COLUMN */}
-          <div className="lg:col-span-6 space-y-7 text-cream/70 font-light text-lg leading-relaxed">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="h-px w-10 bg-gold/60" />
-              <span className="text-[10px] tracking-[0.4em] uppercase text-gold/80">Unsere Geschichte</span>
-            </div>
-            <p className="text-cream font-display text-3xl md:text-4xl leading-tight">
-              {t.about.intro} <span className="italic text-gold/90">{t.about.introItalic}</span>
-            </p>
-            <p>{t.about.p2}</p>
-            <p>{t.about.p3}</p>
-            <div className="flex items-center gap-4 pt-6">
-              <span className="h-px flex-1 bg-gradient-to-r from-gold/60 to-transparent" />
-              <p className="text-xs tracking-[0.3em] uppercase text-gold whitespace-nowrap">
-                {t.about.founders}
-              </p>
+            <div className="hidden md:flex items-center gap-3 text-[10px] tracking-[0.4em] uppercase text-cream/55">
+              <span>Scroll</span>
+              <span className="h-px w-12 bg-gold/60" />
             </div>
           </div>
         </div>
       </section>
 
+      {/* STORY section */}
+      <section className="relative px-6 md:px-12 py-32">
+        {/* huge faded backdrop numeral */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute top-10 left-0 right-0 text-center font-display text-[20rem] md:text-[32rem] leading-none text-gold/[0.035] select-none"
+        >
+          OB
+        </div>
+
+        <div className="max-w-[1100px] mx-auto relative">
+          <div className="flex items-center gap-3 mb-10">
+            <span className="h-px w-12 bg-gold/70" />
+            <span className="text-[10px] tracking-[0.4em] uppercase text-gold">
+              Unsere Geschichte
+            </span>
+          </div>
+
+          <p className="text-cream font-display text-3xl md:text-5xl leading-tight max-w-4xl">
+            {t.about.intro}{" "}
+            <span className="italic text-gold/90 font-light">
+              {t.about.introItalic}
+            </span>
+          </p>
+
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 text-cream/70 font-light text-lg leading-relaxed">
+            <p>{t.about.p2}</p>
+            <p>{t.about.p3}</p>
+          </div>
+
+          <div className="flex items-center gap-4 pt-20">
+            <span className="h-px flex-1 bg-gradient-to-r from-gold/60 to-transparent" />
+            <p className="text-xs tracking-[0.35em] uppercase text-gold whitespace-nowrap">
+              {t.about.founders}
+            </p>
+            <span className="h-px flex-1 bg-gradient-to-l from-gold/60 to-transparent" />
+          </div>
+        </div>
+      </section>
     </SiteLayout>
   );
 }
