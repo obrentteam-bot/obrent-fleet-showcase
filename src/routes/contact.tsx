@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import { supabase } from "@/lib/supabase";
+import { useSettings } from "@/lib/useSettings";
 
 import {
   Select,
@@ -33,12 +34,11 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
 
-const offices = [
-  { city: "Mannheim", line1: "Käferthaler Straße 40", line2: "68167 Mannheim", phone: "+49 15569 459633" },
-];
 
 function ContactPage() {
   const { t, lang } = useI18n();
+  const { settings } = useSettings();
+  const addressLines = settings.address.split(",").map((s) => s.trim());
   const f = t.contact.form;
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
@@ -353,19 +353,18 @@ function ContactPage() {
           <aside className="lg:col-span-5 lg:pl-8 lg:border-l lg:border-border space-y-12">
             <div>
               <div className="eyebrow mb-4">{t.contact.direct}</div>
-              <div className="font-display text-2xl text-cream">concierge@obrent.com</div>
-              <div className="mt-2 text-cream/55">+49 15569 459633</div>
+              <div className="font-display text-2xl text-cream">{settings.email}</div>
+              <div className="mt-2 text-cream/55">{settings.phone}</div>
             </div>
             <div className="space-y-8">
               <div className="eyebrow">{t.contact.ateliers}</div>
-              {offices.map((o) => (
-                <div key={o.city} className="border-l border-gold/30 pl-5">
-                  <div className="font-display text-2xl text-cream mb-1">{o.city}</div>
-                  <div className="text-sm text-cream/60 font-light">{o.line1}</div>
-                  <div className="text-sm text-cream/60 font-light">{o.line2}</div>
-                  <div className="text-sm text-gold/80 mt-2">{o.phone}</div>
-                </div>
-              ))}
+              <div className="border-l border-gold/30 pl-5">
+                <div className="font-display text-2xl text-cream mb-1">{settings.company_name}</div>
+                {addressLines.map((l, i) => (
+                  <div key={i} className="text-sm text-cream/60 font-light">{l}</div>
+                ))}
+                <div className="text-sm text-gold/80 mt-2">{settings.phone}</div>
+              </div>
             </div>
           </aside>
         </div>

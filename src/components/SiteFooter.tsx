@@ -1,10 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import { useSettings } from "@/lib/useSettings";
 import logo from "@/assets/obrent-logo.png";
 
 export function SiteFooter() {
   const { t } = useI18n();
+  const { settings } = useSettings();
   const year = new Date().getFullYear();
+  const addressLines = settings.address.split(",").map((s) => s.trim());
   return (
     <footer className="text-cream relative">
       <div className="bg-[linear-gradient(180deg,oklch(0.10_0_0)_0%,oklch(0.55_0.005_80)_50%,oklch(0.10_0_0)_100%)] border-t border-cream/5">
@@ -30,18 +33,16 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow text-cream/50 mb-6">{t.footer.atelier}</div>
             <ul className="space-y-3 text-sm text-cream/70 font-light">
-              <li>Käferthaler Straße 40</li>
-              <li>68167 Mannheim</li>
-              <li>concierge@obrent.com</li>
-              <li>+49 15569 459633</li>
+              {addressLines.map((l, i) => <li key={i}>{l}</li>)}
+              <li>{settings.email}</li>
+              <li>{settings.phone}</li>
             </ul>
           </div>
 
           <div>
             <div className="eyebrow text-cream/50 mb-6">{t.footer.hours}</div>
             <ul className="space-y-3 text-sm text-cream/70 font-light">
-              <li>{t.footer.hoursDays}</li>
-              <li>{t.footer.hours24}</li>
+              {settings.hours.split("\n").map((l, i) => <li key={i}>{l}</li>)}
               <li className="pt-3 text-xs text-cream/40">{t.footer.chauffeur}</li>
             </ul>
           </div>

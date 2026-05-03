@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, Fragment } from "react";
 import { supabase, type DbBooking, type DbVehicle, formatPrice } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
+import { useSettings, saveSettings, type AppSettings } from "@/lib/useSettings";
 import logo from "@/assets/obrent-logo.png";
 
 export const Route = createFileRoute("/admin/dashboard")({
@@ -15,15 +16,18 @@ export const Route = createFileRoute("/admin/dashboard")({
 });
 
 type Status = "pending" | "confirmed" | "rejected";
-type BookingRow = DbBooking & { phone?: string | null; vehicles?: { name: string } | null };
+type BookingRow = DbBooking & {
+  phone?: string | null;
+  admin_note?: string | null;
+  vehicles?: { name: string } | null;
+};
+type VehicleRow = DbVehicle & { sort_order?: number | null };
 
 const STATUS_LABEL: Record<Status, string> = {
-  pending: "Offen",
-  confirmed: "Bestätigt",
-  rejected: "Abgelehnt",
+  pending: "Offen", confirmed: "Bestätigt", rejected: "Abgelehnt",
 };
-
 const CATEGORIES = ["SUV", "Limousine", "Kombi", "Sports"] as const;
+const SESSION_MAX_MS = 8 * 60 * 60 * 1000; // 8h
 
 function StatusBadge({ s }: { s: Status }) {
   const cls: Record<Status, string> = {
@@ -31,72 +35,38 @@ function StatusBadge({ s }: { s: Status }) {
     confirmed: "bg-green-500/10 text-green-400 border-green-500/30",
     rejected: "bg-red-500/10 text-red-400 border-red-500/30",
   };
-  return (
-    <span className={`inline-block px-2.5 py-1 text-[0.65rem] tracking-[0.2em] uppercase border ${cls[s]}`}>
-      {STATUS_LABEL[s]}
-    </span>
-  );
+  return <span className={`inline-block px-2.5 py-1 text-[0.65rem] tracking-[0.2em] uppercase border ${cls[s]}`}>{STATUS_LABEL[s]}</span>;
 }
 
 type VehicleForm = {
-  name: string;
-  category: string;
-  description: string;
-  engine: string;
-  power_ps: string;
-  year: string;
-  color: string;
-  price_per_day: string;
-  images: string[];
-  available: boolean;
+  name: string; category: string; description: string; engine: string;
+  power_ps: string; year: string; color: string; price_per_day: string;
+  images: string[]; available: boolean;
 };
-
 const emptyForm: VehicleForm = {
-  name: "",
-  category: "SUV",
-  description: "",
-  engine: "",
-  power_ps: "",
-  year: String(new Date().getFullYear()),
-  color: "",
-  price_per_day: "",
-  images: [""],
-  available: true,
+  name: "", category: "SUV", description: "", engine: "",
+  power_ps: "", year: String(new Date().getFullYear()), color: "",
+  price_per_day: "", images: [""], available: true,
 };
 
-function VehicleModal({
-  initial,
-  editingId,
-  onClose,
-  onSaved,
-}: {
-  initial: VehicleForm;
-  editingId: string | null;
-  onClose: () => void;
-  onSaved: () => void;
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div><label className="lux-label">{label}</label>{children}</div>;
+}
+
+function VehicleModal({ initial, editingId, onClose, onSaved }: {
+  initial: VehicleForm; editingId: string | null; onClose: () => void; onSaved: () => void;
 }) {
   const [form, setForm] = useState<VehicleForm>(initial);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const set = <K extends keyof VehicleForm>(k: K, v: VehicleForm[K]) => setForm((f) => ({ ...f, [k]: v }));
-
-  const updateImage = (i: number, val: string) =>
-    setForm((f) => ({ ...f, images: f.images.map((x, idx) => (idx === i ? val : x)) }));
-  const addImage = () => setForm((f) => ({ ...f, images: [...f.images, ""] }));
-  const removeImage = (i: number) =>
-    setForm((f) => ({ ...f, images: f.images.filter((_, idx) => idx !== i) }));
 
   const save = async () => {
     setError(null);
-    if (!form.name.trim() || !form.price_per_day) {
-      setError("Name und Preis sind erforderlich.");
-      return;
-    }
+    if (!form.name.trim() || !form.price_per_day) { setError("Name und Preis sind erforderlich."); return; }
     setSaving(true);
     const payload = {
-      name: form.name.trim(),
-      category: form.category,
+      name: form.name.trim(), category: form.category,
       description: form.description.trim() || null,
       engine: form.engine.trim() || null,
       power_ps: form.power_ps ? Number(form.power_ps) : null,
@@ -110,12 +80,8 @@ function VehicleModal({
       ? await supabase.from("vehicles").update(payload).eq("id", editingId)
       : await supabase.from("vehicles").insert(payload);
     setSaving(false);
-    if (res.error) {
-      setError(res.error.message);
-      return;
-    }
-    onSaved();
-    onClose();
+    if (res.error) { setError(res.error.message); return; }
+    onSaved(); onClose();
   };
 
   return (
@@ -126,17 +92,13 @@ function VehicleModal({
           <button onClick={onClose} className="text-cream/50 hover:text-gold text-xl">×</button>
         </div>
         <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-          <Field label="Name">
-            <input className="lux-input" value={form.name} onChange={(e) => set("name", e.target.value)} />
-          </Field>
+          <Field label="Name"><input className="lux-input" value={form.name} onChange={(e) => set("name", e.target.value)} /></Field>
           <Field label="Kategorie">
             <select className="lux-input" value={form.category} onChange={(e) => set("category", e.target.value)}>
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </Field>
-          <Field label="Beschreibung">
-            <textarea className="lux-input min-h-[80px]" value={form.description} onChange={(e) => set("description", e.target.value)} />
-          </Field>
+          <Field label="Beschreibung"><textarea className="lux-input min-h-[80px]" value={form.description} onChange={(e) => set("description", e.target.value)} /></Field>
           <div className="grid grid-cols-2 gap-4">
             <Field label="Motor"><input className="lux-input" value={form.engine} onChange={(e) => set("engine", e.target.value)} /></Field>
             <Field label="PS"><input type="number" className="lux-input" value={form.power_ps} onChange={(e) => set("power_ps", e.target.value)} /></Field>
@@ -153,14 +115,13 @@ function VehicleModal({
             <label className="lux-label">Bilder (URL) — erste = Hauptbild</label>
             <div className="space-y-2">
               {form.images.map((img, i) => (
-                <div key={i} className="flex gap-2">
-                  <input className="lux-input flex-1" placeholder="https://…" value={img} onChange={(e) => updateImage(i, e.target.value)} />
-                  {form.images.length > 1 && (
-                    <button type="button" onClick={() => removeImage(i)} className="text-red-400 hover:text-gold px-3 border border-border">×</button>
-                  )}
+                <div key={i} className="flex gap-2 items-center">
+                  {img && <img src={img} alt="" className="w-12 h-10 object-cover border border-border" />}
+                  <input className="lux-input flex-1" placeholder="https://…" value={img} onChange={(e) => setForm((f) => ({ ...f, images: f.images.map((x, idx) => idx === i ? e.target.value : x) }))} />
+                  {form.images.length > 1 && <button type="button" onClick={() => setForm((f) => ({ ...f, images: f.images.filter((_, idx) => idx !== i) }))} className="text-red-400 hover:text-gold px-3 border border-border">×</button>}
                 </div>
               ))}
-              <button type="button" onClick={addImage} className="text-[0.65rem] tracking-[0.22em] uppercase text-gold hover:text-cream">+ Bild hinzufügen</button>
+              <button type="button" onClick={() => setForm((f) => ({ ...f, images: [...f.images, ""] }))} className="text-[0.65rem] tracking-[0.22em] uppercase text-gold hover:text-cream">+ Bild hinzufügen</button>
             </div>
           </div>
           {error && <div className="text-sm text-red-400">{error}</div>}
@@ -170,15 +131,6 @@ function VehicleModal({
           <button onClick={save} disabled={saving} className="btn-gold text-[0.65rem] py-3 px-6 disabled:opacity-60">{saving ? "Speichert…" : "Speichern"}</button>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="lux-label">{label}</label>
-      {children}
     </div>
   );
 }
@@ -199,32 +151,74 @@ function ConfirmDialog({ message, onConfirm, onCancel }: { message: string; onCo
 
 function vehicleToForm(v: DbVehicle): VehicleForm {
   return {
-    name: v.name ?? "",
-    category: v.category ?? "SUV",
-    description: v.description ?? "",
-    engine: v.engine ?? "",
+    name: v.name ?? "", category: v.category ?? "SUV",
+    description: v.description ?? "", engine: v.engine ?? "",
     power_ps: v.power_ps != null ? String(v.power_ps) : "",
     year: v.year != null ? String(v.year) : "",
-    color: v.color ?? "",
-    price_per_day: String(v.price_per_day ?? ""),
+    color: v.color ?? "", price_per_day: String(v.price_per_day ?? ""),
     images: v.images && v.images.length ? v.images : [""],
     available: v.available ?? true,
   };
 }
 
+function csvEscape(v: unknown): string {
+  const s = v == null ? "" : String(v);
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function downloadBookingsCsv(rows: BookingRow[]) {
+  const headers = ["Datum", "Name", "E-Mail", "Telefon", "Fahrzeug", "Start", "Ende", "Status", "Nachricht", "Notiz"];
+  const lines = [headers.join(",")];
+  for (const b of rows) {
+    lines.push([
+      b.created_at ?? "", b.customer_name, b.email, b.phone ?? "",
+      b.vehicles?.name ?? "", b.start_date, b.end_date,
+      b.status ?? "pending", b.message ?? "", b.admin_note ?? "",
+    ].map(csvEscape).join(","));
+  }
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `buchungen-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function AdminDashboard() {
   const navigate = useNavigate();
   const { session, isAdmin, loading: authLoading } = useAuth();
+  const { settings, refresh: refreshSettings } = useSettings();
 
   const [bookings, setBookings] = useState<BookingRow[]>([]);
-  const [vehicles, setVehicles] = useState<DbVehicle[]>([]);
+  const [vehicles, setVehicles] = useState<VehicleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
-  const [tab, setTab] = useState<"bookings" | "vehicles">("bookings");
+  const [tab, setTab] = useState<"overview" | "bookings" | "vehicles" | "settings">("overview");
   const [statusFilter, setStatusFilter] = useState<Status | "all">("all");
+  const [expandedBooking, setExpandedBooking] = useState<string | null>(null);
+  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
+  const [savingNote, setSavingNote] = useState<string | null>(null);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<DbVehicle | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ kind: "vehicle" | "booking"; id: string } | null>(null);
+
+  // Session timeout
+  useEffect(() => {
+    if (!session) return;
+    const loginTs = Number(localStorage.getItem("admin_login_ts") ?? Date.now());
+    if (!localStorage.getItem("admin_login_ts")) localStorage.setItem("admin_login_ts", String(loginTs));
+    const remaining = SESSION_MAX_MS - (Date.now() - loginTs);
+    if (remaining <= 0) {
+      supabase.auth.signOut().then(() => { localStorage.removeItem("admin_login_ts"); navigate({ to: "/admin" }); });
+      return;
+    }
+    const t = setTimeout(async () => {
+      await supabase.auth.signOut();
+      localStorage.removeItem("admin_login_ts");
+      navigate({ to: "/admin" });
+    }, remaining);
+    return () => clearTimeout(t);
+  }, [session, navigate]);
 
   useEffect(() => {
     if (!authLoading && !session) navigate({ to: "/admin" });
@@ -234,10 +228,10 @@ function AdminDashboard() {
     setLoadingData(true);
     const [b, v] = await Promise.all([
       supabase.from("bookings").select("*, vehicles(name)").order("created_at", { ascending: false }),
-      supabase.from("vehicles").select("*").order("name"),
+      supabase.from("vehicles").select("*").order("sort_order", { ascending: true, nullsFirst: false }).order("name"),
     ]);
     setBookings((b.data ?? []) as BookingRow[]);
-    setVehicles((v.data ?? []) as DbVehicle[]);
+    setVehicles((v.data ?? []) as VehicleRow[]);
     setLoadingData(false);
   }, []);
 
@@ -248,29 +242,74 @@ function AdminDashboard() {
     if (!error) setBookings((p) => p.map((b) => (b.id === id ? { ...b, status } : b)));
   };
 
-  const toggleAvailable = async (v: DbVehicle) => {
+  const saveNote = async (id: string) => {
+    setSavingNote(id);
+    const note = noteDrafts[id] ?? "";
+    const { error } = await supabase.from("bookings").update({ admin_note: note }).eq("id", id);
+    setSavingNote(null);
+    if (!error) setBookings((p) => p.map((b) => (b.id === id ? { ...b, admin_note: note } : b)));
+  };
+
+  const toggleAvailable = async (v: VehicleRow) => {
     const next = !v.available;
     const { error } = await supabase.from("vehicles").update({ available: next }).eq("id", v.id);
     if (!error) setVehicles((p) => p.map((x) => (x.id === v.id ? { ...x, available: next } : x)));
+  };
+
+  const moveVehicle = async (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= vehicles.length) return;
+    const reordered = [...vehicles];
+    [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    setVehicles(reordered);
+    await Promise.all(reordered.map((v, i) => supabase.from("vehicles").update({ sort_order: i }).eq("id", v.id)));
   };
 
   const doDelete = async () => {
     if (!confirmDelete) return;
     const { kind, id } = confirmDelete;
     setConfirmDelete(null);
-    if (kind === "vehicle") {
-      await supabase.from("vehicles").delete().eq("id", id);
-    } else {
-      await supabase.from("bookings").delete().eq("id", id);
-    }
+    if (kind === "vehicle") await supabase.from("vehicles").delete().eq("id", id);
+    else await supabase.from("bookings").delete().eq("id", id);
     load();
   };
 
-  const signOut = async () => { await supabase.auth.signOut(); navigate({ to: "/admin" }); };
+  const signOut = async () => {
+    localStorage.removeItem("admin_login_ts");
+    await supabase.auth.signOut();
+    navigate({ to: "/admin" });
+  };
 
-  if (authLoading) {
-    return <div className="min-h-screen bg-onyx flex items-center justify-center text-cream/50 text-xs tracking-[0.3em] uppercase">Lade…</div>;
-  }
+  // Stats
+  const stats = useMemo(() => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+    const todayCount = bookings.filter((b) => (b.created_at ?? "").slice(0, 10) === todayStr).length;
+    const pending = bookings.filter((b) => (b.status ?? "pending") === "pending").length;
+    const confirmed = bookings.filter((b) => b.status === "confirmed").length;
+    let revenue = 0;
+    for (const b of bookings) {
+      if (b.status !== "confirmed") continue;
+      if (!b.created_at || new Date(b.created_at) < monthStart) continue;
+      const v = vehicles.find((x) => x.id === b.vehicle_id);
+      if (!v) continue;
+      const days = Math.max(1, Math.ceil((new Date(b.end_date).getTime() - new Date(b.start_date).getTime()) / 86400000) || 1);
+      revenue += Number(v.price_per_day) * days;
+    }
+    return { todayCount, pending, confirmed, revenue };
+  }, [bookings, vehicles]);
+
+  const counts = {
+    pending: bookings.filter((b) => (b.status ?? "pending") === "pending").length,
+    confirmed: bookings.filter((b) => b.status === "confirmed").length,
+    rejected: bookings.filter((b) => b.status === "rejected").length,
+  };
+  const filteredBookings = statusFilter === "all" ? bookings : bookings.filter((b) => (b.status ?? "pending") === statusFilter);
+  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString("de-DE") : "—");
+  const fmtDateTime = (d?: string | null) => (d ? new Date(d).toLocaleString("de-DE") : "—");
+  const lastSignIn = session?.user.last_sign_in_at;
+
+  if (authLoading) return <div className="min-h-screen bg-onyx flex items-center justify-center text-cream/50 text-xs tracking-[0.3em] uppercase">Lade…</div>;
   if (!session) return null;
   if (!isAdmin) {
     return (
@@ -283,13 +322,12 @@ function AdminDashboard() {
     );
   }
 
-  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString("de-DE") : "—");
-  const counts = {
-    pending: bookings.filter((b) => (b.status ?? "pending") === "pending").length,
-    confirmed: bookings.filter((b) => b.status === "confirmed").length,
-    rejected: bookings.filter((b) => b.status === "rejected").length,
-  };
-  const filteredBookings = statusFilter === "all" ? bookings : bookings.filter((b) => (b.status ?? "pending") === statusFilter);
+  const TABS = [
+    { k: "overview", label: "Übersicht" },
+    { k: "bookings", label: `Buchungen (${bookings.length})` },
+    { k: "vehicles", label: `Fahrzeuge (${vehicles.length})` },
+    { k: "settings", label: "Einstellungen" },
+  ] as const;
 
   return (
     <div className="min-h-screen bg-onyx text-cream">
@@ -297,28 +335,69 @@ function AdminDashboard() {
         <Link to="/" className="flex items-center gap-4">
           <img src={logo} alt="OBRENT" className="h-10 w-auto" />
           <div>
-            <div className="text-[0.6rem] tracking-[0.3em] uppercase text-gold/70">OBRENT</div>
+            <div className="text-[0.6rem] tracking-[0.3em] uppercase text-gold/70">{settings.company_name}</div>
             <div className="font-display text-xl">Admin</div>
           </div>
         </Link>
         <div className="flex items-center gap-6">
-          <div className="text-xs text-cream/60 hidden md:block">{session.user.email}</div>
+          <div className="text-right hidden md:block">
+            <div className="text-xs text-cream/60">{session.user.email}</div>
+            {lastSignIn && <div className="text-[0.6rem] text-cream/40 mt-0.5">Letzter Login: {fmtDateTime(lastSignIn)}</div>}
+          </div>
           <button onClick={signOut} className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold border border-border px-4 py-2">Abmelden</button>
         </div>
       </header>
 
-      <div className="px-6 md:px-12 pt-8 flex gap-8 border-b border-border">
-        {(["bookings", "vehicles"] as const).map((k) => (
-          <button key={k} onClick={() => setTab(k)} className={`pb-3 text-[0.7rem] tracking-[0.28em] uppercase border-b-2 transition ${tab === k ? "border-gold text-gold" : "border-transparent text-cream/55 hover:text-cream"}`}>
-            {k === "bookings" ? `Buchungen (${bookings.length})` : `Fahrzeuge (${vehicles.length})`}
+      <div className="px-6 md:px-12 pt-8 flex gap-6 md:gap-8 border-b border-border overflow-x-auto">
+        {TABS.map((t) => (
+          <button key={t.k} onClick={() => setTab(t.k)} className={`pb-3 text-[0.7rem] tracking-[0.28em] uppercase border-b-2 transition whitespace-nowrap ${tab === t.k ? "border-gold text-gold" : "border-transparent text-cream/55 hover:text-cream"}`}>
+            {t.label}
           </button>
         ))}
-        <button onClick={load} className="ml-auto pb-3 text-[0.7rem] tracking-[0.28em] uppercase text-cream/55 hover:text-gold">↻ Aktualisieren</button>
+        <button onClick={load} className="ml-auto pb-3 text-[0.7rem] tracking-[0.28em] uppercase text-cream/55 hover:text-gold whitespace-nowrap">↻ Aktualisieren</button>
       </div>
 
       <main className="px-6 md:px-12 py-8">
         {loadingData ? (
           <div className="text-center py-20 text-cream/40 text-xs tracking-[0.3em] uppercase">Lade…</div>
+        ) : tab === "overview" ? (
+          <div className="space-y-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { l: "Buchungen heute", v: String(stats.todayCount) },
+                { l: "Offene Anfragen", v: String(stats.pending) },
+                { l: "Bestätigte Buchungen", v: String(stats.confirmed) },
+                { l: "Umsatz dieser Monat", v: formatPrice(stats.revenue) },
+              ].map((s) => (
+                <div key={s.l} className="bg-jet border border-border p-6">
+                  <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/50 mb-3">{s.l}</div>
+                  <div className="font-display text-3xl text-gold">{s.v}</div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/60 mb-3">Letzte Buchungen</div>
+              <div className="bg-jet border border-border overflow-x-auto">
+                <table className="w-full text-sm min-w-[700px]">
+                  <thead><tr className="border-b border-border text-left">
+                    {["Datum", "Name", "Fahrzeug", "Zeitraum", "Status"].map((h) => <th key={h} className="px-4 py-3 text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 font-medium">{h}</th>)}
+                  </tr></thead>
+                  <tbody>
+                    {bookings.slice(0, 5).map((b) => (
+                      <tr key={b.id} className="border-b border-border/60">
+                        <td className="px-4 py-3 text-cream/70">{fmtDate(b.created_at)}</td>
+                        <td className="px-4 py-3 text-cream">{b.customer_name}</td>
+                        <td className="px-4 py-3 text-cream/70">{b.vehicles?.name ?? "—"}</td>
+                        <td className="px-4 py-3 text-cream/60">{fmtDate(b.start_date)} – {fmtDate(b.end_date)}</td>
+                        <td className="px-4 py-3"><StatusBadge s={(b.status ?? "pending") as Status} /></td>
+                      </tr>
+                    ))}
+                    {bookings.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-cream/40">Keine Buchungen</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         ) : tab === "bookings" ? (
           <>
             <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
@@ -329,79 +408,107 @@ function AdminDashboard() {
                 <span className="text-cream/30 mx-2">·</span>
                 <span className="text-red-400">{counts.rejected} Abgelehnt</span>
               </div>
-              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as Status | "all")} className="lux-input !py-2 !w-auto">
-                <option value="all">Alle</option>
-                <option value="pending">Offen</option>
-                <option value="confirmed">Bestätigt</option>
-                <option value="rejected">Abgelehnt</option>
-              </select>
+              <div className="flex items-center gap-3">
+                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as Status | "all")} className="lux-input !py-2 !w-auto">
+                  <option value="all">Alle</option>
+                  <option value="pending">Offen</option>
+                  <option value="confirmed">Bestätigt</option>
+                  <option value="rejected">Abgelehnt</option>
+                </select>
+                <button onClick={() => downloadBookingsCsv(bookings)} className="btn-ghost text-[0.65rem] py-2 px-4">CSV Export</button>
+              </div>
             </div>
             <section className="bg-jet border border-border overflow-x-auto">
-              <table className="w-full text-sm min-w-[1200px]">
-                <thead>
-                  <tr className="border-b border-border text-left">
-                    {["Datum", "Name", "E-Mail", "Telefon", "Fahrzeug", "Zeitraum", "Nachricht", "Status", "Aktionen"].map((h) => (
-                      <th key={h} className="px-4 py-4 text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 font-medium">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
+              <table className="w-full text-sm min-w-[1100px]">
+                <thead><tr className="border-b border-border text-left">
+                  {["", "Datum", "Name", "E-Mail", "Telefon", "Fahrzeug", "Zeitraum", "Status", "Aktionen"].map((h, i) => (
+                    <th key={i} className="px-4 py-4 text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 font-medium">{h}</th>
+                  ))}
+                </tr></thead>
                 <tbody>
-                  {filteredBookings.length === 0 && (
-                    <tr><td colSpan={9} className="px-4 py-12 text-center text-cream/40">Keine Buchungen</td></tr>
-                  )}
+                  {filteredBookings.length === 0 && <tr><td colSpan={9} className="px-4 py-12 text-center text-cream/40">Keine Buchungen</td></tr>}
                   {filteredBookings.map((b) => {
                     const status = (b.status ?? "pending") as Status;
+                    const isOpen = expandedBooking === b.id;
+                    const note = noteDrafts[b.id] ?? b.admin_note ?? "";
                     return (
-                      <tr key={b.id} className="border-b border-border/60 align-top hover:bg-onyx/40">
-                        <td className="px-4 py-4 text-cream/70 whitespace-nowrap">{fmtDate(b.created_at)}</td>
-                        <td className="px-4 py-4 text-cream">{b.customer_name}</td>
-                        <td className="px-4 py-4 text-cream/70">{b.email}</td>
-                        <td className="px-4 py-4 text-cream/70">{b.phone ?? "—"}</td>
-                        <td className="px-4 py-4 text-cream/80">{b.vehicles?.name ?? "—"}</td>
-                        <td className="px-4 py-4 text-cream/70 whitespace-nowrap">{fmtDate(b.start_date)} – {fmtDate(b.end_date)}</td>
-                        <td className="px-4 py-4 text-cream/60 max-w-xs">
-                          {b.message ? (
-                            <details><summary className="cursor-pointer text-gold/70 text-xs">Anzeigen</summary>
-                              <pre className="whitespace-pre-wrap text-xs mt-2 text-cream/70">{b.message}</pre>
-                            </details>
-                          ) : "—"}
-                        </td>
-                        <td className="px-4 py-4"><StatusBadge s={status} /></td>
-                        <td className="px-4 py-4">
-                          <div className="flex flex-col gap-1">
-                            <button onClick={() => updateStatus(b.id, "confirmed")} disabled={status === "confirmed"} className="text-[0.6rem] tracking-[0.22em] uppercase text-green-400 hover:text-gold disabled:opacity-30 text-left">Bestätigen</button>
-                            <button onClick={() => updateStatus(b.id, "rejected")} disabled={status === "rejected"} className="text-[0.6rem] tracking-[0.22em] uppercase text-red-400 hover:text-gold disabled:opacity-30 text-left">Ablehnen</button>
-                            <button onClick={() => setConfirmDelete({ kind: "booking", id: b.id })} className="text-[0.6rem] tracking-[0.22em] uppercase text-cream/50 hover:text-red-400 text-left">Löschen</button>
-                          </div>
-                        </td>
-                      </tr>
+                      <Fragment key={b.id}>
+                        <tr className="border-b border-border/60 align-top hover:bg-onyx/40 cursor-pointer" onClick={() => setExpandedBooking(isOpen ? null : b.id)}>
+                          <td className="px-4 py-4 text-gold">{isOpen ? "▼" : "▸"}</td>
+                          <td className="px-4 py-4 text-cream/70 whitespace-nowrap">{fmtDate(b.created_at)}</td>
+                          <td className="px-4 py-4 text-cream">{b.customer_name}</td>
+                          <td className="px-4 py-4 text-cream/70">{b.email}</td>
+                          <td className="px-4 py-4 text-cream/70">{b.phone ?? "—"}</td>
+                          <td className="px-4 py-4 text-cream/80">{b.vehicles?.name ?? "—"}</td>
+                          <td className="px-4 py-4 text-cream/70 whitespace-nowrap">{fmtDate(b.start_date)} – {fmtDate(b.end_date)}</td>
+                          <td className="px-4 py-4"><StatusBadge s={status} /></td>
+                          <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex flex-col gap-1">
+                              <button onClick={() => updateStatus(b.id, "confirmed")} disabled={status === "confirmed"} className="text-[0.6rem] tracking-[0.22em] uppercase text-green-400 hover:text-gold disabled:opacity-30 text-left">Bestätigen</button>
+                              <button onClick={() => updateStatus(b.id, "rejected")} disabled={status === "rejected"} className="text-[0.6rem] tracking-[0.22em] uppercase text-red-400 hover:text-gold disabled:opacity-30 text-left">Ablehnen</button>
+                              <button onClick={() => setConfirmDelete({ kind: "booking", id: b.id })} className="text-[0.6rem] tracking-[0.22em] uppercase text-cream/50 hover:text-red-400 text-left">Löschen</button>
+                            </div>
+                          </td>
+                        </tr>
+                        {isOpen && (
+                          <tr className="bg-onyx/60 border-b border-border">
+                            <td colSpan={9} className="px-6 py-6">
+                              <div className="grid md:grid-cols-2 gap-6">
+                                <div>
+                                  <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/50 mb-3">Vollständige Anfrage-Details</div>
+                                  {b.message ? (
+                                    <pre className="whitespace-pre-wrap text-sm text-cream/80 bg-jet border border-border p-4">{b.message}</pre>
+                                  ) : <div className="text-cream/40 text-sm">Keine zusätzlichen Details</div>}
+                                </div>
+                                <div>
+                                  <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/50 mb-3">Interne Notiz</div>
+                                  <textarea
+                                    className="lux-input min-h-[100px] mb-2"
+                                    value={note}
+                                    onChange={(e) => setNoteDrafts((d) => ({ ...d, [b.id]: e.target.value }))}
+                                    placeholder="Interne Anmerkungen…"
+                                  />
+                                  <button onClick={() => saveNote(b.id)} disabled={savingNote === b.id} className="btn-gold text-[0.6rem] py-2 px-4">
+                                    {savingNote === b.id ? "Speichert…" : "Notiz speichern"}
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
                     );
                   })}
                 </tbody>
               </table>
             </section>
           </>
-        ) : (
+        ) : tab === "vehicles" ? (
           <>
             <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
               <div className="text-sm text-cream/60">{vehicles.length} Fahrzeuge insgesamt</div>
               <button onClick={() => { setEditing(null); setModalOpen(true); }} className="btn-gold text-[0.65rem] py-3 px-6">+ Fahrzeug hinzufügen</button>
             </div>
             <section className="bg-jet border border-border overflow-x-auto">
-              <table className="w-full text-sm min-w-[800px]">
-                <thead>
-                  <tr className="border-b border-border text-left">
-                    {["Name", "Kategorie", "Preis / Tag", "Verfügbar", "Aktionen"].map((h) => (
-                      <th key={h} className="px-4 py-4 text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 font-medium">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
+              <table className="w-full text-sm min-w-[900px]">
+                <thead><tr className="border-b border-border text-left">
+                  {["Reihenfolge", "Bild", "Name", "Kategorie", "Preis / Tag", "Verfügbar", "Aktionen"].map((h) => (
+                    <th key={h} className="px-4 py-4 text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 font-medium">{h}</th>
+                  ))}
+                </tr></thead>
                 <tbody>
-                  {vehicles.length === 0 && (
-                    <tr><td colSpan={5} className="px-4 py-12 text-center text-cream/40">Keine Fahrzeuge</td></tr>
-                  )}
-                  {vehicles.map((v) => (
+                  {vehicles.length === 0 && <tr><td colSpan={7} className="px-4 py-12 text-center text-cream/40">Keine Fahrzeuge</td></tr>}
+                  {vehicles.map((v, i) => (
                     <tr key={v.id} className="border-b border-border/60 hover:bg-onyx/40">
+                      <td className="px-4 py-4">
+                        <div className="flex flex-col gap-1">
+                          <button onClick={() => moveVehicle(i, -1)} disabled={i === 0} className="text-gold hover:text-cream disabled:opacity-20 text-xs">▲</button>
+                          <button onClick={() => moveVehicle(i, 1)} disabled={i === vehicles.length - 1} className="text-gold hover:text-cream disabled:opacity-20 text-xs">▼</button>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        {v.images?.[0] ? <img src={v.images[0]} alt={v.name} className="w-20 h-14 object-cover border border-border" /> : <div className="w-20 h-14 bg-onyx border border-border" />}
+                      </td>
                       <td className="px-4 py-4 text-cream">{v.name}</td>
                       <td className="px-4 py-4 text-cream/70">{v.category}</td>
                       <td className="px-4 py-4 text-cream/80">{formatPrice(Number(v.price_per_day))}</td>
@@ -422,24 +529,52 @@ function AdminDashboard() {
               </table>
             </section>
           </>
+        ) : (
+          <SettingsPanel initial={settings} onSaved={refreshSettings} />
         )}
       </main>
 
       {modalOpen && (
-        <VehicleModal
-          initial={editing ? vehicleToForm(editing) : emptyForm}
-          editingId={editing?.id ?? null}
-          onClose={() => setModalOpen(false)}
-          onSaved={load}
-        />
+        <VehicleModal initial={editing ? vehicleToForm(editing) : emptyForm} editingId={editing?.id ?? null} onClose={() => setModalOpen(false)} onSaved={load} />
       )}
       {confirmDelete && (
         <ConfirmDialog
           message={confirmDelete.kind === "vehicle" ? "Fahrzeug wirklich löschen?" : "Buchung wirklich löschen?"}
-          onConfirm={doDelete}
-          onCancel={() => setConfirmDelete(null)}
+          onConfirm={doDelete} onCancel={() => setConfirmDelete(null)}
         />
       )}
+    </div>
+  );
+}
+
+function SettingsPanel({ initial, onSaved }: { initial: AppSettings; onSaved: () => void }) {
+  const [form, setForm] = useState<AppSettings>(initial);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  useEffect(() => { setForm(initial); }, [initial]);
+  const set = <K extends keyof AppSettings>(k: K, v: AppSettings[K]) => setForm((f) => ({ ...f, [k]: v }));
+  const submit = async () => {
+    setSaving(true); setMsg(null);
+    const err = await saveSettings(form);
+    setSaving(false);
+    if (err) setMsg("Fehler: " + err.message);
+    else { setMsg("Gespeichert."); onSaved(); }
+  };
+  return (
+    <div className="max-w-2xl bg-jet border border-border p-8 space-y-5">
+      <div>
+        <h2 className="font-display text-2xl text-cream mb-1">Firmen-Einstellungen</h2>
+        <p className="text-xs text-cream/50">Wird automatisch im Footer und auf der Kontaktseite angezeigt.</p>
+      </div>
+      <Field label="Firmenname"><input className="lux-input" value={form.company_name} onChange={(e) => set("company_name", e.target.value)} /></Field>
+      <Field label="Adresse (mit Komma trennen für mehrere Zeilen)"><input className="lux-input" value={form.address} onChange={(e) => set("address", e.target.value)} /></Field>
+      <Field label="Telefon"><input className="lux-input" value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
+      <Field label="E-Mail"><input className="lux-input" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
+      <Field label="Öffnungszeiten (eine pro Zeile)"><textarea className="lux-input min-h-[100px]" value={form.hours} onChange={(e) => set("hours", e.target.value)} /></Field>
+      {msg && <div className={`text-sm ${msg.startsWith("Fehler") ? "text-red-400" : "text-green-400"}`}>{msg}</div>}
+      <div className="flex justify-end">
+        <button onClick={submit} disabled={saving} className="btn-gold text-[0.65rem] py-3 px-6 disabled:opacity-60">{saving ? "Speichert…" : "Speichern"}</button>
+      </div>
     </div>
   );
 }

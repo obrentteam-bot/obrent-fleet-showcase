@@ -54,6 +54,7 @@ function AdminLogin() {
       setError("Kein Admin-Zugriff für diesen Account.");
       return;
     }
+    localStorage.setItem("admin_login_ts", String(Date.now()));
     navigate({ to: "/admin/dashboard" });
   };
 
