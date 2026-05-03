@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
+import { supabase } from "@/lib/supabase";
 
 import {
   Select,
@@ -44,11 +45,20 @@ function ContactPage() {
   const [pickupTime, setPickupTime] = useState("10:00");
   const [returnTime, setReturnTime] = useState("18:00");
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
   const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
   const [salutation, setSalutation] = useState<string>("");
   const [titleVal, setTitleVal] = useState<string>("none");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [subject, setSubject] = useState("");
+  const [messageText, setMessageText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
@@ -72,14 +82,50 @@ function ContactPage() {
       <section className="py-20 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-7">
+            {submitted ? (
+              <div className="py-16 border border-gold/30 bg-onyx/40 text-center">
+                <div className="eyebrow text-gold mb-4">✓</div>
+                <h3 className="font-display text-3xl text-cream mb-3">Vielen Dank!</h3>
+                <p className="text-cream/60">Ihre Nachricht wurde übermittelt. Wir melden uns in Kürze.</p>
+              </div>
+            ) : (
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 if (!ageConfirmed) {
                   setShowAgeError(true);
                   return;
                 }
                 setShowAgeError(false);
+                setSubmitting(true);
+                setSubmitError(null);
+                const fullName = [
+                  salutation && f.salutationOptions[salutation as keyof typeof f.salutationOptions],
+                  titleVal !== "none" && f.titleOptions[titleVal as keyof typeof f.titleOptions],
+                  name,
+                ].filter(Boolean).join(" ");
+                const today2 = new Date();
+                const extra = [
+                  subject && `Betreff: ${subject}`,
+                  pickupTime && `Abholzeit: ${pickupTime}`,
+                  returnTime && `Rückgabezeit: ${returnTime}`,
+                  `Übergabe: ${delivery === "pickup" ? "Abholung Standort" : `Lieferung — ${deliveryAddress}`}`,
+                  `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
+                  messageText && `Nachricht: ${messageText}`,
+                ].filter(Boolean).join("\n");
+                const { error } = await supabase.from("bookings").insert({
+                  vehicle_id: null,
+                  customer_name: fullName || name || "—",
+                  email,
+                  phone,
+                  start_date: (pickupDate ?? today2).toISOString().slice(0, 10),
+                  end_date: (returnDate ?? pickupDate ?? today2).toISOString().slice(0, 10),
+                  message: extra,
+                  status: "pending",
+                });
+                setSubmitting(false);
+                if (error) setSubmitError(error.message);
+                else setSubmitted(true);
               }}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
             >
@@ -112,11 +158,15 @@ function ContactPage() {
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.name}</label>
-                <input className="lux-input" type="text" placeholder="Jonathan Beaumont" />
+                <input className="lux-input" type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Jonathan Beaumont" />
               </div>
               <div>
                 <label className="lux-label">{f.email}</label>
-                <input className="lux-input" type="email" placeholder="jonathan@residenz.de" />
+                <input className="lux-input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jonathan@residenz.de" />
+              </div>
+              <div>
+                <label className="lux-label">{f.phone}</label>
+                <input className="lux-input" type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+49 30 00 00 00" />
               </div>
               <div>
                 <label className="lux-label">{f.phone}</label>
@@ -187,7 +237,7 @@ function ContactPage() {
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.subject}</label>
-                <input className="lux-input" type="text" placeholder={f.subjectPlaceholder} />
+                <input className="lux-input" type="text" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={f.subjectPlaceholder} />
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.chauffeur}</label>
@@ -253,14 +303,14 @@ function ContactPage() {
                       className="lux-input"
                       type="text"
                       maxLength={200}
-                      placeholder={f.deliveryAddressPlaceholder}
+                      value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} placeholder={f.deliveryAddressPlaceholder}
                     />
                   </div>
                 )}
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.message}</label>
-                <textarea className="lux-input resize-none" rows={6} placeholder={f.messagePlaceholder} />
+                <textarea className="lux-input resize-none" rows={6} value={messageText} onChange={(e) => setMessageText(e.target.value)} placeholder={f.messagePlaceholder} />
               </div>
               <div className="md:col-span-2 pt-2">
                 <label className="flex items-start gap-3 cursor-pointer group">
@@ -281,19 +331,23 @@ function ContactPage() {
                   <p className="mt-2 text-xs text-red-400/90">{f.ageRequired}</p>
                 )}
               </div>
+              {submitError && (
+                <div className="md:col-span-2 text-sm text-red-400/90">{submitError}</div>
+              )}
               <div className="md:col-span-2 pt-4">
                 <button
                   type="submit"
-                  disabled={!ageConfirmed}
+                  disabled={!ageConfirmed || submitting}
                   className="btn-gold w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  {f.submit}
+                  {submitting ? "…" : f.submit}
                 </button>
                 <p className="mt-6 text-xs text-cream/40">
                   {f.confidential}
                 </p>
               </div>
             </form>
+            )}
           </div>
 
           <aside className="lg:col-span-5 lg:pl-8 lg:border-l lg:border-border space-y-12">

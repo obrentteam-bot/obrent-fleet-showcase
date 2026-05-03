@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Link } from "@tanstack/react-router";
-import { vehicles, categories, formatPrice, VehicleCategory } from "@/lib/vehicles";
+import { formatPrice } from "@/lib/vehicles";
+import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/fleet/")({
@@ -19,7 +20,14 @@ export const Route = createFileRoute("/fleet/")({
 
 function FleetPage() {
   const { t } = useI18n();
-  const [active, setActive] = useState<VehicleCategory | "All">("All");
+  const { vehicles, loading } = useVehicles();
+  const [active, setActive] = useState<string>("All");
+  const cats = t.categories as Record<string, string>;
+
+  const dynamicCategories = useMemo(
+    () => Array.from(new Set(vehicles.map((v) => v.category))),
+    [vehicles]
+  );
 
   const filtered = active === "All" ? vehicles : vehicles.filter((v) => v.category === active);
 
@@ -44,7 +52,7 @@ function FleetPage() {
       <section className="px-6 md:px-12 sticky top-20 z-30 bg-onyx/85 backdrop-blur-xl border-y border-border">
         <div className="max-w-[1440px] mx-auto py-5 flex items-center gap-2 md:gap-8 overflow-x-auto">
           <span className="eyebrow shrink-0 hidden md:inline">{t.common.filter}</span>
-          {(["All", ...categories] as const).map((c) => (
+          {(["All", ...dynamicCategories]).map((c) => (
             <button
               key={c}
               onClick={() => setActive(c)}
@@ -54,7 +62,7 @@ function FleetPage() {
                   : "text-cream/55 border-transparent hover:text-cream"
               }`}
             >
-              {c === "All" ? t.common.all : t.categories[c]}
+              {c === "All" ? t.common.all : (cats[c] ?? c)}
             </button>
           ))}
           <span className="ml-auto eyebrow text-cream/40 hidden md:inline">{filtered.length} {t.common.motorcars}</span>
@@ -63,6 +71,9 @@ function FleetPage() {
 
       <section className="py-20 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loading && (
+            <div className="col-span-full text-center text-cream/50 py-20">{t.common.filter}…</div>
+          )}
           {filtered.map((v) => (
             <div key={v.id} className="glass-card group flex flex-col">
               <Link
@@ -77,7 +88,7 @@ function FleetPage() {
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-onyx/70 via-transparent" />
-                <div className="absolute top-5 left-5 eyebrow text-cream/70">{t.categories[v.category]}</div>
+                <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
               </Link>
               <div className="p-8 flex flex-col flex-1">
                 <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
