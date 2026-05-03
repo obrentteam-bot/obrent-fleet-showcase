@@ -32,6 +32,8 @@ function ContactPage() {
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [showAgeError, setShowAgeError] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
