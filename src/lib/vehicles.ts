@@ -1,3 +1,10 @@
+import porscheCayenneImg from "@/assets/vehicles/porsche-cayenne.jpg";
+import porschePanameraImg from "@/assets/vehicles/porsche-panamera.jpg";
+import bmwX5M60iImg from "@/assets/vehicles/bmw-x5-m60i.jpg";
+import bmwX5M50dImg from "@/assets/vehicles/bmw-x5-m50d.jpg";
+import bmwX4M40iImg from "@/assets/vehicles/bmw-x4-m40i.jpg";
+import audiRs6AvantImg from "@/assets/vehicles/audi-rs6-avant.jpg";
+
 export type VehicleCategory = "Limousine" | "SUV" | "Kombi" | "Sports" | "Convertible" | "Sedan";
 
 export interface Vehicle {
