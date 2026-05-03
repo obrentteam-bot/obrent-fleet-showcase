@@ -26,6 +26,30 @@ function HomePage() {
   const cats = t.categories as Record<string, string>;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+  const [paused, setPaused] = useState(false);
+  const loopVehicles = vehicles.length > 0 ? [...vehicles, ...vehicles] : [];
+
+  // Auto-scroll loop
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el || vehicles.length === 0) return;
+    let raf = 0;
+    let last = performance.now();
+    const speed = 30; // px per second
+    const tick = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      if (!paused && !drag.current.active) {
+        const half = el.scrollWidth / 2;
+        let next = el.scrollLeft + speed * dt;
+        if (next >= half) next -= half;
+        el.scrollLeft = next;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [paused, vehicles.length]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollerRef.current;
