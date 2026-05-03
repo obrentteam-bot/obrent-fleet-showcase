@@ -5,10 +5,10 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Das Haus OBRENT — Über uns" },
-      { name: "description", content: "Gegründet 2012 in Monaco, ist OBRENT ein privates Atelier des Motorsports — der Diskretion, Provenienz und dem Streben nach dem Außergewöhnlichen verpflichtet." },
-      { property: "og:title", content: "Das Haus OBRENT" },
-      { property: "og:description", content: "Gegründet in Monaco. Verpflichtet zu Diskretion, Provenienz und dem Streben nach dem Außergewöhnlichen." },
+      { title: "Über uns — OBRENT Mannheim" },
+      { name: "description", content: "OBRENT — Luxus-Autovermietung aus Mannheim. Premium-Fahrzeuge von Porsche, BMW und Audi zu fairen Preisen, persönlich übergeben." },
+      { property: "og:title", content: "Über uns — OBRENT Mannheim" },
+      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Mannheim. Fair, persönlich, schnell verfügbar." },
     ],
   }),
   component: AboutPage,
