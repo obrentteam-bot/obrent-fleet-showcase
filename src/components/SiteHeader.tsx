@@ -52,13 +52,6 @@ export function SiteHeader() {
 
         <div className="hidden md:flex items-center gap-6">
           <Link
-            to="/fleet"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream hover:text-gold transition-colors"
-          >
-            {t.nav.reserve}
-          </Link>
-          <span className="h-4 w-px bg-cream/20" />
-          <Link
             to="/admin"
             className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/50 hover:text-gold transition-colors"
           >
