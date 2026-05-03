@@ -161,12 +161,12 @@ function HomePage() {
             >
               {loopVehicles.map((v, i) => (
                 <Link
-                  key={v.id}
+                  key={`${v.id}-${i}`}
                   to="/fleet/$vehicleId"
                   params={{ vehicleId: v.id }}
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
                   draggable={false}
-                  className="glass-card group overflow-hidden flex flex-col snap-start shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
+                  className="glass-card group overflow-hidden flex flex-col shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                     <img
