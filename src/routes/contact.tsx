@@ -79,9 +79,32 @@ function ContactPage() {
             >
               <div>
                 <label className="lux-label">{f.salutation}</label>
-                <input className="lux-input" type="text" placeholder={f.salutationPlaceholder} />
+                <Select value={salutation} onValueChange={setSalutation}>
+                  <SelectTrigger className="lux-input h-auto">
+                    <SelectValue placeholder={f.salutationPlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mr">{f.salutationOptions.mr}</SelectItem>
+                    <SelectItem value="ms">{f.salutationOptions.ms}</SelectItem>
+                    <SelectItem value="divers">{f.salutationOptions.divers}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
+                <label className="lux-label">{f.title}</label>
+                <Select value={titleVal} onValueChange={setTitleVal}>
+                  <SelectTrigger className="lux-input h-auto">
+                    <SelectValue placeholder={f.titlePlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{f.titleOptions.none}</SelectItem>
+                    <SelectItem value="dr">{f.titleOptions.dr}</SelectItem>
+                    <SelectItem value="profDr">{f.titleOptions.profDr}</SelectItem>
+                    <SelectItem value="prof">{f.titleOptions.prof}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
                 <label className="lux-label">{f.name}</label>
                 <input className="lux-input" type="text" placeholder="Jonathan Beaumont" />
               </div>
