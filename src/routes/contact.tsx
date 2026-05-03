@@ -39,6 +39,7 @@ function ContactPage() {
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
+  const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
   const [salutation, setSalutation] = useState<string>("");
