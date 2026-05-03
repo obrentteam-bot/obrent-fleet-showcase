@@ -81,9 +81,8 @@ function AboutPage() {
         {/* Bottom: image credit / scroll cue */}
         <div className="absolute bottom-8 left-0 right-0 z-10 px-6 md:px-12">
           <div className="max-w-[1440px] mx-auto flex items-end justify-between gap-6">
-            <div className="text-[10px] tracking-[0.4em] uppercase text-cream/55">
-              Wasserturm <span className="text-gold/80">·</span> Heimat von OBRENT
-            </div>
+            <div />
+
             <div className="hidden md:flex items-center gap-3 text-[10px] tracking-[0.4em] uppercase text-cream/55">
               <span>Scroll</span>
               <span className="h-px w-12 bg-gold/60" />
