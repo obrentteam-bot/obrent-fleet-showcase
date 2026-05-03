@@ -267,15 +267,7 @@ function VehicleDetailPage() {
                   />
                 </PopoverContent>
               </Popover>
-              <input
-                type="time"
-                value={returnTime}
-                onChange={(e) => setReturnTime(e.target.value)}
-                min="06:00"
-                max="23:00"
-                className="lux-input mt-3 [color-scheme:dark]"
-                aria-label={cf.time}
-              />
+              <TimeSelect value={returnTime} onChange={setReturnTime} ariaLabel={cf.time} />
             </div>
             <div className="md:col-span-2">
               <label className="lux-label">{cf.chauffeur}</label>
