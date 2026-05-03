@@ -264,11 +264,11 @@ export const translations = {
       invitationCta: "Get in touch",
     },
     fleet: {
-      eyebrow: "The Collection",
+      eyebrow: "Vehicles",
       title: "Our",
       titleItalic: "fleet",
       lead:
-        "Each motorcar is reserved exclusively for OBRENT clientele — maintained, prepared, and presented to a standard the marque itself would recognise.",
+        "A curated selection of well-maintained premium vehicles. All cars are serviced regularly and available for direct reservation.",
     },
     vehicle: {
       reservationFrom: "Reservation from",
