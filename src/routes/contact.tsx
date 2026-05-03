@@ -15,9 +15,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 const offices = [
-  { city: "Monaco", line1: "Avenue Princesse Grace", line2: "98000 Monaco", phone: "+377 9777 0000" },
-  { city: "Paris", line1: "8 Avenue Montaigne", line2: "75008 Paris", phone: "+33 1 44 00 00 00" },
-  { city: "Dubai", line1: "DIFC, Gate Village 4", line2: "United Arab Emirates", phone: "+971 4 000 0000" },
+  { city: "Mannheim", line1: "Käferthaler Straße 40", line2: "68167 Mannheim", phone: "+49 621 000 000" },
 ];
 
 function ContactPage() {
