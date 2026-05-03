@@ -37,7 +37,7 @@ export function SplashScreen() {
       className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-[700ms] ease-out ${
         fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
-      style={{ background: "#3a3a3a" }}
+      style={{ background: "linear-gradient(180deg, oklch(0.10 0 0) 0%, oklch(0.55 0.005 80) 50%, oklch(0.10 0 0) 100%)" }}
       aria-hidden="true"
     >
       <img
