@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { TimeSelect } from "@/components/TimeSelect";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
