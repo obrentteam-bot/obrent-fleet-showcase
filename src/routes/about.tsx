@@ -37,7 +37,7 @@ function AboutPage() {
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-6">
             <div className="relative aspect-[4/5] overflow-hidden bg-jet">
-              <img src={aboutImage} alt="Ein klassisches Fahrzeug in der Abenddämmerung" className="absolute inset-0 w-full h-full object-cover" />
+              <img src={aboutImage} alt="Premium-Fahrzeug vor dem Mannheimer Wasserturm zur blauen Stunde" className="absolute inset-0 w-full h-full object-cover" />
             </div>
           </div>
           <div className="lg:col-span-6 lg:pl-8 space-y-6 text-cream/70 font-light text-lg leading-relaxed">
