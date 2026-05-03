@@ -31,6 +31,23 @@ function AdminLogin() {
     }
   }, [session, isAdmin, authLoading, navigate]);
 
+  const [deniedEmail, setDeniedEmail] = useState<string | null>(null);
+
+  // Auto-deny if signed in but not admin
+  useEffect(() => {
+    if (!authLoading && session && !isAdmin) {
+      setDeniedEmail(session.user.email ?? "");
+    }
+  }, [session, isAdmin, authLoading]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem("admin_login_ts");
+    setDeniedEmail(null);
+    setEmail("");
+    setPassword("");
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -50,13 +67,30 @@ function AdminLogin() {
       .maybeSingle();
     setLoading(false);
     if (!roleRow) {
-      await supabase.auth.signOut();
-      setError("Kein Admin-Zugriff für diesen Account.");
+      setDeniedEmail(data.session.user.email ?? "");
       return;
     }
     localStorage.setItem("admin_login_ts", String(Date.now()));
     navigate({ to: "/admin/dashboard" });
   };
+
+  if (deniedEmail) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-onyx px-6 text-center">
+        <div className="absolute top-6 right-8"><LanguageSwitcher /></div>
+        <Link to="/" className="mb-12" aria-label="OBRENT">
+          <img src={logo} alt="OBRENT" className="h-14 w-auto" />
+        </Link>
+        <div className="max-w-md w-full border border-red-500/30 bg-red-500/5 p-10">
+          <div className="text-[0.65rem] tracking-[0.3em] uppercase text-red-400/80 mb-4">Zugriff verweigert</div>
+          <h1 className="font-display text-3xl text-cream mb-3">Kein Zugriff.</h1>
+          <p className="text-cream/70 mb-2">Sie sind kein Administrator.</p>
+          <p className="text-xs text-cream/40 mb-8">Angemeldet als <span className="text-cream/70">{deniedEmail}</span></p>
+          <button onClick={handleLogout} className="btn-gold w-full">Abmelden</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-onyx">
