@@ -6,7 +6,10 @@ export function SiteFooter() {
   const { t } = useI18n();
   const year = new Date().getFullYear();
   return (
-    <footer className="text-onyx border-t border-onyx/10 bg-gradient-to-b from-[oklch(0.12_0_0)] via-[oklch(0.55_0.005_80)] to-[oklch(0.82_0.01_80)]">
+    <footer className="text-onyx">
+      {/* Smooth transition strip from dark page into light footer */}
+      <div className="h-32 bg-gradient-to-b from-onyx via-[oklch(0.45_0.005_80)] to-[oklch(0.88_0.012_80)]" />
+      <div className="bg-[oklch(0.88_0.012_80)] border-t border-onyx/5">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-1">
