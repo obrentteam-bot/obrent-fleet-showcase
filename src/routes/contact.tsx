@@ -27,8 +27,13 @@ const offices = [
 ];
 
 function ContactPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const f = t.contact.form;
+  const [pickupDate, setPickupDate] = useState<Date | undefined>();
+  const [returnDate, setReturnDate] = useState<Date | undefined>();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dateLocale = lang === "de" ? de : undefined;
   return (
     <SiteLayout>
       <section className="pt-40 pb-16 px-6 md:px-12">
