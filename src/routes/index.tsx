@@ -114,32 +114,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* USPS */}
-      <section className="py-32 md:py-40 px-6 md:px-12 bg-jet/40 border-y border-border">
-        <div className="max-w-[1440px] mx-auto">
-          <div className="text-center mb-20">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <span className="gold-rule" />
-              <span className="eyebrow">{t.home.standardEyebrow}</span>
-              <span className="gold-rule" />
-            </div>
-            <h2 className="font-display text-4xl md:text-6xl text-cream max-w-3xl mx-auto leading-tight">
-              {t.home.tenetsTitle} <span className="italic text-gold/90 font-light">{t.home.tenetsItalic}</span>{t.home.tenetsRest}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
-            {t.home.usps.map((u, i) => (
-              <div key={numerals[i]} className="bg-onyx p-12 md:p-14">
-                <div className="font-display text-7xl text-gold/60 italic mb-8">{numerals[i]}</div>
-                <h3 className="font-display text-2xl text-cream mb-4">{u.title}</h3>
-                <p className="text-sm text-cream/60 font-light leading-relaxed">{u.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* INVITATION */}
       <section className="py-32 md:py-40 px-6 md:px-12">
         <div className="max-w-3xl mx-auto text-center">
