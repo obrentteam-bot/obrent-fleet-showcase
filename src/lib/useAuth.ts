@@ -8,30 +8,46 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      if (s) {
-        // defer role check
-        setTimeout(async () => {
-          const { data } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", s.user.id)
-            .eq("role", "admin")
-            .maybeSingle();
-          setIsAdmin(!!data);
-        }, 0);
-      } else {
-        setIsAdmin(false);
+    let mounted = true;
+
+    const checkRole = async (s: Session | null) => {
+      if (!s) {
+        if (mounted) {
+          setIsAdmin(false);
+          setLoading(false);
+        }
+        return;
       }
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", s.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (mounted) {
+        setIsAdmin(!!data);
+        setLoading(false);
+      }
+    };
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      if (!mounted) return;
+      setSession(s);
+      setLoading(true);
+      // defer to avoid deadlock
+      setTimeout(() => checkRole(s), 0);
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
       setSession(session);
-      setLoading(false);
+      checkRole(session);
     });
 
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   return { session, isAdmin, loading };
