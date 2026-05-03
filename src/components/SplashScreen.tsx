@@ -4,34 +4,46 @@ import logo from "@/assets/obrent-logo.png";
 
 export function SplashScreen() {
   const location = useLocation();
-  const [mounted, setMounted] = useState(false);
+  const [active, setActive] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (location.pathname !== "/") return;
-    if (sessionStorage.getItem("obrent_splash_shown")) return;
-    sessionStorage.setItem("obrent_splash_shown", "1");
-    setMounted(true);
-    const t1 = setTimeout(() => setFadeOut(true), 2400);
-    const t2 = setTimeout(() => setHidden(true), 3100);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, [location.pathname]);
 
-  if (!mounted || hidden) return null;
+    setActive(true);
+    setHidden(false);
+    setVisible(false);
+
+    // Fade in
+    const tIn = setTimeout(() => setVisible(true), 30);
+    // Start fade out
+    const tOut = setTimeout(() => setVisible(false), 2200);
+    // Unmount
+    const tDone = setTimeout(() => {
+      setHidden(true);
+      setActive(false);
+    }, 3100);
+
+    return () => {
+      clearTimeout(tIn);
+      clearTimeout(tOut);
+      clearTimeout(tDone);
+    };
+    // run only on first mount of the route
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!active || hidden) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-onyx transition-opacity duration-700 ease-out ${
-        fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-onyx transition-opacity duration-[800ms] ease-[cubic-bezier(.22,1,.36,1)] ${
+        visible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       aria-hidden="true"
     >
-      {/* subtle gold radial glow */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
