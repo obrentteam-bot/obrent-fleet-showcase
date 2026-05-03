@@ -1,10 +1,12 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { vehicles, formatPrice } from "@/lib/vehicles";
+import { formatPrice } from "@/lib/vehicles";
+import { useVehicle } from "@/lib/useVehicles";
+import { supabase } from "@/lib/supabase";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -22,34 +24,12 @@ import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
-  head: ({ params }) => {
-    const v = vehicles.find((x) => x.id === params.vehicleId);
-    const title = v ? `${v.name} — OBRENT` : "Fahrzeug — OBRENT";
-    return {
-      meta: [
-        { title },
-        { name: "description", content: v?.tagline ?? "Reservieren Sie ein Fahrzeug bei OBRENT." },
-        { property: "og:title", content: title },
-        { property: "og:description", content: v?.tagline ?? "Reservieren Sie ein Fahrzeug bei OBRENT." },
-        ...(v ? [{ property: "og:image", content: v.image }] : []),
-      ],
-    };
-  },
-  loader: ({ params }) => {
-    const vehicle = vehicles.find((v) => v.id === params.vehicleId);
-    if (!vehicle) throw notFound();
-    return { vehicle };
-  },
-  notFoundComponent: () => <NotFound />,
-  errorComponent: ({ error }) => (
-    <SiteLayout>
-      <div className="min-h-[70vh] flex flex-col items-center justify-center px-6 text-center">
-        <h1 className="font-display text-3xl text-cream mb-4">Etwas ist schiefgelaufen</h1>
-        <p className="text-cream/60 mb-8">{error.message}</p>
-        <Link to="/fleet" className="btn-ghost">Zurück zur Flotte</Link>
-      </div>
-    </SiteLayout>
-  ),
+  head: () => ({
+    meta: [
+      { title: "Fahrzeug — OBRENT" },
+      { name: "description", content: "Reservieren Sie ein Fahrzeug bei OBRENT." },
+    ],
+  }),
   component: VehicleDetailPage,
 });
 
@@ -69,32 +49,90 @@ function NotFound() {
 function VehicleDetailPage() {
   const { vehicleId } = Route.useParams();
   const { t, lang } = useI18n();
-  const v = vehicles.find((x) => x.id === vehicleId)!;
+  const { vehicle: v, loading, notFound } = useVehicle(vehicleId);
   const cf = t.contact.form;
   const f = t.vehicle.form;
+  const cats = t.categories as Record<string, string>;
 
   const [salutation, setSalutation] = useState<string>("");
   const [titleVal, setTitleVal] = useState<string>("none");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
   const [pickupTime, setPickupTime] = useState("10:00");
   const [returnTime, setReturnTime] = useState("18:00");
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
   const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
 
+  if (loading) {
+    return (
+      <SiteLayout>
+        <div className="min-h-[70vh] flex items-center justify-center text-cream/50">…</div>
+      </SiteLayout>
+    );
+  }
+  if (notFound || !v) return <NotFound />;
+
   const specRows: { label: string; value: string }[] = [
     { label: t.vehicle.specs.engine, value: v.specs.engine },
     { label: t.vehicle.specs.power, value: v.specs.power },
-    { label: t.vehicle.specs.acceleration, value: v.specs.acceleration },
-    { label: t.vehicle.specs.topSpeed, value: v.specs.topSpeed },
-    { label: t.vehicle.specs.transmission, value: v.specs.transmission },
-    { label: t.vehicle.specs.seats, value: v.specs.seats },
   ];
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!ageConfirmed) {
+      setShowAgeError(true);
+      return;
+    }
+    if (!pickupDate || !returnDate) return;
+    setSubmitting(true);
+    setSubmitError(null);
+
+    const fullName = [
+      salutation && cf.salutationOptions[salutation as keyof typeof cf.salutationOptions],
+      titleVal !== "none" && cf.titleOptions[titleVal as keyof typeof cf.titleOptions],
+      name,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const extra = [
+      `Abholzeit: ${pickupTime}`,
+      `Rückgabezeit: ${returnTime}`,
+      `Übergabe: ${delivery === "pickup" ? "Abholung Standort" : `Lieferung — ${deliveryAddress}`}`,
+      `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
+      message && `Nachricht: ${message}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const { error } = await supabase.from("bookings").insert({
+      vehicle_id: v!.id,
+      customer_name: fullName || name,
+      email,
+      phone,
+      start_date: pickupDate.toISOString().slice(0, 10),
+      end_date: returnDate.toISOString().slice(0, 10),
+      message: extra,
+      status: "pending",
+    });
+
+    setSubmitting(false);
+    if (error) setSubmitError(error.message);
+    else setSubmitted(true);
+  }
 
   return (
     <SiteLayout>
@@ -109,7 +147,7 @@ function VehicleDetailPage() {
             <div className="lg:col-span-7">
               <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                 <img src={v.image} alt={v.name} className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute top-6 left-6 eyebrow text-cream/80 bg-onyx/50 backdrop-blur px-3 py-2">{t.categories[v.category]}</div>
+                <div className="absolute top-6 left-6 eyebrow text-cream/80 bg-onyx/50 backdrop-blur px-3 py-2">{cats[v.category] ?? v.category}</div>
               </div>
             </div>
 
@@ -134,8 +172,23 @@ function VehicleDetailPage() {
                         <td className="py-4 text-right text-sm text-cream font-light">{r.value}</td>
                       </tr>
                     ))}
+                    <tr className="border-b border-border/60">
+                      <td className="py-4 text-xs tracking-[0.22em] uppercase text-cream/45">Baujahr</td>
+                      <td className="py-4 text-right text-sm text-cream font-light">{v.year}</td>
+                    </tr>
+                    <tr className="border-b border-border/60">
+                      <td className="py-4 text-xs tracking-[0.22em] uppercase text-cream/45">Farbe</td>
+                      <td className="py-4 text-right text-sm text-cream font-light">{v.color}</td>
+                    </tr>
                   </tbody>
                 </table>
+                {v.features.length > 0 && (
+                  <ul className="mt-6 space-y-2 text-sm text-cream/70 font-light">
+                    {v.features.map((feat) => (
+                      <li key={feat} className="flex gap-2"><span className="text-gold">·</span>{feat}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>
@@ -157,15 +210,15 @@ function VehicleDetailPage() {
             <p className="mt-4 text-cream/55 font-light">{t.vehicle.reserveLead}</p>
           </div>
 
+          {submitted ? (
+            <div className="text-center py-16 border border-gold/30 bg-onyx/40">
+              <div className="eyebrow text-gold mb-4">✓ {t.admin.status.confirmed}</div>
+              <h3 className="font-display text-3xl text-cream mb-4">Vielen Dank!</h3>
+              <p className="text-cream/60">Ihre Anfrage wurde übermittelt. Wir melden uns in Kürze.</p>
+            </div>
+          ) : (
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!ageConfirmed) {
-                setShowAgeError(true);
-                return;
-              }
-              setShowAgeError(false);
-            }}
+            onSubmit={onSubmit}
             className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
           >
             <div>
@@ -197,15 +250,15 @@ function VehicleDetailPage() {
             </div>
             <div className="md:col-span-2">
               <label className="lux-label">{f.name}</label>
-              <input className="lux-input" type="text" placeholder={f.namePlaceholder} />
+              <input className="lux-input" type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder={f.namePlaceholder} />
             </div>
             <div>
               <label className="lux-label">{f.email}</label>
-              <input className="lux-input" type="email" placeholder={f.emailPlaceholder} />
+              <input className="lux-input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={f.emailPlaceholder} />
             </div>
             <div>
               <label className="lux-label">{f.phone}</label>
-              <input className="lux-input" type="tel" placeholder={f.phonePlaceholder} />
+              <input className="lux-input" type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={f.phonePlaceholder} />
             </div>
             <div>
               <label className="lux-label">{cf.pickupDate}</label>
@@ -274,25 +327,11 @@ function VehicleDetailPage() {
               <label className="lux-label">{cf.chauffeur}</label>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
                 <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                  <input
-                    type="radio"
-                    name="chauffeur"
-                    value="yes"
-                    checked={chauffeur === "yes"}
-                    onChange={() => setChauffeur("yes")}
-                    className="accent-gold"
-                  />
+                  <input type="radio" name="chauffeur" value="yes" checked={chauffeur === "yes"} onChange={() => setChauffeur("yes")} className="accent-gold" />
                   <span className="text-sm">{cf.chauffeurYes}</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                  <input
-                    type="radio"
-                    name="chauffeur"
-                    value="no"
-                    checked={chauffeur === "no"}
-                    onChange={() => setChauffeur("no")}
-                    className="accent-gold"
-                  />
+                  <input type="radio" name="chauffeur" value="no" checked={chauffeur === "no"} onChange={() => setChauffeur("no")} className="accent-gold" />
                   <span className="text-sm">{cf.chauffeurNo}</span>
                 </label>
               </div>
@@ -304,25 +343,11 @@ function VehicleDetailPage() {
               <label className="lux-label">{cf.delivery}</label>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
                 <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="pickup"
-                    checked={delivery === "pickup"}
-                    onChange={() => setDelivery("pickup")}
-                    className="accent-gold"
-                  />
+                  <input type="radio" name="delivery" value="pickup" checked={delivery === "pickup"} onChange={() => setDelivery("pickup")} className="accent-gold" />
                   <span className="text-sm">{cf.deliveryPickup}</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="custom"
-                    checked={delivery === "custom"}
-                    onChange={() => setDelivery("custom")}
-                    className="accent-gold"
-                  />
+                  <input type="radio" name="delivery" value="custom" checked={delivery === "custom"} onChange={() => setDelivery("custom")} className="accent-gold" />
                   <span className="text-sm">{cf.deliveryCustom}</span>
                 </label>
               </div>
@@ -330,51 +355,30 @@ function VehicleDetailPage() {
               {delivery === "custom" && (
                 <div className="mt-4">
                   <label className="lux-label">{cf.deliveryAddress}</label>
-                  <input
-                    className="lux-input"
-                    type="text"
-                    maxLength={200}
-                    placeholder={cf.deliveryAddressPlaceholder}
-                  />
+                  <input className="lux-input" type="text" maxLength={200} value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} placeholder={cf.deliveryAddressPlaceholder} />
                 </div>
               )}
             </div>
             <div className="md:col-span-2">
               <label className="lux-label">{f.message}</label>
-              <textarea className="lux-input resize-none" rows={4} placeholder={f.messagePlaceholder} />
+              <textarea className="lux-input resize-none" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} placeholder={f.messagePlaceholder} />
             </div>
             <div className="md:col-span-2 pt-2">
               <label className="flex items-start gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={ageConfirmed}
-                  onChange={(e) => {
-                    setAgeConfirmed(e.target.checked);
-                    if (e.target.checked) setShowAgeError(false);
-                  }}
-                  className="mt-1 h-4 w-4 accent-gold flex-shrink-0"
-                />
-                <span className="text-sm text-cream/70 leading-relaxed group-hover:text-cream/90 transition-colors">
-                  {cf.ageConfirm}
-                </span>
+                <input type="checkbox" checked={ageConfirmed} onChange={(e) => { setAgeConfirmed(e.target.checked); if (e.target.checked) setShowAgeError(false); }} className="mt-1 h-4 w-4 accent-gold flex-shrink-0" />
+                <span className="text-sm text-cream/70 leading-relaxed group-hover:text-cream/90 transition-colors">{cf.ageConfirm}</span>
               </label>
-              {showAgeError && (
-                <p className="mt-2 text-xs text-red-400/90">{cf.ageRequired}</p>
-              )}
+              {showAgeError && (<p className="mt-2 text-xs text-red-400/90">{cf.ageRequired}</p>)}
             </div>
+            {submitError && <div className="md:col-span-2 text-sm text-red-400/90">{submitError}</div>}
             <div className="md:col-span-2 flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-4">
-              <p className="text-xs text-cream/40 max-w-md">
-                {f.disclaimer}
-              </p>
-              <button
-                type="submit"
-                disabled={!ageConfirmed}
-                className="btn-gold disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {f.submit}
+              <p className="text-xs text-cream/40 max-w-md">{f.disclaimer}</p>
+              <button type="submit" disabled={!ageConfirmed || submitting} className="btn-gold disabled:opacity-40 disabled:cursor-not-allowed">
+                {submitting ? "…" : f.submit}
               </button>
             </div>
           </form>
+          )}
         </div>
       </section>
     </SiteLayout>
