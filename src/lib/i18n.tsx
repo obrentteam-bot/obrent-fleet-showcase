@@ -58,11 +58,11 @@ export const translations = {
       invitationCta: "Jetzt anfragen",
     },
     fleet: {
-      eyebrow: "Die Kollektion",
+      eyebrow: "Fahrzeuge",
       title: "Unsere",
       titleItalic: "Flotte",
       lead:
-        "Jedes Fahrzeug ist exklusiv der OBRENT-Klientel vorbehalten — gewartet, vorbereitet und präsentiert auf einem Niveau, das die Marke selbst anerkennen würde.",
+        "Eine Auswahl gepflegter Premium-Fahrzeuge. Alle Autos werden regelmäßig gewartet und können direkt bei uns reserviert werden.",
     },
     vehicle: {
       reservationFrom: "Reservierung ab",
