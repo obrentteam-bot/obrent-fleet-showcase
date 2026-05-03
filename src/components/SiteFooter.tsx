@@ -6,13 +6,11 @@ export function SiteFooter() {
   const { t } = useI18n();
   const year = new Date().getFullYear();
   return (
-    <footer className="bg-onyx text-cream border-t border-border">
+    <footer className="text-cream border-t border-border bg-gradient-to-b from-[oklch(0.28_0.005_80)] via-[oklch(0.18_0.003_80)] to-[oklch(0.10_0_0)]">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-1">
-            <div className="inline-block bg-cream rounded-md px-4 py-3 mb-6 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)]">
-              <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-28 md:h-32 w-auto block" />
-            </div>
+            <img src={logo} alt="OBRENT — Luxus Autovermietung" className="h-36 md:h-44 w-auto mb-6 -ml-3" />
             <p className="text-sm text-cream/60 leading-relaxed font-light">
               {t.footer.slogan}
             </p>
