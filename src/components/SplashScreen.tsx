@@ -43,7 +43,7 @@ export function SplashScreen() {
       <img
         src={logo}
         alt="OBRENT"
-        className="w-40 md:w-52 animate-logo-bounce"
+        className="w-48 md:w-64 animate-logo-bounce"
         draggable={false}
       />
     </div>
