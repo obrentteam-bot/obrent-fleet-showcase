@@ -54,7 +54,7 @@ function HomePage() {
           <div className="absolute bottom-10 left-6 md:left-12 right-6 md:right-12 flex items-end justify-between text-cream/50">
             <div className="text-xs tracking-[0.3em] uppercase">{t.home.scroll}</div>
             <div className="hidden md:block text-xs tracking-[0.3em] uppercase">
-              43.7384° N · 7.4246° E
+              Mannheim · Deutschland
             </div>
           </div>
         </div>
