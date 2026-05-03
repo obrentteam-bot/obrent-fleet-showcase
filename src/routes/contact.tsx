@@ -1,6 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useI18n } from "@/lib/i18n";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -19,8 +27,13 @@ const offices = [
 ];
 
 function ContactPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const f = t.contact.form;
+  const [pickupDate, setPickupDate] = useState<Date | undefined>();
+  const [returnDate, setReturnDate] = useState<Date | undefined>();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dateLocale = lang === "de" ? de : undefined;
   return (
     <SiteLayout>
       <section className="pt-40 pb-16 px-6 md:px-12">
@@ -60,6 +73,67 @@ function ContactPage() {
               <div>
                 <label className="lux-label">{f.phone}</label>
                 <input className="lux-input" type="tel" placeholder="+49 30 00 00 00" />
+              </div>
+              <div>
+                <label className="lux-label">{f.pickupDate}</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal bg-transparent border-cream/20 text-cream hover:bg-cream/5 hover:text-cream",
+                        !pickupDate && "text-cream/50"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                      {pickupDate ? format(pickupDate, "PPP", { locale: dateLocale }) : <span>{f.pickDate}</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={pickupDate}
+                      onSelect={(d) => {
+                        setPickupDate(d);
+                        if (d && returnDate && returnDate < d) setReturnDate(undefined);
+                      }}
+                      disabled={(date) => date < today}
+                      initialFocus
+                      locale={dateLocale}
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div>
+                <label className="lux-label">{f.returnDate}</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal bg-transparent border-cream/20 text-cream hover:bg-cream/5 hover:text-cream",
+                        !returnDate && "text-cream/50"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                      {returnDate ? format(returnDate, "PPP", { locale: dateLocale }) : <span>{f.pickDate}</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={returnDate}
+                      onSelect={setReturnDate}
+                      disabled={(date) => date < (pickupDate ?? today)}
+                      initialFocus
+                      locale={dateLocale}
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.subject}</label>
