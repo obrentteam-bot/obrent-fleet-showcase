@@ -2,7 +2,8 @@
   "buildCommand": "vite build",
   "outputDirectory": "dist/client",
   "framework": null,
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/(.*)", "destination": "/_shell.html" }
   ]
 }
