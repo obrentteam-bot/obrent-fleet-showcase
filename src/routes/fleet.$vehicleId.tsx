@@ -153,10 +153,44 @@ function VehicleDetailPage() {
           </div>
 
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!ageConfirmed) {
+                setShowAgeError(true);
+                return;
+              }
+              setShowAgeError(false);
+            }}
             className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
           >
             <div>
+              <label className="lux-label">{cf.salutation}</label>
+              <Select value={salutation} onValueChange={setSalutation}>
+                <SelectTrigger className="lux-input h-auto">
+                  <SelectValue placeholder={cf.salutationPlaceholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mr">{cf.salutationOptions.mr}</SelectItem>
+                  <SelectItem value="ms">{cf.salutationOptions.ms}</SelectItem>
+                  <SelectItem value="divers">{cf.salutationOptions.divers}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="lux-label">{cf.title}</label>
+              <Select value={titleVal} onValueChange={setTitleVal}>
+                <SelectTrigger className="lux-input h-auto">
+                  <SelectValue placeholder={cf.titlePlaceholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">{cf.titleOptions.none}</SelectItem>
+                  <SelectItem value="dr">{cf.titleOptions.dr}</SelectItem>
+                  <SelectItem value="profDr">{cf.titleOptions.profDr}</SelectItem>
+                  <SelectItem value="prof">{cf.titleOptions.prof}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="md:col-span-2">
               <label className="lux-label">{f.name}</label>
               <input className="lux-input" type="text" placeholder={f.namePlaceholder} />
             </div>
@@ -169,26 +203,167 @@ function VehicleDetailPage() {
               <input className="lux-input" type="tel" placeholder={f.phonePlaceholder} />
             </div>
             <div>
-              <label className="lux-label">{f.city}</label>
-              <input className="lux-input" type="text" placeholder={f.cityPlaceholder} />
+              <label className="lux-label">{cf.pickupDate}</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal bg-transparent border-cream/20 text-cream hover:bg-cream/5 hover:text-cream",
+                      !pickupDate && "text-cream/50"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                    {pickupDate ? format(pickupDate, "PPP", { locale: dateLocale }) : <span>{cf.pickDate}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={pickupDate}
+                    onSelect={(d) => {
+                      setPickupDate(d);
+                      if (d && returnDate && returnDate < d) setReturnDate(undefined);
+                    }}
+                    disabled={(date) => date < today}
+                    initialFocus
+                    locale={dateLocale}
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
-              <label className="lux-label">{f.startDate}</label>
-              <input className="lux-input [color-scheme:dark]" type="date" />
+              <label className="lux-label">{cf.returnDate}</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal bg-transparent border-cream/20 text-cream hover:bg-cream/5 hover:text-cream",
+                      !returnDate && "text-cream/50"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                    {returnDate ? format(returnDate, "PPP", { locale: dateLocale }) : <span>{cf.pickDate}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={returnDate}
+                    onSelect={setReturnDate}
+                    disabled={(date) => date < (pickupDate ?? today)}
+                    initialFocus
+                    locale={dateLocale}
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
-            <div>
-              <label className="lux-label">{f.endDate}</label>
-              <input className="lux-input [color-scheme:dark]" type="date" />
+            <div className="md:col-span-2">
+              <label className="lux-label">{cf.chauffeur}</label>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
+                <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                  <input
+                    type="radio"
+                    name="chauffeur"
+                    value="yes"
+                    checked={chauffeur === "yes"}
+                    onChange={() => setChauffeur("yes")}
+                    className="accent-gold"
+                  />
+                  <span className="text-sm">{cf.chauffeurYes}</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                  <input
+                    type="radio"
+                    name="chauffeur"
+                    value="no"
+                    checked={chauffeur === "no"}
+                    onChange={() => setChauffeur("no")}
+                    className="accent-gold"
+                  />
+                  <span className="text-sm">{cf.chauffeurNo}</span>
+                </label>
+              </div>
+              <p className="mt-2 text-xs text-cream/40">{cf.chauffeurHint}</p>
+            </div>
+            <div className="md:col-span-2">
+              <label className="lux-label">{cf.delivery}</label>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
+                <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="pickup"
+                    checked={delivery === "pickup"}
+                    onChange={() => setDelivery("pickup")}
+                    className="accent-gold"
+                  />
+                  <span className="text-sm">{cf.deliveryPickup}</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="custom"
+                    checked={delivery === "custom"}
+                    onChange={() => setDelivery("custom")}
+                    className="accent-gold"
+                  />
+                  <span className="text-sm">{cf.deliveryCustom}</span>
+                </label>
+              </div>
+              <p className="mt-2 text-xs text-cream/40">{cf.deliveryHint}</p>
+              {delivery === "custom" && (
+                <div className="mt-4">
+                  <label className="lux-label">{cf.deliveryAddress}</label>
+                  <input
+                    className="lux-input"
+                    type="text"
+                    maxLength={200}
+                    placeholder={cf.deliveryAddressPlaceholder}
+                  />
+                </div>
+              )}
             </div>
             <div className="md:col-span-2">
               <label className="lux-label">{f.message}</label>
               <textarea className="lux-input resize-none" rows={4} placeholder={f.messagePlaceholder} />
             </div>
+            <div className="md:col-span-2 pt-2">
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={ageConfirmed}
+                  onChange={(e) => {
+                    setAgeConfirmed(e.target.checked);
+                    if (e.target.checked) setShowAgeError(false);
+                  }}
+                  className="mt-1 h-4 w-4 accent-gold flex-shrink-0"
+                />
+                <span className="text-sm text-cream/70 leading-relaxed group-hover:text-cream/90 transition-colors">
+                  {cf.ageConfirm}
+                </span>
+              </label>
+              {showAgeError && (
+                <p className="mt-2 text-xs text-red-400/90">{cf.ageRequired}</p>
+              )}
+            </div>
             <div className="md:col-span-2 flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-4">
               <p className="text-xs text-cream/40 max-w-md">
                 {f.disclaimer}
               </p>
-              <button type="submit" className="btn-gold">{f.submit}</button>
+              <button
+                type="submit"
+                disabled={!ageConfirmed}
+                className="btn-gold disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {f.submit}
+              </button>
             </div>
           </form>
         </div>
