@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
@@ -26,6 +26,30 @@ function HomePage() {
   const cats = t.categories as Record<string, string>;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+  const [paused, setPaused] = useState(false);
+  const loopVehicles = vehicles.length > 0 ? [...vehicles, ...vehicles] : [];
+
+  // Auto-scroll loop
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el || vehicles.length === 0) return;
+    let raf = 0;
+    let last = performance.now();
+    const speed = 30; // px per second
+    const tick = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      if (!paused && !drag.current.active) {
+        const half = el.scrollWidth / 2;
+        let next = el.scrollLeft + speed * dt;
+        if (next >= half) next -= half;
+        el.scrollLeft = next;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [paused, vehicles.length]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollerRef.current;
@@ -126,21 +150,23 @@ function HomePage() {
 
             <div
               ref={scrollerRef}
-              onPointerDown={onPointerDown}
+              onPointerDown={(e) => { setPaused(true); onPointerDown(e); }}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onPointerCancel={onPointerUp}
-              className="flex gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              className="flex gap-8 overflow-x-auto scroll-smooth pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               style={{ touchAction: "pan-y" }}
             >
-              {vehicles.map((v, i) => (
+              {loopVehicles.map((v, i) => (
                 <Link
-                  key={v.id}
+                  key={`${v.id}-${i}`}
                   to="/fleet/$vehicleId"
                   params={{ vehicleId: v.id }}
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
                   draggable={false}
-                  className="glass-card group overflow-hidden flex flex-col snap-start shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
+                  className="glass-card group overflow-hidden flex flex-col shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                     <img
