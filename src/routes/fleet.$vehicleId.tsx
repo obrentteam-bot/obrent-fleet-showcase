@@ -75,6 +75,8 @@ function VehicleDetailPage() {
   const [titleVal, setTitleVal] = useState<string>("none");
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
+  const [pickupTime, setPickupTime] = useState("10:00");
+  const [returnTime, setReturnTime] = useState("18:00");
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
