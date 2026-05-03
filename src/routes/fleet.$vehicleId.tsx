@@ -65,8 +65,22 @@ function NotFound() {
 
 function VehicleDetailPage() {
   const { vehicleId } = Route.useParams();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const v = vehicles.find((x) => x.id === vehicleId)!;
+  const cf = t.contact.form;
+  const f = t.vehicle.form;
+
+  const [salutation, setSalutation] = useState<string>("");
+  const [titleVal, setTitleVal] = useState<string>("none");
+  const [pickupDate, setPickupDate] = useState<Date | undefined>();
+  const [returnDate, setReturnDate] = useState<Date | undefined>();
+  const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
+  const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [showAgeError, setShowAgeError] = useState(false);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dateLocale = lang === "de" ? de : undefined;
 
   const specRows: { label: string; value: string }[] = [
     { label: t.vehicle.specs.engine, value: v.specs.engine },
@@ -76,8 +90,6 @@ function VehicleDetailPage() {
     { label: t.vehicle.specs.transmission, value: v.specs.transmission },
     { label: t.vehicle.specs.seats, value: v.specs.seats },
   ];
-
-  const f = t.vehicle.form;
 
   return (
     <SiteLayout>
