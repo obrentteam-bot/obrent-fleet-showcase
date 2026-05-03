@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const heroImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=2400&q=85";
+
 
 function HomePage() {
   const { t } = useI18n();
