@@ -145,6 +145,8 @@ export const translations = {
         pickupDate: "Abholdatum",
         returnDate: "Rückgabedatum",
         pickDate: "Datum wählen",
+        time: "Uhrzeit",
+        timeHint: "Frühestens 06:00, spätestens 23:00",
         chauffeur: "Privater Chauffeur",
         chauffeurHint: "Optional gegen Aufpreis hinzubuchen",
         chauffeurYes: "Ja, mit Chauffeur",
