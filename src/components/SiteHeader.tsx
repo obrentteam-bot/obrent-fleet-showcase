@@ -51,13 +51,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden md:flex items-center gap-6">
-          <Link
-            to="/admin"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/50 hover:text-gold transition-colors"
-          >
-            {t.nav.concierge}
-          </Link>
-          <span className="h-4 w-px bg-cream/20" />
           <LanguageSwitcher />
         </div>
 
