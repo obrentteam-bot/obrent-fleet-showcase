@@ -255,11 +255,11 @@
 /* Ferrari headlight glow on hero */
 .headlight {
   position: absolute;
-  top: 62%;
-  width: 14vw;
-  max-width: 220px;
-  height: 14vw;
-  max-height: 220px;
+  top: 58%;
+  width: 9vw;
+  max-width: 160px;
+  height: 9vw;
+  max-height: 160px;
   transform: translate(-50%, -50%);
   border-radius: 9999px;
   background: radial-gradient(
@@ -274,8 +274,8 @@
   opacity: 0;
   animation: headlight-pulse 4.2s ease-in-out 0.6s infinite;
 }
-.headlight-left  { left: 43.5%; }
-.headlight-right { left: 56.5%; animation-delay: 0.75s; }
+.headlight-left  { left: 42%; }
+.headlight-right { left: 58%; animation-delay: 0.75s; }
 
 @keyframes headlight-pulse {
   0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
