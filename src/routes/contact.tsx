@@ -155,6 +155,45 @@ function ContactPage() {
                 <p className="mt-2 text-xs text-cream/40">{f.chauffeurHint}</p>
               </div>
               <div className="md:col-span-2">
+                <label className="lux-label">{f.delivery}</label>
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
+                  <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value="pickup"
+                      checked={delivery === "pickup"}
+                      onChange={() => setDelivery("pickup")}
+                      className="accent-gold"
+                    />
+                    <span className="text-sm">{f.deliveryPickup}</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value="custom"
+                      checked={delivery === "custom"}
+                      onChange={() => setDelivery("custom")}
+                      className="accent-gold"
+                    />
+                    <span className="text-sm">{f.deliveryCustom}</span>
+                  </label>
+                </div>
+                <p className="mt-2 text-xs text-cream/40">{f.deliveryHint}</p>
+                {delivery === "custom" && (
+                  <div className="mt-4">
+                    <label className="lux-label">{f.deliveryAddress}</label>
+                    <input
+                      className="lux-input"
+                      type="text"
+                      maxLength={200}
+                      placeholder={f.deliveryAddressPlaceholder}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="md:col-span-2">
                 <label className="lux-label">{f.message}</label>
                 <textarea className="lux-input resize-none" rows={6} placeholder={f.messagePlaceholder} />
               </div>
