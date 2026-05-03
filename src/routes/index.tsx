@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
@@ -22,8 +23,31 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const { t } = useI18n();
   const { vehicles } = useVehicles();
-  const featured = vehicles.slice(0, 3);
   const cats = t.categories as Record<string, string>;
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    drag.current = { active: true, startX: e.clientX, startScroll: el.scrollLeft, moved: false };
+    el.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!drag.current.active || !scrollerRef.current) return;
+    const dx = e.clientX - drag.current.startX;
+    if (Math.abs(dx) > 4) drag.current.moved = true;
+    scrollerRef.current.scrollLeft = drag.current.startScroll - dx;
+  };
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    drag.current.active = false;
+    try { scrollerRef.current?.releasePointerCapture(e.pointerId); } catch {}
+  };
+  const scrollByDir = (dir: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
 
   return (
     <SiteLayout>
@@ -81,38 +105,69 @@ function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featured.map((v, i) => (
-              <Link
-                key={v.id}
-                to="/fleet/$vehicleId"
-                params={{ vehicleId: v.id }}
-                className="glass-card group overflow-hidden flex flex-col"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                  <img
-                    src={v.image}
-                    alt={v.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
-                    loading={i === 0 ? "eager" : "lazy"}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
-                  <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
-                </div>
-                <div className="p-8">
-                  <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
-                  <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
-                  <p className="text-sm text-cream/55 font-light italic mb-6">{v.tagline}</p>
-                  <div className="flex items-end justify-between pt-6 border-t border-border">
-                    <div>
-                      <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
-                      <div className="font-display text-2xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">{t.common.perDay}</span></div>
-                    </div>
-                    <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{t.common.reserve} →</span>
+          <div className="relative">
+            {/* Arrows */}
+            <button
+              type="button"
+              aria-label="Vorherige"
+              onClick={() => scrollByDir(-1)}
+              className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              aria-label="Nächste"
+              onClick={() => scrollByDir(1)}
+              className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
+            >
+              →
+            </button>
+
+            <div
+              ref={scrollerRef}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerCancel={onPointerUp}
+              className="flex gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              style={{ touchAction: "pan-y" }}
+            >
+              {vehicles.map((v, i) => (
+                <Link
+                  key={v.id}
+                  to="/fleet/$vehicleId"
+                  params={{ vehicleId: v.id }}
+                  onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
+                  draggable={false}
+                  className="glass-card group overflow-hidden flex flex-col snap-start shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-jet">
+                    <img
+                      src={v.image}
+                      alt={v.name}
+                      draggable={false}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
+                      loading={i < 2 ? "eager" : "lazy"}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
+                    <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className="p-8">
+                    <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
+                    <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
+                    <p className="text-sm text-cream/55 font-light italic mb-6">{v.tagline}</p>
+                    <div className="flex items-end justify-between pt-6 border-t border-border">
+                      <div>
+                        <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
+                        <div className="font-display text-2xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">{t.common.perDay}</span></div>
+                      </div>
+                      <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{t.common.reserve} →</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
