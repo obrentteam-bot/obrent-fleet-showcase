@@ -82,14 +82,50 @@ function ContactPage() {
       <section className="py-20 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-7">
+            {submitted ? (
+              <div className="py-16 border border-gold/30 bg-onyx/40 text-center">
+                <div className="eyebrow text-gold mb-4">✓</div>
+                <h3 className="font-display text-3xl text-cream mb-3">Vielen Dank!</h3>
+                <p className="text-cream/60">Ihre Nachricht wurde übermittelt. Wir melden uns in Kürze.</p>
+              </div>
+            ) : (
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 if (!ageConfirmed) {
                   setShowAgeError(true);
                   return;
                 }
                 setShowAgeError(false);
+                setSubmitting(true);
+                setSubmitError(null);
+                const fullName = [
+                  salutation && f.salutationOptions[salutation as keyof typeof f.salutationOptions],
+                  titleVal !== "none" && f.titleOptions[titleVal as keyof typeof f.titleOptions],
+                  name,
+                ].filter(Boolean).join(" ");
+                const today2 = new Date();
+                const extra = [
+                  subject && `Betreff: ${subject}`,
+                  pickupTime && `Abholzeit: ${pickupTime}`,
+                  returnTime && `Rückgabezeit: ${returnTime}`,
+                  `Übergabe: ${delivery === "pickup" ? "Abholung Standort" : `Lieferung — ${deliveryAddress}`}`,
+                  `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
+                  messageText && `Nachricht: ${messageText}`,
+                ].filter(Boolean).join("\n");
+                const { error } = await supabase.from("bookings").insert({
+                  vehicle_id: null,
+                  customer_name: fullName || name || "—",
+                  email,
+                  phone,
+                  start_date: (pickupDate ?? today2).toISOString().slice(0, 10),
+                  end_date: (returnDate ?? pickupDate ?? today2).toISOString().slice(0, 10),
+                  message: extra,
+                  status: "pending",
+                });
+                setSubmitting(false);
+                if (error) setSubmitError(error.message);
+                else setSubmitted(true);
               }}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
             >
