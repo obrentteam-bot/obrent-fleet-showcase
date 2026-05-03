@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
   head: ({ params }) => {
