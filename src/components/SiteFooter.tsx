@@ -52,9 +52,8 @@ export function SiteFooter() {
             {t.footer.rights.replace("{year}", String(year))}
           </div>
           <div className="flex gap-8 text-xs tracking-[0.2em] uppercase text-cream/40">
-            <a href="#" className="hover:text-gold transition-colors">{t.footer.privacy}</a>
-            <a href="#" className="hover:text-gold transition-colors">{t.footer.terms}</a>
-            <a href="#" className="hover:text-gold transition-colors">{t.footer.imprint}</a>
+            <Link to="/datenschutz" className="hover:text-gold transition-colors">{t.footer.privacy}</Link>
+            <Link to="/impressum" className="hover:text-gold transition-colors">{t.footer.imprint}</Link>
           </div>
         </div>
       </div>
