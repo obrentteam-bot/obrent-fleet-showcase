@@ -558,7 +558,7 @@ function SettingsPanel({ initial, onSaved }: { initial: AppSettings; onSaved: ()
     const err = await saveSettings(form);
     setSaving(false);
     if (err) setMsg("Fehler: " + err.message);
-    else { setMsg("Gespeichert."); onSaved(); }
+    else { setMsg("Einstellungen gespeichert ✓"); onSaved(); setTimeout(() => setMsg(null), 3000); }
   };
   return (
     <div className="max-w-2xl bg-jet border border-border p-8 space-y-5">

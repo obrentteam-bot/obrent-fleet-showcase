@@ -12,6 +12,7 @@ export function useVehicles() {
       const { data, error } = await supabase
         .from("vehicles")
         .select("*")
+        .order("sort_order", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: false });
       if (!mounted) return;
       if (error) setError(error.message);
