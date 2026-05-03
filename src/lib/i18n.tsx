@@ -138,6 +138,10 @@ export const translations = {
         subjectPlaceholder: "Anfrage Wochenendmiete",
         message: "Ihre Nachricht",
         messagePlaceholder: "Wunschfahrzeug, Zeitraum und weitere Details…",
+        chauffeur: "Privater Chauffeur",
+        chauffeurHint: "Optional gegen Aufpreis hinzubuchen",
+        chauffeurYes: "Ja, mit Chauffeur",
+        chauffeurNo: "Nein, ich fahre selbst",
         submit: "Senden",
         confidential:
           "Ihre Daten werden vertraulich behandelt. Wir antworten in der Regel innerhalb weniger Stunden.",
