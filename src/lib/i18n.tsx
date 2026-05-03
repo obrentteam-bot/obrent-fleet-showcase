@@ -108,7 +108,7 @@ export const translations = {
       intro:
         "Gegründet 2026 in Mannheim, vermieten wir Premium-Fahrzeuge",
       introItalic: "fair, transparent und persönlich.",
-      p2: "Bei OBRENT setzen wir auf eine sorgfältig ausgewählte Flotte von Porsche, BMW und Audi. Jedes Fahrzeug wird regelmäßig gewartet, gepflegt und für Sie bereitgestellt — ohne versteckte Kosten und ohne Umwege.",
+      p2: "Bei OBRENT setzen wir auf eine sorgfältig ausgewählte Flotte hochwertiger Fahrzeuge. Jedes Auto wird regelmäßig gewartet, gepflegt und für Sie bereitgestellt — ohne versteckte Kosten und ohne Umwege.",
       p3: "Ob für ein Wochenende, eine Geschäftsreise oder einen besonderen Anlass — wir beraten Sie persönlich und übergeben Ihr Wunschfahrzeug direkt in Mannheim. Schnell, unkompliziert und auf Augenhöhe.",
       founders: "— Das OBRENT-Team",
       valuesEyebrow: "Unsere Werte",
