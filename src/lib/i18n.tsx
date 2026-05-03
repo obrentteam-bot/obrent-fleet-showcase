@@ -145,6 +145,12 @@ export const translations = {
         chauffeurHint: "Optional gegen Aufpreis hinzubuchen",
         chauffeurYes: "Ja, mit Chauffeur",
         chauffeurNo: "Nein, ich fahre selbst",
+        delivery: "Fahrzeug-Lieferung",
+        deliveryHint: "Auf Wunsch liefern wir das Fahrzeug an einen anderen Ort",
+        deliveryPickup: "Abholung in Mannheim",
+        deliveryCustom: "An anderen Ort liefern",
+        deliveryAddress: "Lieferadresse",
+        deliveryAddressPlaceholder: "Straße, PLZ, Stadt",
         submit: "Senden",
         confidential:
           "Ihre Daten werden vertraulich behandelt. Wir antworten in der Regel innerhalb weniger Stunden.",
