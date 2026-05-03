@@ -6,7 +6,7 @@ export function SiteFooter() {
   const { t } = useI18n();
   const year = new Date().getFullYear();
   return (
-    <footer className="bg-cream text-onyx border-t border-onyx/10">
+    <footer className="text-onyx border-t border-onyx/10 bg-gradient-to-b from-[oklch(0.12_0_0)] via-[oklch(0.55_0.005_80)] to-[oklch(0.82_0.01_80)]">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-1">
