@@ -327,19 +327,23 @@ function ContactPage() {
                   <p className="mt-2 text-xs text-red-400/90">{f.ageRequired}</p>
                 )}
               </div>
+              {submitError && (
+                <div className="md:col-span-2 text-sm text-red-400/90">{submitError}</div>
+              )}
               <div className="md:col-span-2 pt-4">
                 <button
                   type="submit"
-                  disabled={!ageConfirmed}
+                  disabled={!ageConfirmed || submitting}
                   className="btn-gold w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  {f.submit}
+                  {submitting ? "…" : f.submit}
                 </button>
                 <p className="mt-6 text-xs text-cream/40">
                   {f.confidential}
                 </p>
               </div>
             </form>
+            )}
           </div>
 
           <aside className="lg:col-span-5 lg:pl-8 lg:border-l lg:border-border space-y-12">
