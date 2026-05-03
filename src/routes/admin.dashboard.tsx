@@ -451,28 +451,19 @@ function AdminDashboard() {
                           </td>
                         </tr>
                         {isOpen && (
-                          <tr className="bg-onyx/60 border-b border-border">
-                            <td colSpan={9} className="px-6 py-6">
-                              <div className="grid md:grid-cols-2 gap-6">
-                                <div>
-                                  <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/50 mb-3">Vollständige Anfrage-Details</div>
-                                  {b.message ? (
-                                    <pre className="whitespace-pre-wrap text-sm text-cream/80 bg-jet border border-border p-4">{b.message}</pre>
-                                  ) : <div className="text-cream/40 text-sm">Keine zusätzlichen Details</div>}
-                                </div>
-                                <div>
-                                  <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/50 mb-3">Interne Notiz</div>
-                                  <textarea
-                                    className="lux-input min-h-[100px] mb-2"
-                                    value={note}
-                                    onChange={(e) => setNoteDrafts((d) => ({ ...d, [b.id]: e.target.value }))}
-                                    placeholder="Interne Anmerkungen…"
-                                  />
-                                  <button onClick={() => saveNote(b.id)} disabled={savingNote === b.id} className="btn-gold text-[0.6rem] py-2 px-4">
-                                    {savingNote === b.id ? "Speichert…" : "Notiz speichern"}
-                                  </button>
-                                </div>
-                              </div>
+                          <tr className="bg-onyx/40 border-b border-border">
+                            <td colSpan={9} className="px-0 py-0">
+                              <BookingDetails
+                                booking={b}
+                                note={note}
+                                onNoteChange={(v) => setNoteDrafts((d) => ({ ...d, [b.id]: v }))}
+                                onSaveNote={() => saveNote(b.id)}
+                                savingNote={savingNote === b.id}
+                                onUpdateStatus={(s) => updateStatus(b.id, s)}
+                                onDelete={() => setConfirmDelete({ kind: "booking", id: b.id })}
+                                fmtDate={fmtDate}
+                                fmtDateTime={fmtDateTime}
+                              />
                             </td>
                           </tr>
                         )}
