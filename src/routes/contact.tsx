@@ -237,7 +237,7 @@ function ContactPage() {
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.subject}</label>
-                <input className="lux-input" type="text" placeholder={f.subjectPlaceholder} />
+                <input className="lux-input" type="text" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={f.subjectPlaceholder} />
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.chauffeur}</label>
@@ -303,14 +303,14 @@ function ContactPage() {
                       className="lux-input"
                       type="text"
                       maxLength={200}
-                      placeholder={f.deliveryAddressPlaceholder}
+                      value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} placeholder={f.deliveryAddressPlaceholder}
                     />
                   </div>
                 )}
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.message}</label>
-                <textarea className="lux-input resize-none" rows={6} placeholder={f.messagePlaceholder} />
+                <textarea className="lux-input resize-none" rows={6} value={messageText} onChange={(e) => setMessageText(e.target.value)} placeholder={f.messagePlaceholder} />
               </div>
               <div className="md:col-span-2 pt-2">
                 <label className="flex items-start gap-3 cursor-pointer group">
