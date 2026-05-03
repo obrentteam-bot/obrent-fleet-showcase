@@ -6,7 +6,7 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "Über uns — OBRENT Mannheim" },
-      { name: "description", content: "OBRENT — Luxus-Autovermietung aus Mannheim. Premium-Fahrzeuge von Porsche, BMW und Audi zu fairen Preisen, persönlich übergeben." },
+      { name: "description", content: "OBRENT — Luxus-Autovermietung aus Mannheim. Hochwertige Fahrzeuge zu fairen Preisen, persönlich übergeben." },
       { property: "og:title", content: "Über uns — OBRENT Mannheim" },
       { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Mannheim. Fair, persönlich, schnell verfügbar." },
     ],
