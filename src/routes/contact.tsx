@@ -216,7 +216,8 @@ function ContactPage() {
                 </div>
                 <p className="mt-2 text-xs text-cream/40">{f.chauffeurHint}</p>
               </div>
-              
+              {chauffeur === "yes" && <ChauffeurDetails />}
+
               <div className="md:col-span-2">
                 <label className="lux-label">{f.delivery}</label>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
