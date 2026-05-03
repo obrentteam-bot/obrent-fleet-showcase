@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useI18n } from "@/lib/i18n";
+import aboutImage from "@/assets/about-mannheim.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -13,8 +14,6 @@ export const Route = createFileRoute("/about")({
   }),
   component: AboutPage,
 });
-
-const aboutImage = "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1800&q=85";
 
 function AboutPage() {
   const { t } = useI18n();
