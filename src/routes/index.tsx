@@ -35,7 +35,7 @@ function HomePage() {
     if (!el || vehicles.length === 0) return;
     let raf = 0;
     let last = performance.now();
-    const speed = 30; // px per second
+    const speed = 80; // px per second
     const tick = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
