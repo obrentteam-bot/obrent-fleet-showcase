@@ -41,6 +41,8 @@ function ContactPage() {
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
+  const [salutation, setSalutation] = useState<string>("");
+  const [titleVal, setTitleVal] = useState<string>("none");
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
