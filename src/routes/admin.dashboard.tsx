@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, Fragment } from "react";
 import { supabase, type DbBooking, type DbVehicle, formatPrice } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
 import { useSettings, saveSettings, type AppSettings } from "@/lib/useSettings";
@@ -432,8 +432,8 @@ function AdminDashboard() {
                     const isOpen = expandedBooking === b.id;
                     const note = noteDrafts[b.id] ?? b.admin_note ?? "";
                     return (
-                      <>
-                        <tr key={b.id} className="border-b border-border/60 align-top hover:bg-onyx/40 cursor-pointer" onClick={() => setExpandedBooking(isOpen ? null : b.id)}>
+                      <Fragment key={b.id}>
+                        <tr className="border-b border-border/60 align-top hover:bg-onyx/40 cursor-pointer" onClick={() => setExpandedBooking(isOpen ? null : b.id)}>
                           <td className="px-4 py-4 text-gold">{isOpen ? "▼" : "▸"}</td>
                           <td className="px-4 py-4 text-cream/70 whitespace-nowrap">{fmtDate(b.created_at)}</td>
                           <td className="px-4 py-4 text-cream">{b.customer_name}</td>
@@ -451,7 +451,7 @@ function AdminDashboard() {
                           </td>
                         </tr>
                         {isOpen && (
-                          <tr key={b.id + "-detail"} className="bg-onyx/60 border-b border-border">
+                          <tr className="bg-onyx/60 border-b border-border">
                             <td colSpan={9} className="px-6 py-6">
                               <div className="grid md:grid-cols-2 gap-6">
                                 <div>
@@ -476,7 +476,7 @@ function AdminDashboard() {
                             </td>
                           </tr>
                         )}
-                      </>
+                      </Fragment>
                     );
                   })}
                 </tbody>
