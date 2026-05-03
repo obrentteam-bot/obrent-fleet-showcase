@@ -43,8 +43,13 @@ export function SplashScreen() {
       <img
         src={logo}
         alt="OBRENT"
-        className="w-48 md:w-64 animate-logo-bounce"
+        width={512}
+        height={512}
+        className="w-48 md:w-64 h-auto animate-logo-bounce will-change-transform"
+        style={{ transformOrigin: "50% 50%", backfaceVisibility: "hidden" }}
         draggable={false}
+        decoding="sync"
+        fetchPriority="high"
       />
     </div>
   );
