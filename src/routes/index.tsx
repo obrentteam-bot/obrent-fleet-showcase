@@ -39,8 +39,8 @@ function HomePage() {
               <span className="gold-rule" />
               <span className="eyebrow">{t.home.eyebrow}</span>
             </div>
-            <h1 className="font-display text-[15vw] md:text-[10rem] leading-[0.9] text-cream tracking-tight">
-              OB<span className="text-gold italic font-light">rent</span>
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[1] text-cream tracking-tight max-w-3xl">
+              {t.home.heroTitle} <span className="text-gold italic font-light">{t.home.heroTitleItalic}</span>{t.home.heroTitleRest}
             </h1>
             <p className="mt-10 text-lg md:text-xl text-cream/75 font-light max-w-xl leading-relaxed">
               {t.home.heroLead}
