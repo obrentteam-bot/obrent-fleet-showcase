@@ -285,7 +285,7 @@ function ContactPage() {
                 <button
                   type="submit"
                   disabled={!ageConfirmed}
-                  className="btn-gold disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="btn-gold w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {f.submit}
                 </button>
