@@ -80,13 +80,6 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              to="/admin"
-              onClick={() => setOpen(false)}
-              className="text-sm tracking-[0.28em] uppercase text-cream/50"
-            >
-              {t.nav.concierge}
-            </Link>
             <div className="pt-4 border-t border-border">
               <LanguageSwitcher />
             </div>
