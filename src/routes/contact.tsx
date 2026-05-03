@@ -58,7 +58,14 @@ function ContactPage() {
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-7">
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!ageConfirmed) {
+                  setShowAgeError(true);
+                  return;
+                }
+                setShowAgeError(false);
+              }}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
             >
               <div>
