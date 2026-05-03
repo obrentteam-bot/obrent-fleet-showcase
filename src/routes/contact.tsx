@@ -164,13 +164,9 @@ function ContactPage() {
                 <label className="lux-label">{f.email}</label>
                 <input className="lux-input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jonathan@residenz.de" />
               </div>
-              <div>
+              <div className="md:col-span-2">
                 <label className="lux-label">{f.phone}</label>
                 <input className="lux-input" type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+49 30 00 00 00" />
-              </div>
-              <div>
-                <label className="lux-label">{f.phone}</label>
-                <input className="lux-input" type="tel" placeholder="+49 30 00 00 00" />
               </div>
               <div>
                 <label className="lux-label">{f.pickupDate}</label>
