@@ -5,6 +5,10 @@ import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import path from "node:path";
 
+// TanStack Start config tuned for Vercel static hosting.
+// The app has no server functions — all backend calls go to Supabase
+// directly from the browser using VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY.
+// We render in SPA mode so Vercel only needs to serve static assets.
 export default defineConfig({
   resolve: {
     alias: {
@@ -15,7 +19,11 @@ export default defineConfig({
   plugins: [
     tsConfigPaths(),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      spa: {
+        enabled: true,
+      },
+    }),
     viteReact(),
   ],
   server: {
