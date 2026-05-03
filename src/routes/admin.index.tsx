@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/useAuth";
 import logo from "@/assets/obrent-logo.png";
 
 export const Route = createFileRoute("/admin/")({
@@ -17,17 +19,46 @@ export const Route = createFileRoute("/admin/")({
 function AdminLogin() {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const { session, isAdmin, loading: authLoading } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!authLoading && session && isAdmin) {
+      navigate({ to: "/admin/dashboard" });
+    }
+  }, [session, isAdmin, authLoading, navigate]);
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => navigate({ to: "/admin/dashboard" }), 600);
+    setError(null);
+    const { data, error: signErr } = await supabase.auth.signInWithPassword({ email, password });
+    if (signErr || !data.session) {
+      setLoading(false);
+      setError(signErr?.message ?? "Login fehlgeschlagen");
+      return;
+    }
+    // verify role
+    const { data: roleRow } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.session.user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    setLoading(false);
+    if (!roleRow) {
+      await supabase.auth.signOut();
+      setError("Kein Admin-Zugriff für diesen Account.");
+      return;
+    }
+    navigate({ to: "/admin/dashboard" });
   };
 
   return (
     <div className="min-h-screen flex bg-onyx">
-      {/* Left visual */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <img
           src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=85"
@@ -48,7 +79,6 @@ function AdminLogin() {
         </div>
       </div>
 
-      {/* Right form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 md:px-20 py-16 relative">
         <div className="absolute top-6 right-8">
           <LanguageSwitcher />
@@ -69,18 +99,13 @@ function AdminLogin() {
           <form onSubmit={onSubmit} className="space-y-8">
             <div>
               <label className="lux-label">{t.admin.email}</label>
-              <input className="lux-input" type="email" placeholder="agent@obrent.com" required />
+              <input className="lux-input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="agent@obrent.com" />
             </div>
             <div>
               <label className="lux-label">{t.admin.passphrase}</label>
-              <input className="lux-input" type="password" placeholder="••••••••••" required />
+              <input className="lux-input" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••••" />
             </div>
-            <div className="flex items-center justify-between text-xs">
-              <label className="flex items-center gap-2 text-cream/55">
-                <input type="checkbox" className="accent-gold" /> {t.admin.remember}
-              </label>
-              <a href="#" className="text-gold/80 hover:text-gold tracking-[0.2em] uppercase">{t.admin.recover}</a>
-            </div>
+            {error && <div className="text-sm text-red-400/90">{error}</div>}
             <button type="submit" disabled={loading} className="btn-gold w-full disabled:opacity-60">
               {loading ? t.admin.authenticating : t.admin.enter}
             </button>
