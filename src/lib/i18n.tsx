@@ -147,10 +147,12 @@ export const translations = {
         chauffeurNo: "Nein, ich fahre selbst",
         delivery: "Fahrzeug-Lieferung",
         deliveryHint: "Auf Wunsch liefern wir das Fahrzeug an einen anderen Ort",
-        deliveryPickup: "Abholung in Mannheim",
+        deliveryPickup: "Abholung im Umkreis Mannheim",
         deliveryCustom: "An anderen Ort liefern",
         deliveryAddress: "Lieferadresse",
         deliveryAddressPlaceholder: "Straße, PLZ, Stadt",
+        ageConfirm: "Ich bestätige, dass ich mindestens 21 Jahre alt bin und seit mindestens 2 Jahren im Besitz eines gültigen Führerscheins bin.",
+        ageRequired: "Bitte Altersbestätigung aktivieren.",
         submit: "Senden",
         confidential:
           "Ihre Daten werden vertraulich behandelt. Wir antworten in der Regel innerhalb weniger Stunden.",
