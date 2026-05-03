@@ -123,11 +123,11 @@ export const translations = {
       ],
     },
     contact: {
-      eyebrow: "Eine Einladung",
-      title: "Beginnen Sie ein",
-      titleItalic: "Gespräch",
+      eyebrow: "Kontakt",
+      title: "Schreiben Sie uns eine",
+      titleItalic: "Nachricht",
       lead:
-        "Ob für einen Nachmittag in den Alpes-Maritimes oder eine Saison im Ausland — unser Concierge gestaltet ein Erlebnis ganz nach Ihren Wünschen.",
+        "Sie haben Fragen zu einem Fahrzeug oder möchten eine Reservierung anfragen? Wir melden uns schnellstmöglich bei Ihnen zurück.",
       form: {
         salutation: "Anrede",
         salutationPlaceholder: "Hr. / Fr. / Dr.",
@@ -135,15 +135,15 @@ export const translations = {
         email: "E-Mail",
         phone: "Telefon",
         subject: "Betreff",
-        subjectPlaceholder: "Ein privates Wochenende in Monaco",
+        subjectPlaceholder: "Anfrage Wochenendmiete",
         message: "Ihre Nachricht",
-        messagePlaceholder: "Bitte teilen Sie uns die Details Ihrer Anfrage mit…",
+        messagePlaceholder: "Wunschfahrzeug, Zeitraum und weitere Details…",
         submit: "Senden",
         confidential:
-          "Ihre Anfrage wird streng vertraulich behandelt. Wir antworten persönlich innerhalb einer Stunde.",
+          "Ihre Daten werden vertraulich behandelt. Wir antworten in der Regel innerhalb weniger Stunden.",
       },
       direct: "Direkt",
-      ateliers: "Ateliers",
+      ateliers: "Standort",
     },
     footer: {
       slogan: "Kuratierte Mobilität. Diskreter Service. Eine Einladung zum Außergewöhnlichen.",
