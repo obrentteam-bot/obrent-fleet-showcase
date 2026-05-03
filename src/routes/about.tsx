@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useI18n } from "@/lib/i18n";
+import aboutImage from "@/assets/about-mannheim.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -13,8 +14,6 @@ export const Route = createFileRoute("/about")({
   }),
   component: AboutPage,
 });
-
-const aboutImage = "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1800&q=85";
 
 function AboutPage() {
   const { t } = useI18n();
@@ -38,7 +37,7 @@ function AboutPage() {
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-6">
             <div className="relative aspect-[4/5] overflow-hidden bg-jet">
-              <img src={aboutImage} alt="Ein klassisches Fahrzeug in der Abenddämmerung" className="absolute inset-0 w-full h-full object-cover" />
+              <img src={aboutImage} alt="Premium-Fahrzeug vor dem Mannheimer Wasserturm zur blauen Stunde" className="absolute inset-0 w-full h-full object-cover" />
             </div>
           </div>
           <div className="lg:col-span-6 lg:pl-8 space-y-6 text-cream/70 font-light text-lg leading-relaxed">
