@@ -132,29 +132,5 @@ export function adaptVehicle(v: DbVehicle): UiVehicle {
   };
 }
 
-export function adaptVehicle(v: DbVehicle): UiVehicle {
-  const marque = v.name.split(" ")[0] ?? "";
-  const restName = v.name.replace(marque, "").trim() || v.name;
-  const images = (v.images ?? []).filter(Boolean);
-  const fallback = placeholderFor(v.name);
-  return {
-    id: v.id,
-    name: restName,
-    marque,
-    category: v.category,
-    year: v.year ?? new Date().getFullYear(),
-    color: v.color ?? "—",
-    pricePerDay: Number(v.price_per_day),
-    image: images[0] ?? fallback,
-    images: images.length ? images : [fallback],
-    tagline: v.description ?? "",
-    features: v.features ?? [],
-    specs: {
-      engine: v.engine ?? "—",
-      power: v.power_ps ? `${v.power_ps} PS` : "—",
-    },
-  };
-}
-
 export const formatPrice = (n: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
