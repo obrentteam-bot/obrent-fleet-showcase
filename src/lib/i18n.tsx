@@ -130,7 +130,11 @@ export const translations = {
         "Sie haben Fragen zu einem Fahrzeug oder möchten eine Reservierung anfragen? Wir melden uns schnellstmöglich bei Ihnen zurück.",
       form: {
         salutation: "Anrede",
-        salutationPlaceholder: "Hr. / Fr. / Dr.",
+        salutationPlaceholder: "Bitte wählen",
+        title: "Titel (optional)",
+        titlePlaceholder: "Kein Titel",
+        salutationOptions: { mr: "Herr", ms: "Frau", divers: "Divers" },
+        titleOptions: { none: "Kein Titel", dr: "Dr.", profDr: "Prof. Dr.", prof: "Prof." },
         name: "Vollständiger Name",
         email: "E-Mail",
         phone: "Telefon",
