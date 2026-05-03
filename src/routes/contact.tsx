@@ -10,6 +10,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
+import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 
 import {
   Select,
@@ -216,7 +217,8 @@ function ContactPage() {
                 </div>
                 <p className="mt-2 text-xs text-cream/40">{f.chauffeurHint}</p>
               </div>
-              
+              {chauffeur === "yes" && <ChauffeurDetails />}
+
               <div className="md:col-span-2">
                 <label className="lux-label">{f.delivery}</label>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
