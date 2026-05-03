@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { ChauffeurDetails } from "@/components/ChauffeurDetails";
+
 import {
   Select,
   SelectContent,
@@ -39,6 +39,8 @@ function ContactPage() {
   const f = t.contact.form;
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
+  const [pickupTime, setPickupTime] = useState("10:00");
+  const [returnTime, setReturnTime] = useState("18:00");
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -149,6 +151,15 @@ function ContactPage() {
                     />
                   </PopoverContent>
                 </Popover>
+                <input
+                  type="time"
+                  value={pickupTime}
+                  onChange={(e) => setPickupTime(e.target.value)}
+                  min="06:00"
+                  max="23:00"
+                  className="lux-input mt-3 [color-scheme:dark]"
+                  aria-label={f.time}
+                />
               </div>
               <div>
                 <label className="lux-label">{f.returnDate}</label>
@@ -178,6 +189,15 @@ function ContactPage() {
                     />
                   </PopoverContent>
                 </Popover>
+                <input
+                  type="time"
+                  value={returnTime}
+                  onChange={(e) => setReturnTime(e.target.value)}
+                  min="06:00"
+                  max="23:00"
+                  className="lux-input mt-3 [color-scheme:dark]"
+                  aria-label={f.time}
+                />
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.subject}</label>
@@ -211,7 +231,7 @@ function ContactPage() {
                 </div>
                 <p className="mt-2 text-xs text-cream/40">{f.chauffeurHint}</p>
               </div>
-              {chauffeur === "yes" && <ChauffeurDetails />}
+              
               <div className="md:col-span-2">
                 <label className="lux-label">{f.delivery}</label>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { ChauffeurDetails } from "@/components/ChauffeurDetails";
+
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
   head: ({ params }) => {
@@ -75,6 +75,8 @@ function VehicleDetailPage() {
   const [titleVal, setTitleVal] = useState<string>("none");
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
+  const [pickupTime, setPickupTime] = useState("10:00");
+  const [returnTime, setReturnTime] = useState("18:00");
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -234,6 +236,15 @@ function VehicleDetailPage() {
                   />
                 </PopoverContent>
               </Popover>
+              <input
+                type="time"
+                value={pickupTime}
+                onChange={(e) => setPickupTime(e.target.value)}
+                min="06:00"
+                max="23:00"
+                className="lux-input mt-3 [color-scheme:dark]"
+                aria-label={cf.time}
+              />
             </div>
             <div>
               <label className="lux-label">{cf.returnDate}</label>
@@ -263,6 +274,15 @@ function VehicleDetailPage() {
                   />
                 </PopoverContent>
               </Popover>
+              <input
+                type="time"
+                value={returnTime}
+                onChange={(e) => setReturnTime(e.target.value)}
+                min="06:00"
+                max="23:00"
+                className="lux-input mt-3 [color-scheme:dark]"
+                aria-label={cf.time}
+              />
             </div>
             <div className="md:col-span-2">
               <label className="lux-label">{cf.chauffeur}</label>
@@ -292,7 +312,7 @@ function VehicleDetailPage() {
               </div>
               <p className="mt-2 text-xs text-cream/40">{cf.chauffeurHint}</p>
             </div>
-            {chauffeur === "yes" && <ChauffeurDetails />}
+            
             <div className="md:col-span-2">
               <label className="lux-label">{cf.delivery}</label>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
