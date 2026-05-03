@@ -32,6 +32,8 @@ function ContactPage() {
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [showAgeError, setShowAgeError] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
@@ -56,7 +58,14 @@ function ContactPage() {
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-7">
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!ageConfirmed) {
+                  setShowAgeError(true);
+                  return;
+                }
+                setShowAgeError(false);
+              }}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
             >
               <div>
@@ -197,8 +206,33 @@ function ContactPage() {
                 <label className="lux-label">{f.message}</label>
                 <textarea className="lux-input resize-none" rows={6} placeholder={f.messagePlaceholder} />
               </div>
+              <div className="md:col-span-2 pt-2">
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={ageConfirmed}
+                    onChange={(e) => {
+                      setAgeConfirmed(e.target.checked);
+                      if (e.target.checked) setShowAgeError(false);
+                    }}
+                    className="mt-1 h-4 w-4 accent-gold flex-shrink-0"
+                  />
+                  <span className="text-sm text-cream/70 leading-relaxed group-hover:text-cream/90 transition-colors">
+                    {f.ageConfirm}
+                  </span>
+                </label>
+                {showAgeError && (
+                  <p className="mt-2 text-xs text-red-400/90">{f.ageRequired}</p>
+                )}
+              </div>
               <div className="md:col-span-2 pt-4">
-                <button type="submit" className="btn-gold">{f.submit}</button>
+                <button
+                  type="submit"
+                  disabled={!ageConfirmed}
+                  className="btn-gold disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {f.submit}
+                </button>
                 <p className="mt-6 text-xs text-cream/40">
                   {f.confidential}
                 </p>
