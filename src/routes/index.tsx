@@ -22,8 +22,31 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const { t } = useI18n();
   const { vehicles } = useVehicles();
-  const featured = vehicles.slice(0, 3);
   const cats = t.categories as Record<string, string>;
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    drag.current = { active: true, startX: e.clientX, startScroll: el.scrollLeft, moved: false };
+    el.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!drag.current.active || !scrollerRef.current) return;
+    const dx = e.clientX - drag.current.startX;
+    if (Math.abs(dx) > 4) drag.current.moved = true;
+    scrollerRef.current.scrollLeft = drag.current.startScroll - dx;
+  };
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    drag.current.active = false;
+    try { scrollerRef.current?.releasePointerCapture(e.pointerId); } catch {}
+  };
+  const scrollByDir = (dir: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
 
   return (
     <SiteLayout>
