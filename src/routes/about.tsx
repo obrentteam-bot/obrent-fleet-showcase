@@ -54,29 +54,6 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="py-24 md:py-32 px-6 md:px-12 bg-jet/40 border-y border-border">
-        <div className="max-w-[1440px] mx-auto">
-          <div className="text-center mb-20">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <span className="gold-rule" />
-              <span className="eyebrow">{t.about.valuesEyebrow}</span>
-              <span className="gold-rule" />
-            </div>
-            <h2 className="font-display text-4xl md:text-6xl text-cream">
-              {t.about.valuesTitle} <span className="italic text-gold/90 font-light">{t.about.valuesItalic}</span>{t.about.valuesRest}
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border">
-            {t.about.values.map((v, i) => (
-              <div key={numerals[i]} className="bg-onyx p-12 md:p-16">
-                <div className="font-display text-7xl text-gold/60 italic mb-6">{numerals[i]}</div>
-                <h3 className="font-display text-3xl text-cream mb-4">{v.title}</h3>
-                <p className="text-cream/60 font-light leading-relaxed">{v.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </SiteLayout>
   );
 }
