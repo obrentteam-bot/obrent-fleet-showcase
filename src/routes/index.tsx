@@ -29,21 +29,26 @@ function HomePage() {
   const [paused, setPaused] = useState(false);
   const loopVehicles = vehicles.length > 0 ? [...vehicles, ...vehicles] : [];
 
-  // Auto-scroll loop
+  // Auto-scroll loop (sub-pixel accumulator for smooth motion)
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el || vehicles.length === 0) return;
     let raf = 0;
     let last = performance.now();
-    const speed = 80; // px per second
+    let pos = el.scrollLeft;
+    const speed = 55; // px per second
     const tick = (now: number) => {
-      const dt = (now - last) / 1000;
+      const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       if (!paused && !drag.current.active) {
         const half = el.scrollWidth / 2;
-        let next = el.scrollLeft + speed * dt;
-        if (next >= half) next -= half;
-        el.scrollLeft = next;
+        if (half > 0) {
+          pos += speed * dt;
+          if (pos >= half) pos -= half;
+          el.scrollLeft = pos;
+        }
+      } else {
+        pos = el.scrollLeft;
       }
       raf = requestAnimationFrame(tick);
     };
