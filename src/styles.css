@@ -238,7 +238,7 @@
 }
 
 .animate-logo-bounce {
-  animation: logo-bounce 2s cubic-bezier(.45,.05,.25,1) both;
+  animation: logo-bounce 3.5s cubic-bezier(.45,.05,.25,1) both;
 }
 
 @keyframes logo-reveal {
