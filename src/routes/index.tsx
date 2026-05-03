@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import { vehicles, formatPrice } from "@/lib/vehicles";
+import { formatPrice } from "@/lib/vehicles";
+import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
 import heroImage from "@/assets/hero-fleet.jpg";
 
@@ -20,8 +21,9 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const { t } = useI18n();
-  const featured = vehicles;
-  const numerals = ["I", "II", "III"];
+  const { vehicles } = useVehicles();
+  const featured = vehicles.slice(0, 3);
+  const cats = t.categories as Record<string, string>;
 
   return (
     <SiteLayout>
@@ -95,7 +97,7 @@ function HomePage() {
                     loading={i === 0 ? "eager" : "lazy"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
-                  <div className="absolute top-5 left-5 eyebrow text-cream/70">{t.categories[v.category]}</div>
+                  <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
                 </div>
                 <div className="p-8">
                   <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
