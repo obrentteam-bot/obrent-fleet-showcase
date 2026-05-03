@@ -6,10 +6,10 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "OBRENT — Kuratierte Luxus-Mobilität" },
-      { name: "description", content: "OBRENT bietet eine diskrete, handverlesene Flotte der außergewöhnlichsten Automobile der Welt — auf Termin in Monaco, Paris und Dubai." },
-      { property: "og:title", content: "OBRENT — Kuratierte Luxus-Mobilität" },
-      { property: "og:description", content: "Eine Einladung zum Außergewöhnlichen. Handverlesene Fahrzeuge, zu Ihnen geliefert." },
+      { title: "OBRENT — Luxus Autovermietung Mannheim" },
+      { name: "description", content: "OBRENT vermietet Premium-Fahrzeuge von Porsche, BMW und Audi in Mannheim — fair, schnell verfügbar und persönlich übergeben." },
+      { property: "og:title", content: "OBRENT — Luxus Autovermietung Mannheim" },
+      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Mannheim — Porsche, BMW, Audi." },
     ],
   }),
   component: HomePage,
