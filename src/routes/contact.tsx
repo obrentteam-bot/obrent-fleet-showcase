@@ -189,6 +189,15 @@ function ContactPage() {
                     />
                   </PopoverContent>
                 </Popover>
+                <input
+                  type="time"
+                  value={returnTime}
+                  onChange={(e) => setReturnTime(e.target.value)}
+                  min="06:00"
+                  max="23:00"
+                  className="lux-input mt-3 [color-scheme:dark]"
+                  aria-label={f.time}
+                />
               </div>
               <div className="md:col-span-2">
                 <label className="lux-label">{f.subject}</label>
