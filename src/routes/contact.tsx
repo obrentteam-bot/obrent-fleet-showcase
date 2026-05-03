@@ -33,7 +33,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 const offices = [
-  { city: "Mannheim", line1: "Käferthaler Straße 40", line2: "68167 Mannheim", phone: "+49 621 000 000" },
+  { city: "Mannheim", line1: "Käferthaler Straße 40", line2: "68167 Mannheim", phone: "+49 15569 459633" },
 ];
 
 function ContactPage() {
@@ -300,7 +300,7 @@ function ContactPage() {
             <div>
               <div className="eyebrow mb-4">{t.contact.direct}</div>
               <div className="font-display text-2xl text-cream">concierge@obrent.com</div>
-              <div className="mt-2 text-cream/55">+377 9777 0000</div>
+              <div className="mt-2 text-cream/55">+49 15569 459633</div>
             </div>
             <div className="space-y-8">
               <div className="eyebrow">{t.contact.ateliers}</div>

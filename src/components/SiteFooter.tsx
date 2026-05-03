@@ -33,7 +33,7 @@ export function SiteFooter() {
               <li>Monaco · Paris · Dubai</li>
               <li>{t.footer.byAppointment}</li>
               <li>concierge@obrent.com</li>
-              <li>+377 9777 0000</li>
+              <li>+49 15569 459633</li>
             </ul>
           </div>
 
