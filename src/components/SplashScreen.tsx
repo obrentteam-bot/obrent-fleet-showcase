@@ -5,7 +5,7 @@ import logo from "@/assets/obrent-logo.png";
 export function SplashScreen() {
   const location = useLocation();
   const [active, setActive] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
@@ -14,24 +14,19 @@ export function SplashScreen() {
 
     setActive(true);
     setHidden(false);
-    setVisible(false);
+    setFadeOut(false);
 
-    // Fade in
-    const tIn = setTimeout(() => setVisible(true), 30);
-    // Start fade out
-    const tOut = setTimeout(() => setVisible(false), 2200);
-    // Unmount
+    // Bounce duration ~1.5s, then fade out
+    const tOut = setTimeout(() => setFadeOut(true), 1500);
     const tDone = setTimeout(() => {
       setHidden(true);
       setActive(false);
-    }, 3100);
+    }, 2300);
 
     return () => {
-      clearTimeout(tIn);
       clearTimeout(tOut);
       clearTimeout(tDone);
     };
-    // run only on first mount of the route
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -39,22 +34,16 @@ export function SplashScreen() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-onyx transition-opacity duration-[800ms] ease-[cubic-bezier(.22,1,.36,1)] ${
-        visible ? "opacity-100" : "opacity-0 pointer-events-none"
+      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-[700ms] ease-out ${
+        fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
+      style={{ background: "#3a3a3a" }}
       aria-hidden="true"
     >
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, color-mix(in oklab, var(--gold) 18%, transparent) 0%, transparent 60%)",
-        }}
-      />
       <img
         src={logo}
         alt="OBRENT"
-        className="relative w-[22rem] md:w-[34rem] lg:w-[42rem] animate-logo-reveal drop-shadow-[0_0_60px_rgba(212,175,55,0.25)]"
+        className="w-40 md:w-52 animate-logo-bounce"
         draggable={false}
       />
     </div>
