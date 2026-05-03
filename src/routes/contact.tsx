@@ -31,6 +31,7 @@ function ContactPage() {
   const f = t.contact.form;
   const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
+  const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
