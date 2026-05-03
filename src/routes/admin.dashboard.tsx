@@ -184,6 +184,131 @@ function downloadBookingsCsv(rows: BookingRow[]) {
   URL.revokeObjectURL(url);
 }
 
+function parseMessage(msg?: string | null): { fields: Array<{ label: string; value: string }>; freeText: string | null } {
+  if (!msg) return { fields: [], freeText: null };
+  const lines = msg.split("\n").map((l) => l.trim()).filter(Boolean);
+  const fields: Array<{ label: string; value: string }> = [];
+  let freeText: string | null = null;
+  const knownLabels = ["Betreff", "Abholzeit", "Rückgabezeit", "Übergabe", "Chauffeur", "Lieferadresse"];
+  for (const line of lines) {
+    const idx = line.indexOf(":");
+    if (idx === -1) { freeText = (freeText ? freeText + "\n" : "") + line; continue; }
+    const label = line.slice(0, idx).trim();
+    const value = line.slice(idx + 1).trim();
+    if (label === "Nachricht") { freeText = (freeText ? freeText + "\n" : "") + value; continue; }
+    if (knownLabels.includes(label) || label.length < 30) fields.push({ label, value });
+    else freeText = (freeText ? freeText + "\n" : "") + line;
+  }
+  return { fields, freeText };
+}
+
+function DetailRow({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
+  return (
+    <div className="grid grid-cols-[140px_1fr] gap-4 py-2.5 border-b border-border/40 last:border-0">
+      <div className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 pt-0.5">{label}</div>
+      <div className={`text-sm text-cream/90 ${mono ? "font-mono" : ""}`}>{value || <span className="text-cream/30">—</span>}</div>
+    </div>
+  );
+}
+
+function BookingDetails({
+  booking, note, onNoteChange, onSaveNote, savingNote, onUpdateStatus, onDelete, fmtDate, fmtDateTime,
+}: {
+  booking: BookingRow;
+  note: string;
+  onNoteChange: (v: string) => void;
+  onSaveNote: () => void;
+  savingNote: boolean;
+  onUpdateStatus: (s: Status) => void;
+  onDelete: () => void;
+  fmtDate: (d?: string | null) => string;
+  fmtDateTime: (d?: string | null) => string;
+}) {
+  const status = (booking.status ?? "pending") as Status;
+  const { fields, freeText } = parseMessage(booking.message);
+  const days = (() => {
+    try {
+      const d = Math.ceil((new Date(booking.end_date).getTime() - new Date(booking.start_date).getTime()) / 86400000);
+      return Math.max(1, d || 1);
+    } catch { return null; }
+  })();
+  const copyMail = `mailto:${booking.email}?subject=${encodeURIComponent("Ihre OBRENT-Anfrage")}`;
+  const copyTel = booking.phone ? `tel:${booking.phone.replace(/\s/g, "")}` : null;
+
+  return (
+    <div className="px-8 py-8 bg-gradient-to-b from-onyx/80 to-onyx/40 border-l-2 border-gold/40">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Kunde */}
+        <div className="bg-jet/60 border border-border p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="w-8 h-8 rounded-full bg-gold/15 text-gold text-xs flex items-center justify-center font-medium">01</span>
+            <h3 className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">Kunde</h3>
+          </div>
+          <DetailRow label="Name" value={booking.customer_name} />
+          <DetailRow label="E-Mail" value={<a href={copyMail} className="text-gold hover:underline">{booking.email}</a>} />
+          <DetailRow label="Telefon" value={copyTel ? <a href={copyTel} className="text-gold hover:underline">{booking.phone}</a> : "—"} />
+          <DetailRow label="Anfrage am" value={fmtDateTime(booking.created_at)} />
+          <DetailRow label="Buchungs-ID" value={booking.id.slice(0, 8) + "…"} mono />
+        </div>
+
+        {/* Buchung */}
+        <div className="bg-jet/60 border border-border p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="w-8 h-8 rounded-full bg-gold/15 text-gold text-xs flex items-center justify-center font-medium">02</span>
+            <h3 className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">Buchung</h3>
+          </div>
+          <DetailRow label="Fahrzeug" value={booking.vehicles?.name ?? "—"} />
+          <DetailRow label="Abholung" value={fmtDate(booking.start_date)} />
+          <DetailRow label="Rückgabe" value={fmtDate(booking.end_date)} />
+          <DetailRow label="Dauer" value={days ? `${days} Tag${days === 1 ? "" : "e"}` : "—"} />
+          <DetailRow label="Status" value={<StatusBadge s={status} />} />
+          {fields.map((f) => <DetailRow key={f.label} label={f.label} value={f.value} />)}
+        </div>
+
+        {/* Notiz + Aktionen */}
+        <div className="space-y-5">
+          <div className="bg-jet/60 border border-border p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="w-8 h-8 rounded-full bg-gold/15 text-gold text-xs flex items-center justify-center font-medium">03</span>
+              <h3 className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">Interne Notiz</h3>
+            </div>
+            <textarea
+              className="lux-input min-h-[110px] mb-3 text-sm"
+              value={note}
+              onChange={(e) => onNoteChange(e.target.value)}
+              placeholder="Anmerkungen für das Team…"
+            />
+            <button onClick={onSaveNote} disabled={savingNote} className="btn-gold text-[0.6rem] py-2 px-4 w-full">
+              {savingNote ? "Speichert…" : "Notiz speichern"}
+            </button>
+          </div>
+
+          <div className="bg-jet/60 border border-border p-6">
+            <h3 className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/55 mb-4">Aktionen</h3>
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => onUpdateStatus("confirmed")} disabled={status === "confirmed"} className="text-[0.6rem] tracking-[0.22em] uppercase py-2.5 border border-green-500/40 text-green-400 hover:bg-green-500/10 disabled:opacity-30 disabled:cursor-not-allowed">Bestätigen</button>
+              <button onClick={() => onUpdateStatus("rejected")} disabled={status === "rejected"} className="text-[0.6rem] tracking-[0.22em] uppercase py-2.5 border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-30 disabled:cursor-not-allowed">Ablehnen</button>
+              <button onClick={() => onUpdateStatus("pending")} disabled={status === "pending"} className="col-span-2 text-[0.6rem] tracking-[0.22em] uppercase py-2.5 border border-yellow-500/40 text-yellow-400 hover:bg-yellow-500/10 disabled:opacity-30 disabled:cursor-not-allowed">Auf „Offen" zurücksetzen</button>
+              <button onClick={onDelete} className="col-span-2 text-[0.6rem] tracking-[0.22em] uppercase py-2.5 border border-border text-cream/60 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/40">Buchung löschen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Nachricht */}
+      {freeText && (
+        <div className="mt-6 bg-jet/60 border border-border p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-8 h-8 rounded-full bg-gold/15 text-gold text-xs flex items-center justify-center font-medium">04</span>
+            <h3 className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">Nachricht des Kunden</h3>
+          </div>
+          <p className="whitespace-pre-wrap text-sm text-cream/85 leading-relaxed font-light">{freeText}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AdminDashboard() {
   const navigate = useNavigate();
   const { session, isAdmin, loading: authLoading } = useAuth();
