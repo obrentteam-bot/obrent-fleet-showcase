@@ -359,7 +359,7 @@ function ContactPage() {
                 {addressLines.map((l, i) => (
                   <div key={i} className="text-sm text-cream/60 font-light">{l}</div>
                 ))}
-                <div className="text-sm text-gold/80 mt-2">{settings.phone}</div>
+                
               </div>
             </div>
           </aside>
