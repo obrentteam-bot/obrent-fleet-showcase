@@ -203,7 +203,7 @@ export const translations = {
     footer: {
       slogan: "Kuratierte Mobilität. Diskreter Service. Eine Einladung zum Außergewöhnlichen.",
       navigate: "Navigation",
-      atelier: "Atelier",
+      atelier: "Standort",
       hours: "Öffnungszeiten",
       hoursDays: "Montag — Sonntag",
       hours24: "24 Stunden · Auf Anfrage",
@@ -461,7 +461,7 @@ export const translations = {
     footer: {
       slogan: "Curated motoring. Discreet service. An invitation to the extraordinary.",
       navigate: "Navigate",
-      atelier: "Atelier",
+      atelier: "Location",
       hours: "Hours",
       hoursDays: "Monday — Sunday",
       hours24: "24 hours · By request",
