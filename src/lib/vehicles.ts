@@ -150,7 +150,7 @@ export const vehicles: Vehicle[] = [
   },
 ];
 
-export const categories: VehicleCategory[] = ["Limousine", "SUV", "Kombi"];
+export const categories: VehicleCategory[] = ["Limousine", "SUV", "Kombi", "Sports"];
 
 export const formatPrice = (n: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
