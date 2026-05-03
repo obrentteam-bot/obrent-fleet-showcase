@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { vehicles, formatPrice } from "@/lib/vehicles";
 import { useI18n } from "@/lib/i18n";
+import heroImage from "@/assets/hero-fleet.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
