@@ -85,9 +85,80 @@
 }
 
 .dark {
-  /* Site is always dark; mirror :root */
+  /* Mirror :root dark defaults */
   --background: oklch(0.12 0 0);
   --foreground: oklch(0.93 0.015 80);
+}
+
+.light {
+  /* Warm luxury light palette */
+  --background: oklch(0.965 0.012 85);       /* #F8F5F0 warm white */
+  --foreground: oklch(0.18 0.005 80);        /* #1A1A1A near black */
+  --card: oklch(1 0 0);                      /* #FFFFFF */
+  --card-foreground: oklch(0.18 0.005 80);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.005 80);
+
+  --primary: oklch(0.62 0.085 80);           /* same gold #B8975A */
+  --primary-foreground: oklch(0.98 0.005 85);
+
+  --secondary: oklch(0.93 0.012 85);
+  --secondary-foreground: oklch(0.18 0.005 80);
+  --muted: oklch(0.93 0.012 85);
+  --muted-foreground: oklch(0.42 0.01 80);
+  --accent: oklch(0.62 0.085 80);
+  --accent-foreground: oklch(0.98 0.005 85);
+
+  --border: oklch(0.18 0.005 80 / 14%);
+  --input: oklch(0.92 0.01 85);
+  --ring: oklch(0.62 0.085 80);
+
+  /* Brand tokens — invert onyx/cream/jet for light surfaces */
+  --gold: oklch(0.62 0.085 80);              /* keep gold #B8975A */
+  --gold-soft: oklch(0.7 0.07 80);
+  --cream: oklch(0.18 0.005 80);             /* "cream" now acts as primary text */
+  --onyx: oklch(0.94 0.012 85);              /* "onyx" surfaces become warm light #F0EBE3 */
+  --jet: oklch(1 0 0);                       /* card surface white */
+}
+
+.light body {
+  background-color: var(--color-background);
+}
+
+.light .glass-card {
+  background: color-mix(in oklab, #ffffff 92%, transparent);
+  border: 1px solid color-mix(in oklab, var(--gold) 22%, transparent);
+  box-shadow: 0 10px 30px -18px color-mix(in oklab, #1a1a1a 40%, transparent);
+}
+
+.light .glass-card:hover {
+  border-color: color-mix(in oklab, var(--gold) 55%, transparent);
+}
+
+.light .btn-ghost {
+  color: var(--foreground);
+  border-color: color-mix(in oklab, var(--foreground) 25%, transparent);
+}
+
+.light .btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.light .lux-input {
+  color: var(--foreground);
+  border-bottom-color: color-mix(in oklab, var(--foreground) 18%, transparent);
+}
+
+.light .lux-label {
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
+}
+
+html {
+  transition: background-color 400ms ease, color 400ms ease;
+}
+body {
+  transition: background-color 400ms ease, color 400ms ease;
 }
 
 @layer base {

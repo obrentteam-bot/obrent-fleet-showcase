@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { I18nProvider } from "@/lib/i18n";
+import { ThemeProvider } from "@/lib/theme";
 import { SplashScreen } from "@/components/SplashScreen";
 
 import appCss from "../styles.css?url";
@@ -72,9 +73,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <I18nProvider>
-      <SplashScreen />
-      <Outlet />
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <SplashScreen />
+        <Outlet />
+      </I18nProvider>
+    </ThemeProvider>
   );
 }

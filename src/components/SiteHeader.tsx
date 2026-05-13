@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import logo from "@/assets/obrent-logo-header.png";
 
 export function SiteHeader() {
@@ -52,6 +53,8 @@ export function SiteHeader() {
 
         <div className="hidden md:flex items-center gap-6">
           <LanguageSwitcher />
+          <span className="h-3 w-px bg-cream/20" />
+          <ThemeToggle />
         </div>
 
         <button
@@ -80,8 +83,9 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-border">
+            <div className="pt-4 border-t border-border flex items-center gap-6">
               <LanguageSwitcher />
+              <ThemeToggle />
             </div>
           </nav>
         </div>
