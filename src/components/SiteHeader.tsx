@@ -14,9 +14,9 @@ export function SiteHeader() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const services = [
-    { hash: "vip-shuttle", label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
-    { hash: "chauffeur-service", label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
-    { hash: "business-langzeitmiete", label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
+    { path: "/services/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
+    { path: "/services/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
+    { path: "/services/business-langzeitmiete" as const, label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
   ];
 
   useEffect(() => {
@@ -89,9 +89,8 @@ export function SiteHeader() {
                 <div className="p-2">
                   {services.map((s, i) => (
                     <Link
-                      key={s.hash}
-                      to="/services"
-                      hash={s.hash}
+                      key={s.path}
+                      to={s.path}
                       onClick={() => setServicesOpen(false)}
                       className="group block relative p-6 transition-all duration-500 hover:bg-gold/5"
                     >
@@ -188,9 +187,8 @@ export function SiteHeader() {
                   </Link>
                   {services.map((s) => (
                     <Link
-                      key={s.hash}
-                      to="/services"
-                      hash={s.hash}
+                      key={s.path}
+                      to={s.path}
                       onClick={() => setOpen(false)}
                       className="text-xs tracking-[0.28em] uppercase text-cream/70 hover:text-gold"
                     >

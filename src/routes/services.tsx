@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useI18n } from "@/lib/i18n";
@@ -90,9 +90,9 @@ function ServicesPage() {
   };
 
   const serviceCards = [
-    { id: "vip-shuttle", title: s.vip.title, body: s.vip.body, Icon: Plane },
-    { id: "chauffeur-service", title: s.chauffeur.title, body: s.chauffeur.body, Icon: UserCheck },
-    { id: "business-langzeitmiete", title: s.longterm.title, body: s.longterm.body, Icon: Briefcase },
+    { id: "vip-shuttle", path: "/services/vip-shuttle" as const, title: s.vip.title, body: s.vip.body, Icon: Plane },
+    { id: "chauffeur-service", path: "/services/chauffeur-service" as const, title: s.chauffeur.title, body: s.chauffeur.body, Icon: UserCheck },
+    { id: "business-langzeitmiete", path: "/services/business-langzeitmiete" as const, title: s.longterm.title, body: s.longterm.body, Icon: Briefcase },
   ];
 
   return (
@@ -122,11 +122,12 @@ function ServicesPage() {
       {/* SERVICE CARDS */}
       <section className="py-24 px-6 md:px-12">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {serviceCards.map(({ id, title, body, Icon }, i) => (
-            <article
+          {serviceCards.map(({ id, path, title, body, Icon }, i) => (
+            <Link
               key={id}
+              to={path}
               id={id}
-              className="group relative scroll-mt-32 border border-border/60 bg-[#1A1A1A] p-10 lg:p-12 transition-all duration-500 hover:border-gold/60"
+              className="group relative scroll-mt-32 border border-border/60 bg-[#1A1A1A] p-10 lg:p-12 transition-all duration-500 hover:border-gold/60 block"
             >
               <div className="flex items-center gap-3 mb-10">
                 <span className="font-display italic text-gold/70 text-sm">0{i + 1}</span>
@@ -139,7 +140,10 @@ function ServicesPage() {
               <p className="text-cream/60 text-sm leading-relaxed font-light">
                 {body}
               </p>
-            </article>
+              <span className="mt-8 inline-block text-[0.7rem] tracking-[0.28em] uppercase text-gold/70 group-hover:text-gold transition-colors">
+                {s.enquire} →
+              </span>
+            </Link>
           ))}
         </div>
       </section>
