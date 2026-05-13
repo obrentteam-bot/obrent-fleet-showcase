@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import bg from "@/assets/services-vip-shuttle.jpg";
 
-export const Route = createFileRoute("/services/vip-shuttle")({
+export const Route = createFileRoute("/vip-shuttle")({
   head: () => ({
     meta: [
       { title: "VIP Shuttle — OBRENT" },

@@ -14,9 +14,9 @@ export function SiteHeader() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const services = [
-    { path: "/services/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
-    { path: "/services/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
-    { path: "/services/business-langzeitmiete" as const, label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
+    { path: "/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
+    { path: "/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
+    { path: "/business-langzeitmiete" as const, label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
   ];
 
   useEffect(() => {
@@ -70,13 +70,13 @@ export function SiteHeader() {
             onMouseEnter={openMenu}
             onMouseLeave={scheduleClose}
           >
-            <Link
-              to="/services"
+            <button
+              type="button"
+              onClick={() => setServicesOpen((s) => !s)}
               className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
-              activeProps={{ className: "text-gold" }}
             >
               {t.nav.services}
-            </Link>
+            </button>
             <div
               className={`absolute left-1/2 -translate-x-1/2 top-full pt-4 transition-all duration-300 ease-out ${
                 servicesOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
@@ -178,13 +178,6 @@ export function SiteHeader() {
               </button>
               {mobileServicesOpen && (
                 <div className="mt-4 pl-4 border-l border-gold/30 flex flex-col gap-4">
-                  <Link
-                    to="/services"
-                    onClick={() => setOpen(false)}
-                    className="text-xs tracking-[0.28em] uppercase text-cream/70 hover:text-gold"
-                  >
-                    {t.nav.services} —
-                  </Link>
                   {services.map((s) => (
                     <Link
                       key={s.path}

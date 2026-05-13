@@ -9,24 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ServicesRouteImport } from './routes/services'
+import { Route as VipShuttleRouteImport } from './routes/vip-shuttle'
 import { Route as ImpressumRouteImport } from './routes/impressum'
 import { Route as DatenschutzRouteImport } from './routes/datenschutz'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ChauffeurServiceRouteImport } from './routes/chauffeur-service'
+import { Route as BusinessLangzeitmieteRouteImport } from './routes/business-langzeitmiete'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FleetIndexRouteImport } from './routes/fleet.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as ServicesVipShuttleRouteImport } from './routes/services.vip-shuttle'
-import { Route as ServicesChauffeurServiceRouteImport } from './routes/services.chauffeur-service'
-import { Route as ServicesBusinessLangzeitmieteRouteImport } from './routes/services.business-langzeitmiete'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
-const ServicesRoute = ServicesRouteImport.update({
-  id: '/services',
-  path: '/services',
+const VipShuttleRoute = VipShuttleRouteImport.update({
+  id: '/vip-shuttle',
+  path: '/vip-shuttle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImpressumRoute = ImpressumRouteImport.update({
@@ -42,6 +41,16 @@ const DatenschutzRoute = DatenschutzRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChauffeurServiceRoute = ChauffeurServiceRouteImport.update({
+  id: '/chauffeur-service',
+  path: '/chauffeur-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessLangzeitmieteRoute = BusinessLangzeitmieteRouteImport.update({
+  id: '/business-langzeitmiete',
+  path: '/business-langzeitmiete',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -69,23 +78,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const ServicesVipShuttleRoute = ServicesVipShuttleRouteImport.update({
-  id: '/vip-shuttle',
-  path: '/vip-shuttle',
-  getParentRoute: () => ServicesRoute,
-} as any)
-const ServicesChauffeurServiceRoute =
-  ServicesChauffeurServiceRouteImport.update({
-    id: '/chauffeur-service',
-    path: '/chauffeur-service',
-    getParentRoute: () => ServicesRoute,
-  } as any)
-const ServicesBusinessLangzeitmieteRoute =
-  ServicesBusinessLangzeitmieteRouteImport.update({
-    id: '/business-langzeitmiete',
-    path: '/business-langzeitmiete',
-    getParentRoute: () => ServicesRoute,
-  } as any)
 const FleetVehicleIdRoute = FleetVehicleIdRouteImport.update({
   id: '/fleet/$vehicleId',
   path: '/fleet/$vehicleId',
@@ -101,30 +93,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/business-langzeitmiete': typeof BusinessLangzeitmieteRoute
+  '/chauffeur-service': typeof ChauffeurServiceRoute
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
-  '/services': typeof ServicesRouteWithChildren
+  '/vip-shuttle': typeof VipShuttleRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
-  '/services/business-langzeitmiete': typeof ServicesBusinessLangzeitmieteRoute
-  '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
-  '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/business-langzeitmiete': typeof BusinessLangzeitmieteRoute
+  '/chauffeur-service': typeof ChauffeurServiceRoute
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
-  '/services': typeof ServicesRouteWithChildren
+  '/vip-shuttle': typeof VipShuttleRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
-  '/services/business-langzeitmiete': typeof ServicesBusinessLangzeitmieteRoute
-  '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
-  '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin': typeof AdminIndexRoute
   '/fleet': typeof FleetIndexRoute
 }
@@ -133,15 +123,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/business-langzeitmiete': typeof BusinessLangzeitmieteRoute
+  '/chauffeur-service': typeof ChauffeurServiceRoute
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
-  '/services': typeof ServicesRouteWithChildren
+  '/vip-shuttle': typeof VipShuttleRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
-  '/services/business-langzeitmiete': typeof ServicesBusinessLangzeitmieteRoute
-  '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
-  '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
 }
@@ -151,30 +140,28 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/business-langzeitmiete'
+    | '/chauffeur-service'
     | '/contact'
     | '/datenschutz'
     | '/impressum'
-    | '/services'
+    | '/vip-shuttle'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
-    | '/services/business-langzeitmiete'
-    | '/services/chauffeur-service'
-    | '/services/vip-shuttle'
     | '/admin/'
     | '/fleet/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/business-langzeitmiete'
+    | '/chauffeur-service'
     | '/contact'
     | '/datenschutz'
     | '/impressum'
-    | '/services'
+    | '/vip-shuttle'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
-    | '/services/business-langzeitmiete'
-    | '/services/chauffeur-service'
-    | '/services/vip-shuttle'
     | '/admin'
     | '/fleet'
   id:
@@ -182,15 +169,14 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/business-langzeitmiete'
+    | '/chauffeur-service'
     | '/contact'
     | '/datenschutz'
     | '/impressum'
-    | '/services'
+    | '/vip-shuttle'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
-    | '/services/business-langzeitmiete'
-    | '/services/chauffeur-service'
-    | '/services/vip-shuttle'
     | '/admin/'
     | '/fleet/'
   fileRoutesById: FileRoutesById
@@ -199,21 +185,23 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  BusinessLangzeitmieteRoute: typeof BusinessLangzeitmieteRoute
+  ChauffeurServiceRoute: typeof ChauffeurServiceRoute
   ContactRoute: typeof ContactRoute
   DatenschutzRoute: typeof DatenschutzRoute
   ImpressumRoute: typeof ImpressumRoute
-  ServicesRoute: typeof ServicesRouteWithChildren
+  VipShuttleRoute: typeof VipShuttleRoute
   FleetVehicleIdRoute: typeof FleetVehicleIdRoute
   FleetIndexRoute: typeof FleetIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/services': {
-      id: '/services'
-      path: '/services'
-      fullPath: '/services'
-      preLoaderRoute: typeof ServicesRouteImport
+    '/vip-shuttle': {
+      id: '/vip-shuttle'
+      path: '/vip-shuttle'
+      fullPath: '/vip-shuttle'
+      preLoaderRoute: typeof VipShuttleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/impressum': {
@@ -235,6 +223,20 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chauffeur-service': {
+      id: '/chauffeur-service'
+      path: '/chauffeur-service'
+      fullPath: '/chauffeur-service'
+      preLoaderRoute: typeof ChauffeurServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-langzeitmiete': {
+      id: '/business-langzeitmiete'
+      path: '/business-langzeitmiete'
+      fullPath: '/business-langzeitmiete'
+      preLoaderRoute: typeof BusinessLangzeitmieteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -272,27 +274,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/services/vip-shuttle': {
-      id: '/services/vip-shuttle'
-      path: '/vip-shuttle'
-      fullPath: '/services/vip-shuttle'
-      preLoaderRoute: typeof ServicesVipShuttleRouteImport
-      parentRoute: typeof ServicesRoute
-    }
-    '/services/chauffeur-service': {
-      id: '/services/chauffeur-service'
-      path: '/chauffeur-service'
-      fullPath: '/services/chauffeur-service'
-      preLoaderRoute: typeof ServicesChauffeurServiceRouteImport
-      parentRoute: typeof ServicesRoute
-    }
-    '/services/business-langzeitmiete': {
-      id: '/services/business-langzeitmiete'
-      path: '/business-langzeitmiete'
-      fullPath: '/services/business-langzeitmiete'
-      preLoaderRoute: typeof ServicesBusinessLangzeitmieteRouteImport
-      parentRoute: typeof ServicesRoute
-    }
     '/fleet/$vehicleId': {
       id: '/fleet/$vehicleId'
       path: '/fleet/$vehicleId'
@@ -322,30 +303,16 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface ServicesRouteChildren {
-  ServicesBusinessLangzeitmieteRoute: typeof ServicesBusinessLangzeitmieteRoute
-  ServicesChauffeurServiceRoute: typeof ServicesChauffeurServiceRoute
-  ServicesVipShuttleRoute: typeof ServicesVipShuttleRoute
-}
-
-const ServicesRouteChildren: ServicesRouteChildren = {
-  ServicesBusinessLangzeitmieteRoute: ServicesBusinessLangzeitmieteRoute,
-  ServicesChauffeurServiceRoute: ServicesChauffeurServiceRoute,
-  ServicesVipShuttleRoute: ServicesVipShuttleRoute,
-}
-
-const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
-  ServicesRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  BusinessLangzeitmieteRoute: BusinessLangzeitmieteRoute,
+  ChauffeurServiceRoute: ChauffeurServiceRoute,
   ContactRoute: ContactRoute,
   DatenschutzRoute: DatenschutzRoute,
   ImpressumRoute: ImpressumRoute,
-  ServicesRoute: ServicesRouteWithChildren,
+  VipShuttleRoute: VipShuttleRoute,
   FleetVehicleIdRoute: FleetVehicleIdRoute,
   FleetIndexRoute: FleetIndexRoute,
 }

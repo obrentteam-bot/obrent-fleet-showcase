@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import bg from "@/assets/services-longterm.jpg";
 
-export const Route = createFileRoute("/services/business-langzeitmiete")({
+export const Route = createFileRoute("/business-langzeitmiete")({
   head: () => ({
     meta: [
       { title: "Business Langzeitmiete — OBRENT" },
