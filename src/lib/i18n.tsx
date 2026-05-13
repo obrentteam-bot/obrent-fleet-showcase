@@ -19,6 +19,9 @@ export const translations = {
       vipShuttle: "VIP Shuttle",
       chauffeur: "Chauffeur Service",
       longterm: "Business Langzeitmiete",
+      vipShuttleDesc: "Exklusiver Transfer-Service für höchste Ansprüche und diskretes Reisen.",
+      chauffeurDesc: "Professionelle Chauffeure begleiten Sie sicher und stilvoll an Ihr Ziel.",
+      longtermDesc: "Maßgeschneiderte Mobilitätslösungen für Unternehmen und Langzeitprojekte.",
     },
     services: {
       eyebrow: "Premium Services",
@@ -323,6 +326,9 @@ export const translations = {
       vipShuttle: "VIP Shuttle",
       chauffeur: "Chauffeur Service",
       longterm: "Business Long-Term Rental",
+      vipShuttleDesc: "Exclusive transfer service for the highest standards and discreet travel.",
+      chauffeurDesc: "Professional chauffeurs drive you safely and in style to your destination.",
+      longtermDesc: "Tailored mobility solutions for companies and long-term projects.",
     },
     services: {
       eyebrow: "Premium Services",
