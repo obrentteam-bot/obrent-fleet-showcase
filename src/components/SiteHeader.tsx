@@ -178,13 +178,6 @@ export function SiteHeader() {
               </button>
               {mobileServicesOpen && (
                 <div className="mt-4 pl-4 border-l border-gold/30 flex flex-col gap-4">
-                  <Link
-                    to="/services"
-                    onClick={() => setOpen(false)}
-                    className="text-xs tracking-[0.28em] uppercase text-cream/70 hover:text-gold"
-                  >
-                    {t.nav.services} —
-                  </Link>
                   {services.map((s) => (
                     <Link
                       key={s.path}
