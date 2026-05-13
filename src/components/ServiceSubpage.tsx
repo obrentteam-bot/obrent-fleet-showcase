@@ -200,13 +200,13 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       </section>
 
       {/* WHY OBRENT */}
-      <section className="py-24 md:py-32 px-6 md:px-12 bg-onyx/40 border-y border-border/40">
+      <section className="py-24 md:py-32 px-6 md:px-12 bg-muted/40 border-y border-border/40">
         <div className="max-w-[1280px] mx-auto">
           <div className="text-center mb-16">
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold/80 mb-6">
               {lang === "de" ? "Warum OBRENT" : "Why OBRENT"}
             </div>
-            <h2 className="font-display text-3xl md:text-5xl text-cream leading-tight max-w-3xl mx-auto">
+            <h2 className="font-display text-3xl md:text-5xl text-foreground leading-tight max-w-3xl mx-auto">
               {props.why.title[lang]}
             </h2>
           </div>
@@ -214,13 +214,13 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             {props.why.cards.map(({ Icon, title, body }) => (
               <article
                 key={title.en}
-                className="border border-border/60 bg-[#141414] p-10 transition-all duration-500 hover:border-gold/60"
+                className="border border-border/60 bg-card p-10 transition-all duration-500 hover:border-gold/60"
               >
                 <Icon className="w-8 h-8 text-gold mb-6" strokeWidth={1.25} />
-                <h3 className="font-display text-2xl text-cream leading-tight mb-3">
+                <h3 className="font-display text-2xl text-foreground leading-tight mb-3">
                   {title[lang]}
                 </h3>
-                <p className="text-cream/60 text-sm leading-relaxed font-light">
+                <p className="text-muted-foreground text-sm leading-relaxed font-light">
                   {body[lang]}
                 </p>
               </article>
