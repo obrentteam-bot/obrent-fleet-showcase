@@ -1,13 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceSubpage, type FieldDef } from "@/components/ServiceSubpage";
-import bg from "@/assets/hero-fleet.jpg";
+import {
+  Crown,
+  Users,
+  Building2,
+  Megaphone,
+  UserPlus,
+  CalendarRange,
+  Zap,
+  ClipboardCheck,
+  Gem,
+} from "lucide-react";
+import bg from "@/assets/services-longterm.jpg";
 
 export const Route = createFileRoute("/services/business-langzeitmiete")({
   head: () => ({
     meta: [
       { title: "Business Langzeitmiete — OBRENT" },
-      { name: "description", content: "Maßgeschneiderte Mobilitätslösungen für Unternehmen und Langzeitprojekte." },
+      {
+        name: "description",
+        content:
+          "Maßgeschneiderte Langzeitmiete für Geschäftsführer, Projektteams und Firmenflotten.",
+      },
     ],
   }),
   component: BusinessLongTermPage,
@@ -18,7 +33,21 @@ const fields: FieldDef[] = [
   { type: "text", key: "contact", label: { de: "Ansprechpartner", en: "Contact person" }, required: true },
   { type: "tel", key: "phone", label: { de: "Telefon", en: "Phone" }, required: true },
   { type: "email", key: "email", label: { de: "E-Mail", en: "Email" }, required: true },
-  { type: "text", key: "vehicle", label: { de: "Gewünschtes Fahrzeug", en: "Desired vehicle" }, colSpan: 2 },
+  {
+    type: "select",
+    key: "vehicle",
+    colSpan: 2,
+    label: { de: "Gewünschtes Fahrzeug", en: "Desired vehicle" },
+    placeholder: { de: "Bitte wählen", en: "Please select" },
+    options: [
+      { value: "porsche-cayenne", label: { de: "Porsche Cayenne", en: "Porsche Cayenne" } },
+      { value: "porsche-panamera", label: { de: "Porsche Panamera", en: "Porsche Panamera" } },
+      { value: "bmw-x5-m60i", label: { de: "BMW X5 M60i", en: "BMW X5 M60i" } },
+      { value: "bmw-x5-m50d", label: { de: "BMW X5 M50d", en: "BMW X5 M50d" } },
+      { value: "bmw-x4-m40i", label: { de: "BMW X4 M40i", en: "BMW X4 M40i" } },
+      { value: "audi-rs6-avant", label: { de: "Audi RS6 Avant", en: "Audi RS6 Avant" } },
+    ],
+  },
   {
     type: "select",
     key: "duration",
@@ -40,63 +69,67 @@ function BusinessLongTermPage() {
   return (
     <SiteLayout>
       <ServiceSubpage
-        serviceKey="business-langzeitmiete"
+        serviceTitleEn="Business Langzeitmiete"
         bgImage={bg}
-        fields={fields}
-        submitLabel={{ de: "Langzeitmiete anfragen", en: "Request long-term rental" }}
-        copy={{
-          de: {
-            crumb: "Business Langzeitmiete",
-            servicesLabel: "Services",
-            title: "Business Langzeitmiete",
-            subline: "Maßgeschneiderte Mobilitätslösungen für Unternehmen und Langzeitprojekte.",
-            whatTitle: "Ideal für",
-            whatItems: [
-              "Geschäftsführer & Vorstände",
-              "Projektteams",
-              "Firmenflotten",
-              "Temporäre Mitarbeiter",
-              "Messeauftritte & Events",
-            ],
-            whyTagline: "Flexibel. Planbar. Exklusiv.",
-            whyCards: [
-              { title: "Flexibel", body: "Laufzeiten und Fahrzeuge passen sich Ihrem Projekt an — nicht umgekehrt." },
-              { title: "Planbar", body: "Transparente Konditionen, klare Monatsraten, keine versteckten Kosten." },
-              { title: "Exklusiv", body: "Premium-Fahrzeuge, persönlich betreut von einem festen Ansprechpartner." },
-            ],
-            formEyebrow: "Anfrage",
-            formTitle: "Langzeitmiete",
-            formItalic: "anfragen",
-            formLead: "Wir melden uns innerhalb weniger Stunden persönlich bei Ihnen.",
-            successMsg: "Vielen Dank! Ihre Anfrage wurde übermittelt.",
-            back: "Zurück zu Services",
+        hero={{
+          eyebrow: { de: "Business Langzeitmiete", en: "Business Long-Term Rental" },
+          headline: {
+            de: "Mobilität für Ihr Unternehmen. Flexibel und zuverlässig.",
+            en: "Mobility for your company. Flexible and reliable.",
           },
-          en: {
-            crumb: "Business Long-Term Rental",
-            servicesLabel: "Services",
-            title: "Business Long-Term Rental",
-            subline: "Tailored mobility solutions for companies and long-term projects.",
-            whatTitle: "Ideal for",
-            whatItems: [
-              "Executives & board members",
-              "Project teams",
-              "Corporate fleets",
-              "Temporary staff",
-              "Trade shows & events",
-            ],
-            whyTagline: "Flexible. Predictable. Exclusive.",
-            whyCards: [
-              { title: "Flexible", body: "Terms and vehicles adapt to your project — not the other way around." },
-              { title: "Predictable", body: "Transparent terms, clear monthly rates, no hidden costs." },
-              { title: "Exclusive", body: "Premium vehicles, personally managed by a dedicated point of contact." },
-            ],
-            formEyebrow: "Request",
-            formTitle: "Request",
-            formItalic: "long-term rental",
-            formLead: "We will personally get back to you within a few hours.",
-            successMsg: "Thank you! Your request has been submitted.",
-            back: "Back to Services",
+          subline: {
+            de: "Langzeitmietlösungen für Geschäftsführer, Projektteams und Firmenflotten — individuell und diskret.",
+            en: "Long-term rental solutions for executives, project teams and corporate fleets — bespoke and discreet.",
           },
+          cta: { de: "Jetzt anfragen", en: "Request now" },
+        }}
+        leistungen={{
+          title: { de: "Unsere Leistungen", en: "Our services" },
+          cards: [
+            { Icon: Crown, label: { de: "Geschäftsführer & Vorstände", en: "Executives & board members" } },
+            { Icon: Users, label: { de: "Projektteams", en: "Project teams" } },
+            { Icon: Building2, label: { de: "Firmenflotten", en: "Corporate fleets" } },
+            { Icon: Megaphone, label: { de: "Messeauftritte", en: "Trade show appearances" } },
+            { Icon: UserPlus, label: { de: "Temporäre Mitarbeiter", en: "Temporary staff" } },
+            { Icon: CalendarRange, label: { de: "Langzeitprojekte", en: "Long-term projects" } },
+          ],
+        }}
+        why={{
+          title: {
+            de: "Flexibel. Planbar. Exklusiv.",
+            en: "Flexible. Predictable. Exclusive.",
+          },
+          cards: [
+            {
+              Icon: Zap,
+              title: { de: "Flexibel", en: "Flexible" },
+              body: {
+                de: "Mietdauer nach Ihren Wünschen — von einem Monat bis individuell verlängerbar.",
+                en: "Rental duration to your needs — from one month, extendable as required.",
+              },
+            },
+            {
+              Icon: ClipboardCheck,
+              title: { de: "Planbar", en: "Predictable" },
+              body: {
+                de: "Feste Konditionen, keine Überraschungen. Eine klare Monatsrate, transparent kalkuliert.",
+                en: "Fixed terms, no surprises. A clear monthly rate, transparently calculated.",
+              },
+            },
+            {
+              Icon: Gem,
+              title: { de: "Exklusiv", en: "Exclusive" },
+              body: {
+                de: "Premium Fahrzeuge, persönlicher Ansprechpartner — wir betreuen Ihre Flotte direkt.",
+                en: "Premium vehicles, dedicated contact — we manage your fleet personally.",
+              },
+            },
+          ],
+        }}
+        form={{
+          title: { de: "Langzeitmiete anfragen", en: "Request long-term rental" },
+          submit: { de: "Anfrage senden", en: "Send request" },
+          fields,
         }}
       />
     </SiteLayout>
