@@ -73,9 +73,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <I18nProvider>
-      <SplashScreen />
-      <Outlet />
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <SplashScreen />
+        <Outlet />
+      </I18nProvider>
+    </ThemeProvider>
   );
 }
