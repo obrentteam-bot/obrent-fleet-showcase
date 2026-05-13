@@ -14,9 +14,9 @@ export function SiteHeader() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const services = [
-    { path: "/services/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
-    { path: "/services/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
-    { path: "/services/business-langzeitmiete" as const, label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
+    { path: "/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
+    { path: "/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
+    { path: "/business-langzeitmiete" as const, label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
   ];
 
   useEffect(() => {
