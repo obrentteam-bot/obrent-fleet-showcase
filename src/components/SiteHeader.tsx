@@ -70,13 +70,13 @@ export function SiteHeader() {
             onMouseEnter={openMenu}
             onMouseLeave={scheduleClose}
           >
-            <Link
-              to="/services"
+            <button
+              type="button"
+              onClick={() => setServicesOpen((s) => !s)}
               className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
-              activeProps={{ className: "text-gold" }}
             >
               {t.nav.services}
-            </Link>
+            </button>
             <div
               className={`absolute left-1/2 -translate-x-1/2 top-full pt-4 transition-all duration-300 ease-out ${
                 servicesOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
