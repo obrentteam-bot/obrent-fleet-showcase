@@ -319,15 +319,6 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             </form>
           )}
 
-          <div className="mt-20 text-center">
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 text-[0.7rem] tracking-[0.28em] uppercase text-gold/70 hover:text-gold transition-colors"
-            >
-              <ArrowLeft className="w-3 h-3" />
-              {labels.back}
-            </Link>
-          </div>
         </div>
       </section>
     </>
