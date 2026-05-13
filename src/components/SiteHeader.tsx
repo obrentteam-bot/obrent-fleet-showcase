@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
@@ -9,12 +9,14 @@ export function SiteHeader() {
   const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const navItems = [
-    { to: "/" as const, label: t.nav.home },
-    { to: "/fleet" as const, label: t.nav.fleet },
-    { to: "/about" as const, label: t.nav.about },
-    { to: "/contact" as const, label: t.nav.contact },
+  const services = [
+    { hash: "vip-shuttle", label: t.servicesMenu.vipShuttle },
+    { hash: "chauffeur-service", label: t.servicesMenu.chauffeur },
+    { hash: "business-langzeitmiete", label: t.servicesMenu.longterm },
   ];
 
   useEffect(() => {
@@ -23,6 +25,15 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const openMenu = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setServicesOpen(true);
+  };
+  const scheduleClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setServicesOpen(false), 120);
+  };
 
   return (
     <header
@@ -38,17 +49,69 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-12">
-          {navItems.map((item) => (
+          <Link
+            to="/"
+            activeOptions={{ exact: true }}
+            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            activeProps={{ className: "text-gold" }}
+          >
+            {t.nav.home}
+          </Link>
+          <Link
+            to="/fleet"
+            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            activeProps={{ className: "text-gold" }}
+          >
+            {t.nav.fleet}
+          </Link>
+
+          <div
+            className="relative"
+            onMouseEnter={openMenu}
+            onMouseLeave={scheduleClose}
+          >
             <Link
-              key={item.to}
-              to={item.to}
-              activeOptions={{ exact: item.to === "/" }}
-              className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300 relative"
+              to="/services"
+              className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
               activeProps={{ className: "text-gold" }}
             >
-              {item.label}
+              {t.nav.services}
             </Link>
-          ))}
+            <div
+              className={`absolute left-1/2 -translate-x-1/2 top-full pt-4 transition-all duration-200 ${
+                servicesOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
+              }`}
+            >
+              <div className="min-w-[260px] bg-[#111111] border border-gold/30 shadow-xl py-3">
+                {services.map((s) => (
+                  <Link
+                    key={s.hash}
+                    to="/services"
+                    hash={s.hash}
+                    onClick={() => setServicesOpen(false)}
+                    className="block px-5 py-3 text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold hover:bg-white/5 transition-colors"
+                  >
+                    {s.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <Link
+            to="/about"
+            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            activeProps={{ className: "text-gold" }}
+          >
+            {t.nav.about}
+          </Link>
+          <Link
+            to="/contact"
+            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            activeProps={{ className: "text-gold" }}
+          >
+            {t.nav.contact}
+          </Link>
         </nav>
 
         <div className="hidden md:flex items-center gap-6">
@@ -73,16 +136,50 @@ export function SiteHeader() {
       {open && (
         <div className="md:hidden bg-onyx/95 backdrop-blur-xl border-t border-border">
           <nav className="flex flex-col px-6 py-8 gap-6">
-            {navItems.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                onClick={() => setOpen(false)}
-                className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold"
+            <Link to="/" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+              {t.nav.home}
+            </Link>
+            <Link to="/fleet" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+              {t.nav.fleet}
+            </Link>
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileServicesOpen((s) => !s)}
+                className="w-full flex items-center justify-between text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold"
               >
-                {item.label}
-              </Link>
-            ))}
+                <span>{t.nav.services}</span>
+                <span className={`transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}>▾</span>
+              </button>
+              {mobileServicesOpen && (
+                <div className="mt-4 pl-4 border-l border-gold/30 flex flex-col gap-4">
+                  <Link
+                    to="/services"
+                    onClick={() => setOpen(false)}
+                    className="text-xs tracking-[0.28em] uppercase text-cream/70 hover:text-gold"
+                  >
+                    {t.nav.services} —
+                  </Link>
+                  {services.map((s) => (
+                    <Link
+                      key={s.hash}
+                      to="/services"
+                      hash={s.hash}
+                      onClick={() => setOpen(false)}
+                      className="text-xs tracking-[0.28em] uppercase text-cream/70 hover:text-gold"
+                    >
+                      {s.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Link to="/about" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+              {t.nav.about}
+            </Link>
+            <Link to="/contact" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+              {t.nav.contact}
+            </Link>
             <div className="pt-4 border-t border-border flex items-center gap-6">
               <LanguageSwitcher />
               <ThemeToggle />
