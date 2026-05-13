@@ -9,7 +9,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
   const addressLines = settings.address.split(",").map((s) => s.trim());
   return (
-    <footer className="text-cream relative">
+    <footer className="relative [&_*]:!text-[color:oklch(0.93_0.015_80)]" style={{ ["--cream" as any]: "oklch(0.93 0.015 80)" }}>
       <div className="bg-[linear-gradient(180deg,oklch(0.10_0_0)_0%,oklch(0.55_0.005_80)_50%,oklch(0.10_0_0)_100%)] border-t border-cream/5">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
