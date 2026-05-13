@@ -14,9 +14,9 @@ export function SiteHeader() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const services = [
-    { hash: "vip-shuttle", label: t.servicesMenu.vipShuttle },
-    { hash: "chauffeur-service", label: t.servicesMenu.chauffeur },
-    { hash: "business-langzeitmiete", label: t.servicesMenu.longterm },
+    { hash: "vip-shuttle", label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
+    { hash: "chauffeur-service", label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
+    { hash: "business-langzeitmiete", label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
   ];
 
   useEffect(() => {
@@ -78,22 +78,48 @@ export function SiteHeader() {
               {t.nav.services}
             </Link>
             <div
-              className={`absolute left-1/2 -translate-x-1/2 top-full pt-4 transition-all duration-200 ${
-                servicesOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
+              className={`absolute left-1/2 -translate-x-1/2 top-full pt-4 transition-all duration-300 ease-out ${
+                servicesOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
               }`}
             >
-              <div className="min-w-[260px] bg-[#111111] border border-gold/30 shadow-xl py-3">
-                {services.map((s) => (
-                  <Link
-                    key={s.hash}
-                    to="/services"
-                    hash={s.hash}
-                    onClick={() => setServicesOpen(false)}
-                    className="block px-5 py-3 text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold hover:bg-white/5 transition-colors"
-                  >
-                    {s.label}
-                  </Link>
-                ))}
+              <div className="relative w-[440px] bg-onyx/90 backdrop-blur-2xl border border-gold/30 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden">
+                {/* Top accent edge */}
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
+
+                <div className="p-2">
+                  {services.map((s, i) => (
+                    <Link
+                      key={s.hash}
+                      to="/services"
+                      hash={s.hash}
+                      onClick={() => setServicesOpen(false)}
+                      className="group block relative p-6 transition-all duration-500 hover:bg-gold/5"
+                    >
+                      <div className="flex items-start gap-6">
+                        <span className="font-display text-gold text-xl italic opacity-60 group-hover:opacity-100 transition-opacity duration-500 select-none leading-none mt-1">
+                          0{i + 1}
+                        </span>
+                        <div className="flex flex-col gap-1.5">
+                          <h3 className="text-cream text-[0.78rem] font-medium tracking-[0.25em] uppercase transition-all duration-500 group-hover:translate-x-2 group-hover:text-gold">
+                            {s.label}
+                          </h3>
+                          <p className="text-cream/45 text-[11px] leading-relaxed tracking-wide group-hover:text-cream/70 transition-colors duration-500 normal-case">
+                            {s.desc}
+                          </p>
+                        </div>
+                      </div>
+                      {/* Animated bottom underline */}
+                      <div className="absolute bottom-0 left-6 right-6 h-px bg-gold/15">
+                        <div className="h-full w-0 bg-gold group-hover:w-full transition-all duration-700 ease-out" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Corner accent */}
+                <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden pointer-events-none opacity-20">
+                  <div className="absolute top-[-25px] right-[-25px] w-12 h-12 rotate-45 border border-gold" />
+                </div>
               </div>
             </div>
           </div>
