@@ -89,9 +89,8 @@ export function SiteHeader() {
                 <div className="p-2">
                   {services.map((s, i) => (
                     <Link
-                      key={s.hash}
-                      to="/services"
-                      hash={s.hash}
+                      key={s.path}
+                      to={s.path}
                       onClick={() => setServicesOpen(false)}
                       className="group block relative p-6 transition-all duration-500 hover:bg-gold/5"
                     >
