@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as FleetIndexRouteImport } from './routes/fleet.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesVipShuttleRouteImport } from './routes/services.vip-shuttle'
+import { Route as ServicesChauffeurServiceRouteImport } from './routes/services.chauffeur-service'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
@@ -72,6 +73,12 @@ const ServicesVipShuttleRoute = ServicesVipShuttleRouteImport.update({
   path: '/vip-shuttle',
   getParentRoute: () => ServicesRoute,
 } as any)
+const ServicesChauffeurServiceRoute =
+  ServicesChauffeurServiceRouteImport.update({
+    id: '/chauffeur-service',
+    path: '/chauffeur-service',
+    getParentRoute: () => ServicesRoute,
+  } as any)
 const FleetVehicleIdRoute = FleetVehicleIdRouteImport.update({
   id: '/fleet/$vehicleId',
   path: '/fleet/$vehicleId',
@@ -93,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
   '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
@@ -106,6 +114,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
   '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin': typeof AdminIndexRoute
   '/fleet': typeof FleetIndexRoute
@@ -121,6 +130,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
   '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/chauffeur-service'
     | '/services/vip-shuttle'
     | '/admin/'
     | '/fleet/'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/chauffeur-service'
     | '/services/vip-shuttle'
     | '/admin'
     | '/fleet'
@@ -164,6 +176,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/chauffeur-service'
     | '/services/vip-shuttle'
     | '/admin/'
     | '/fleet/'
@@ -253,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesVipShuttleRouteImport
       parentRoute: typeof ServicesRoute
     }
+    '/services/chauffeur-service': {
+      id: '/services/chauffeur-service'
+      path: '/chauffeur-service'
+      fullPath: '/services/chauffeur-service'
+      preLoaderRoute: typeof ServicesChauffeurServiceRouteImport
+      parentRoute: typeof ServicesRoute
+    }
     '/fleet/$vehicleId': {
       id: '/fleet/$vehicleId'
       path: '/fleet/$vehicleId'
@@ -283,10 +303,12 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ServicesRouteChildren {
+  ServicesChauffeurServiceRoute: typeof ServicesChauffeurServiceRoute
   ServicesVipShuttleRoute: typeof ServicesVipShuttleRoute
 }
 
 const ServicesRouteChildren: ServicesRouteChildren = {
+  ServicesChauffeurServiceRoute: ServicesChauffeurServiceRoute,
   ServicesVipShuttleRoute: ServicesVipShuttleRoute,
 }
 
