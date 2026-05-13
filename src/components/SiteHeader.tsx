@@ -187,9 +187,8 @@ export function SiteHeader() {
                   </Link>
                   {services.map((s) => (
                     <Link
-                      key={s.hash}
-                      to="/services"
-                      hash={s.hash}
+                      key={s.path}
+                      to={s.path}
                       onClick={() => setOpen(false)}
                       className="text-xs tracking-[0.28em] uppercase text-cream/70 hover:text-gold"
                     >
