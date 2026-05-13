@@ -43,9 +43,10 @@ export const translations = {
         body: "Flexible Langzeitmietlösungen für Unternehmen, Geschäftsführer, Projektteams und Firmenflotten — individuell planbar und zuverlässig betreut.",
       },
       enquire: "Anfrage stellen",
-      formEyebrow: "Anfrage",
-      formTitle: "Service",
-      formItalic: "anfragen",
+      formEyebrow: "Kontakt",
+      formTitle: "Kontaktieren Sie",
+      formItalic: "uns",
+      contactSubline: "Wir melden uns innerhalb weniger Stunden persönlich bei Ihnen.",
       form: {
         name: "Name",
         company: "Unternehmen (optional)",
