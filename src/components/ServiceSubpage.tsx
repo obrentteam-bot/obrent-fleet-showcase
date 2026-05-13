@@ -184,13 +184,13 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             {props.leistungen.cards.map(({ Icon, label }) => (
               <article
                 key={label.en}
-                className="group border border-border/60 bg-[#1A1A1A] p-8 lg:p-10 transition-all duration-500 hover:border-gold/60 hover:translate-y-[-2px]"
+                className="group border border-border/60 bg-card p-8 lg:p-10 transition-all duration-500 hover:border-gold/60 hover:translate-y-[-2px]"
               >
                 <Icon
                   className="w-8 h-8 text-gold mb-8 transition-transform duration-500 group-hover:scale-110"
                   strokeWidth={1.25}
                 />
-                <h3 className="font-display text-xl md:text-2xl text-cream leading-tight">
+                <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight">
                   {label[lang]}
                 </h3>
               </article>
