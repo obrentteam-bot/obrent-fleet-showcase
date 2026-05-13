@@ -83,8 +83,9 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-border">
+            <div className="pt-4 border-t border-border flex items-center gap-6">
               <LanguageSwitcher />
+              <ThemeToggle />
             </div>
           </nav>
         </div>
