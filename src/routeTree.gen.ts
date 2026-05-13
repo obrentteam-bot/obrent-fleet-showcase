@@ -20,6 +20,7 @@ import { Route as FleetIndexRouteImport } from './routes/fleet.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesVipShuttleRouteImport } from './routes/services.vip-shuttle'
 import { Route as ServicesChauffeurServiceRouteImport } from './routes/services.chauffeur-service'
+import { Route as ServicesBusinessLangzeitmieteRouteImport } from './routes/services.business-langzeitmiete'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
@@ -79,6 +80,12 @@ const ServicesChauffeurServiceRoute =
     path: '/chauffeur-service',
     getParentRoute: () => ServicesRoute,
   } as any)
+const ServicesBusinessLangzeitmieteRoute =
+  ServicesBusinessLangzeitmieteRouteImport.update({
+    id: '/business-langzeitmiete',
+    path: '/business-langzeitmiete',
+    getParentRoute: () => ServicesRoute,
+  } as any)
 const FleetVehicleIdRoute = FleetVehicleIdRouteImport.update({
   id: '/fleet/$vehicleId',
   path: '/fleet/$vehicleId',
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/business-langzeitmiete': typeof ServicesBusinessLangzeitmieteRoute
   '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
   '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
@@ -114,6 +122,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/business-langzeitmiete': typeof ServicesBusinessLangzeitmieteRoute
   '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
   '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin': typeof AdminIndexRoute
@@ -130,6 +139,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/business-langzeitmiete': typeof ServicesBusinessLangzeitmieteRoute
   '/services/chauffeur-service': typeof ServicesChauffeurServiceRoute
   '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/business-langzeitmiete'
     | '/services/chauffeur-service'
     | '/services/vip-shuttle'
     | '/admin/'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/business-langzeitmiete'
     | '/services/chauffeur-service'
     | '/services/vip-shuttle'
     | '/admin'
@@ -176,6 +188,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/business-langzeitmiete'
     | '/services/chauffeur-service'
     | '/services/vip-shuttle'
     | '/admin/'
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesChauffeurServiceRouteImport
       parentRoute: typeof ServicesRoute
     }
+    '/services/business-langzeitmiete': {
+      id: '/services/business-langzeitmiete'
+      path: '/business-langzeitmiete'
+      fullPath: '/services/business-langzeitmiete'
+      preLoaderRoute: typeof ServicesBusinessLangzeitmieteRouteImport
+      parentRoute: typeof ServicesRoute
+    }
     '/fleet/$vehicleId': {
       id: '/fleet/$vehicleId'
       path: '/fleet/$vehicleId'
@@ -303,11 +323,13 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ServicesRouteChildren {
+  ServicesBusinessLangzeitmieteRoute: typeof ServicesBusinessLangzeitmieteRoute
   ServicesChauffeurServiceRoute: typeof ServicesChauffeurServiceRoute
   ServicesVipShuttleRoute: typeof ServicesVipShuttleRoute
 }
 
 const ServicesRouteChildren: ServicesRouteChildren = {
+  ServicesBusinessLangzeitmieteRoute: ServicesBusinessLangzeitmieteRoute,
   ServicesChauffeurServiceRoute: ServicesChauffeurServiceRoute,
   ServicesVipShuttleRoute: ServicesVipShuttleRoute,
 }
