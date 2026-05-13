@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { useState, ReactNode } from "react";
+import { useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
-import { ChevronRight, ArrowLeft, Clock, ShieldCheck, Sparkles } from "lucide-react";
+import { ChevronRight, ArrowLeft, ArrowDown } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -11,59 +12,82 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type Bilingual = { de: string; en: string };
+
 type SelectFieldDef = {
   type: "select";
   key: string;
-  label: { de: string; en: string };
-  placeholder: { de: string; en: string };
-  colSpan?: 1 | 2;
-  options: { value: string; label: { de: string; en: string } }[];
-};
-
-type TextFieldDef = {
-  type: "text" | "tel" | "email" | "number" | "datetime-local" | "date" | "textarea";
-  key: string;
-  label: { de: string; en: string };
+  label: Bilingual;
+  placeholder: Bilingual;
   required?: boolean;
   colSpan?: 1 | 2;
-  placeholder?: { de: string; en: string };
+  options: { value: string; label: Bilingual }[];
 };
 
-export type FieldDef = TextFieldDef | SelectFieldDef;
+type InputFieldDef = {
+  type: "text" | "tel" | "email" | "number" | "date" | "time" | "datetime-local" | "textarea";
+  key: string;
+  label: Bilingual;
+  required?: boolean;
+  colSpan?: 1 | 2;
+  placeholder?: Bilingual;
+};
+
+export type FieldDef = SelectFieldDef | InputFieldDef;
+
+export type ServiceCardDef = {
+  Icon: LucideIcon;
+  label: Bilingual;
+};
+
+export type WhyCardDef = {
+  Icon: LucideIcon;
+  title: Bilingual;
+  body: Bilingual;
+};
 
 export type ServiceSubpageProps = {
-  serviceKey: "vip-shuttle" | "chauffeur-service" | "business-langzeitmiete";
+  serviceTitleEn: string; // e.g. "VIP Shuttle" — stored in Supabase booking message
   bgImage: string;
-  copy: {
-    de: SubpageCopy;
-    en: SubpageCopy;
+  hero: {
+    eyebrow: Bilingual;
+    headline: Bilingual;
+    subline: Bilingual;
+    cta: Bilingual;
   };
-  fields: FieldDef[];
-  submitLabel: { de: string; en: string };
+  leistungen: {
+    title: Bilingual;
+    cards: ServiceCardDef[];
+  };
+  why: {
+    title: Bilingual;
+    cards: WhyCardDef[];
+  };
+  form: {
+    title: Bilingual;
+    submit: Bilingual;
+    fields: FieldDef[];
+  };
 };
 
-type SubpageCopy = {
-  crumb: string;
-  title: string;
-  subline: string;
-  whatTitle: string;
-  whatItems: string[];
-  whyTagline: string;
-  whyCards: { title: string; body: string }[];
-  formEyebrow: string;
-  formTitle: string;
-  formItalic: string;
-  formLead: string;
-  back: string;
-  servicesLabel: string;
-  successMsg: string;
+const PAGE_LABELS = {
+  de: {
+    services: "Services",
+    back: "Zurück zu Services",
+    success: "Vielen Dank — wir melden uns kurzfristig persönlich.",
+    sending: "Senden…",
+  },
+  en: {
+    services: "Services",
+    back: "Back to Services",
+    success: "Thank you — we will personally get back to you shortly.",
+    sending: "Sending…",
+  },
 };
 
-const ICONS = [Clock, ShieldCheck, Sparkles];
-
-export function ServiceSubpage({ serviceKey, bgImage, copy, fields, submitLabel }: ServiceSubpageProps) {
+export function ServiceSubpage(props: ServiceSubpageProps) {
   const { lang } = useI18n();
-  const c = copy[lang];
+  const labels = PAGE_LABELS[lang];
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -72,12 +96,17 @@ export function ServiceSubpage({ serviceKey, bgImage, copy, fields, submitLabel 
 
   const setVal = (k: string, v: string) => setValues((p) => ({ ...p, [k]: v }));
 
+  const scrollToForm = () => {
+    const el = document.getElementById("anfrage");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     const today = new Date().toISOString().slice(0, 10);
-    const lines = fields
+    const lines = props.form.fields
       .map((f) => {
         const v = values[f.key];
         if (!v) return null;
@@ -90,10 +119,11 @@ export function ServiceSubpage({ serviceKey, bgImage, copy, fields, submitLabel 
       })
       .filter(Boolean)
       .join("\n");
-    const body = `Service: ${c.title}\n${lines}`;
+    const body = `Service: ${props.serviceTitleEn}\n${lines}`;
     const { error: insErr } = await supabase.from("bookings").insert({
       vehicle_id: null,
-      customer_name: values["name"] || values["contact"] || values["company"] || "—",
+      customer_name:
+        values["name"] || values["contact"] || values["company"] || "—",
       email: values["email"] || "",
       phone: values["phone"] || "",
       start_date: today,
@@ -108,105 +138,144 @@ export function ServiceSubpage({ serviceKey, bgImage, copy, fields, submitLabel 
 
   return (
     <>
-      {/* HERO */}
-      <section className="relative min-h-[80vh] flex items-end pt-40 pb-20 px-6 md:px-12 overflow-hidden">
+      {/* HERO — full screen */}
+      <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-16 px-6 md:px-12 overflow-hidden">
         <div className="absolute inset-0">
-          <img src={bgImage} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-onyx/80 via-onyx/70 to-onyx" />
+          <img
+            src={props.bgImage}
+            alt=""
+            className="w-full h-full object-cover"
+            width={1920}
+            height={1280}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-onyx/85 via-onyx/60 to-onyx" />
         </div>
-        <div className="relative max-w-[1100px] mx-auto w-full">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 mb-8 text-[0.7rem] tracking-[0.25em] uppercase">
-            <Link to="/services" className="text-gold/70 hover:text-gold transition-colors">
-              {c.servicesLabel}
+
+        {/* Breadcrumb */}
+        <div className="relative max-w-[1280px] mx-auto w-full">
+          <div className="flex items-center gap-2 mb-12 text-[0.65rem] tracking-[0.3em] uppercase">
+            <Link
+              to="/services"
+              className="text-gold/70 hover:text-gold transition-colors"
+            >
+              {labels.services}
             </Link>
             <ChevronRight className="w-3 h-3 text-gold/50" />
-            <span className="text-gold">{c.crumb}</span>
+            <span className="text-gold">{props.hero.eyebrow[lang]}</span>
           </div>
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-cream leading-[0.95]">
-            {c.title}
+        </div>
+
+        <div className="relative max-w-[1280px] mx-auto w-full">
+          <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-8">
+            {props.hero.eyebrow[lang]}
+          </div>
+          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-cream leading-[0.95] max-w-4xl">
+            {props.hero.headline[lang]}
           </h1>
-          <p className="mt-8 text-lg text-cream/70 font-light max-w-2xl leading-relaxed">
-            {c.subline}
+          <p className="mt-8 text-base md:text-lg text-cream/70 font-light max-w-2xl leading-relaxed">
+            {props.hero.subline[lang]}
           </p>
-          <div className="mt-12 h-px w-24 bg-gold/60" />
+          <div className="mt-12 flex items-center gap-6">
+            <button onClick={scrollToForm} className="btn-gold">
+              {props.hero.cta[lang]}
+            </button>
+            <ArrowDown className="w-4 h-4 text-gold/60 animate-bounce" />
+          </div>
         </div>
       </section>
 
-      {/* WHAT IS INCLUDED */}
-      <section className="py-24 px-6 md:px-12">
-        <div className="max-w-[900px] mx-auto">
-          <h2 className="font-display text-3xl md:text-5xl text-foreground leading-tight mb-12">
-            {c.whatTitle}
-          </h2>
-          <ul className="space-y-5">
-            {c.whatItems.map((item) => (
-              <li key={item} className="flex items-start gap-5 group">
-                <span className="mt-3 h-px w-8 bg-gold flex-shrink-0 transition-all duration-500 group-hover:w-14" />
-                <span className="text-foreground/80 text-lg font-light">{item}</span>
-              </li>
+      {/* LEISTUNGEN */}
+      <section className="py-24 md:py-32 px-6 md:px-12">
+        <div className="max-w-[1280px] mx-auto">
+          <div className="flex items-end justify-between mb-16 flex-wrap gap-6">
+            <h2 className="font-display text-4xl md:text-5xl text-foreground leading-tight">
+              {props.leistungen.title[lang]}
+            </h2>
+            <span className="h-px w-24 bg-gold/60" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {props.leistungen.cards.map(({ Icon, label }) => (
+              <article
+                key={label.en}
+                className="group border border-border/60 bg-[#1A1A1A] p-8 lg:p-10 transition-all duration-500 hover:border-gold/60 hover:translate-y-[-2px]"
+              >
+                <Icon
+                  className="w-8 h-8 text-gold mb-8 transition-transform duration-500 group-hover:scale-110"
+                  strokeWidth={1.25}
+                />
+                <h3 className="font-display text-xl md:text-2xl text-cream leading-tight">
+                  {label[lang]}
+                </h3>
+              </article>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
       {/* WHY OBRENT */}
-      <section className="py-24 px-6 md:px-12 bg-onyx/40 border-y border-border/40">
-        <div className="max-w-[1100px] mx-auto">
-          <p className="font-display italic text-2xl md:text-3xl text-gold/90 text-center mb-16 tracking-wide">
-            {c.whyTagline}
-          </p>
+      <section className="py-24 md:py-32 px-6 md:px-12 bg-onyx/40 border-y border-border/40">
+        <div className="max-w-[1280px] mx-auto">
+          <div className="text-center mb-16">
+            <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold/80 mb-6">
+              {lang === "de" ? "Warum OBRENT" : "Why OBRENT"}
+            </div>
+            <h2 className="font-display text-3xl md:text-5xl text-cream leading-tight max-w-3xl mx-auto">
+              {props.why.title[lang]}
+            </h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {c.whyCards.map((card, i) => {
-              const Icon = ICONS[i % ICONS.length];
-              return (
-                <article
-                  key={card.title}
-                  className="border border-border/60 bg-[#1A1A1A] p-8 lg:p-10 transition-all duration-500 hover:border-gold/60"
-                >
-                  <Icon className="w-8 h-8 text-gold mb-6" strokeWidth={1.25} />
-                  <h3 className="font-display text-xl text-cream leading-tight mb-3">
-                    {card.title}
-                  </h3>
-                  <p className="text-cream/60 text-sm leading-relaxed font-light">{card.body}</p>
-                </article>
-              );
-            })}
+            {props.why.cards.map(({ Icon, title, body }) => (
+              <article
+                key={title.en}
+                className="border border-border/60 bg-[#141414] p-10 transition-all duration-500 hover:border-gold/60"
+              >
+                <Icon className="w-8 h-8 text-gold mb-6" strokeWidth={1.25} />
+                <h3 className="font-display text-2xl text-cream leading-tight mb-3">
+                  {title[lang]}
+                </h3>
+                <p className="text-cream/60 text-sm leading-relaxed font-light">
+                  {body[lang]}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       {/* FORM */}
-      <section className="py-24 px-6 md:px-12">
+      <section id="anfrage" className="py-24 md:py-32 px-6 md:px-12 scroll-mt-32">
         <div className="max-w-[900px] mx-auto">
           <div className="flex justify-center mb-16">
             <span className="h-px w-32 bg-gold/60" />
           </div>
           <div className="text-center mb-14">
-            <div className="text-[0.7rem] tracking-[0.28em] uppercase text-gold/80 mb-6">
-              {c.formEyebrow}
-            </div>
-            <h2 className="font-display text-4xl md:text-6xl text-foreground leading-[0.95] mb-6">
-              {c.formTitle}{" "}
-              <span className="italic text-gold/90 font-light">{c.formItalic}</span>
+            <h2 className="font-display text-4xl md:text-6xl text-foreground leading-[0.95]">
+              {props.form.title[lang]}
             </h2>
-            <p className="text-foreground/60 font-light max-w-xl mx-auto">{c.formLead}</p>
           </div>
 
           {submitted ? (
             <div className="py-16 border border-gold/30 bg-onyx/40 text-center">
-              <div className="text-[0.7rem] tracking-[0.28em] uppercase text-gold mb-4">✓</div>
-              <p className="text-foreground/80">{c.successMsg}</p>
+              <div className="text-[0.7rem] tracking-[0.28em] uppercase text-gold mb-4">
+                ✓
+              </div>
+              <p className="text-foreground/80">{labels.success}</p>
             </div>
           ) : (
-            <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-              {fields.map((f) => {
+            <form
+              onSubmit={onSubmit}
+              className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
+            >
+              {props.form.fields.map((f) => {
                 const span = f.colSpan === 2 ? "md:col-span-2" : "";
                 if (f.type === "select") {
                   return (
                     <div key={f.key} className={span}>
                       <label className="lux-label">{f.label[lang]}</label>
-                      <Select value={values[f.key] || ""} onValueChange={(v) => setVal(f.key, v)}>
+                      <Select
+                        value={values[f.key] || ""}
+                        onValueChange={(v) => setVal(f.key, v)}
+                      >
                         <SelectTrigger className="lux-input h-auto">
                           <SelectValue placeholder={f.placeholder[lang]} />
                         </SelectTrigger>
@@ -248,35 +317,32 @@ export function ServiceSubpage({ serviceKey, bgImage, copy, fields, submitLabel 
                   </div>
                 );
               })}
-              {error && <div className="md:col-span-2 text-sm text-red-400/90">{error}</div>}
+              {error && (
+                <div className="md:col-span-2 text-sm text-red-400/90">{error}</div>
+              )}
               <div className="md:col-span-2 pt-4">
                 <button
                   type="submit"
                   disabled={submitting}
                   className="btn-gold w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  {submitting ? "…" : submitLabel[lang]}
+                  {submitting ? labels.sending : props.form.submit[lang]}
                 </button>
               </div>
             </form>
           )}
 
-          {/* Back link */}
           <div className="mt-20 text-center">
             <Link
               to="/services"
               className="inline-flex items-center gap-2 text-[0.7rem] tracking-[0.28em] uppercase text-gold/70 hover:text-gold transition-colors"
             >
               <ArrowLeft className="w-3 h-3" />
-              {c.back}
+              {labels.back}
             </Link>
           </div>
         </div>
       </section>
     </>
   );
-}
-
-export function SubpageMeta({ children }: { children?: ReactNode }) {
-  return <>{children}</>;
 }

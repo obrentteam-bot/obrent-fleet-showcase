@@ -1,13 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceSubpage, type FieldDef } from "@/components/ServiceSubpage";
-import bg from "@/assets/hero-fleet.jpg";
+import {
+  Briefcase,
+  Plane,
+  Calendar,
+  Car,
+  Users,
+  Clock,
+  Award,
+  Zap,
+  Gem,
+} from "lucide-react";
+import bg from "@/assets/services-chauffeur.jpg";
 
 export const Route = createFileRoute("/services/chauffeur-service")({
   head: () => ({
     meta: [
       { title: "Chauffeur Service — OBRENT" },
-      { name: "description", content: "Professionelle Chauffeure begleiten Sie sicher und stilvoll an Ihr Ziel." },
+      {
+        name: "description",
+        content:
+          "Professionelle Chauffeure für Business, Events und private Fahrten — diskret und stilvoll.",
+      },
     ],
   }),
   component: ChauffeurServicePage,
@@ -17,9 +32,14 @@ const fields: FieldDef[] = [
   { type: "text", key: "name", label: { de: "Name", en: "Name" }, required: true },
   { type: "tel", key: "phone", label: { de: "Telefon", en: "Phone" }, required: true },
   { type: "email", key: "email", label: { de: "E-Mail", en: "Email" }, required: true, colSpan: 2 },
-  { type: "datetime-local", key: "startAt", label: { de: "Datum & Uhrzeit", en: "Date & time" } },
-  { type: "text", key: "duration", label: { de: "Dauer des Einsatzes", en: "Duration" }, placeholder: { de: "z.B. 4 Stunden", en: "e.g. 4 hours" } },
-  { type: "text", key: "route", label: { de: "Einsatzort / Route", en: "Location / Route" }, colSpan: 2 },
+  { type: "date", key: "date", label: { de: "Datum", en: "Date" } },
+  { type: "time", key: "time", label: { de: "Uhrzeit", en: "Time" } },
+  {
+    type: "text",
+    key: "route",
+    label: { de: "Einsatzort / Route", en: "Location / Route" },
+    colSpan: 2,
+  },
   {
     type: "select",
     key: "vehicle",
@@ -28,11 +48,19 @@ const fields: FieldDef[] = [
     placeholder: { de: "Bitte wählen", en: "Please select" },
     options: [
       { value: "porsche-cayenne", label: { de: "Porsche Cayenne", en: "Porsche Cayenne" } },
-      { value: "bmw-x5", label: { de: "BMW X5", en: "BMW X5" } },
-      { value: "audi-rs6", label: { de: "Audi RS6", en: "Audi RS6" } },
-      { value: "mercedes-s", label: { de: "Mercedes S-Klasse", en: "Mercedes S-Class" } },
-      { value: "other", label: { de: "Andere / nach Absprache", en: "Other / on request" } },
+      { value: "porsche-panamera", label: { de: "Porsche Panamera", en: "Porsche Panamera" } },
+      { value: "bmw-x5-m60i", label: { de: "BMW X5 M60i", en: "BMW X5 M60i" } },
+      { value: "bmw-x5-m50d", label: { de: "BMW X5 M50d", en: "BMW X5 M50d" } },
+      { value: "bmw-x4-m40i", label: { de: "BMW X4 M40i", en: "BMW X4 M40i" } },
+      { value: "audi-rs6-avant", label: { de: "Audi RS6 Avant", en: "Audi RS6 Avant" } },
     ],
+  },
+  {
+    type: "text",
+    key: "duration",
+    label: { de: "Ungefähre Dauer", en: "Approx. duration" },
+    placeholder: { de: "z.B. 4 Stunden", en: "e.g. 4 hours" },
+    colSpan: 2,
   },
   { type: "textarea", key: "message", label: { de: "Nachricht", en: "Message" }, colSpan: 2 },
 ];
@@ -41,51 +69,67 @@ function ChauffeurServicePage() {
   return (
     <SiteLayout>
       <ServiceSubpage
-        serviceKey="chauffeur-service"
+        serviceTitleEn="Chauffeur Service"
         bgImage={bg}
-        fields={fields}
-        submitLabel={{ de: "Chauffeur anfragen", en: "Request chauffeur" }}
-        copy={{
-          de: {
-            crumb: "Chauffeur Service",
-            servicesLabel: "Services",
-            title: "Chauffeur Service",
-            subline: "Professionelle Chauffeure begleiten Sie sicher und stilvoll an Ihr Ziel.",
-            whatTitle: "Einsatzbereiche",
-            whatItems: ["Private Fahrten", "Business-Termine", "Veranstaltungen", "Flughafentransfers", "Individuelle Einsätze"],
-            whyTagline: "Professionell. Zuverlässig. Diskret.",
-            whyCards: [
-              { title: "Professionell", body: "Erfahrene Chauffeure mit Sinn für Etikette, Sprache und Service." },
-              { title: "Zuverlässig", body: "Pünktlich, vorbereitet und durchdacht — auch bei kurzfristigen Änderungen." },
-              { title: "Diskret", body: "Vertrauliche Gespräche bleiben im Fahrzeug. Was Sie sagen, bleibt bei Ihnen." },
-            ],
-            formEyebrow: "Anfrage",
-            formTitle: "Chauffeur",
-            formItalic: "anfragen",
-            formLead: "Wir melden uns innerhalb weniger Stunden persönlich bei Ihnen.",
-            successMsg: "Vielen Dank! Ihre Anfrage wurde übermittelt.",
-            back: "Zurück zu Services",
+        hero={{
+          eyebrow: { de: "Chauffeur Service", en: "Chauffeur Service" },
+          headline: {
+            de: "Ihr persönlicher Chauffeur. Wann immer Sie ihn brauchen.",
+            en: "Your personal chauffeur. Whenever you need one.",
           },
-          en: {
-            crumb: "Chauffeur Service",
-            servicesLabel: "Services",
-            title: "Chauffeur Service",
-            subline: "Professional chauffeurs drive you safely and in style to your destination.",
-            whatTitle: "Areas of service",
-            whatItems: ["Private drives", "Business appointments", "Events", "Airport transfers", "Bespoke assignments"],
-            whyTagline: "Professional. Reliable. Discreet.",
-            whyCards: [
-              { title: "Professional", body: "Experienced chauffeurs with a sense for etiquette, language and service." },
-              { title: "Reliable", body: "Punctual, prepared and considered — even when plans change at short notice." },
-              { title: "Discreet", body: "Confidential conversations stay in the car. What you say stays with you." },
-            ],
-            formEyebrow: "Request",
-            formTitle: "Request a",
-            formItalic: "chauffeur",
-            formLead: "We will personally get back to you within a few hours.",
-            successMsg: "Thank you! Your request has been submitted.",
-            back: "Back to Services",
+          subline: {
+            de: "Professionell, zuverlässig und diskret — für Business, Events und private Fahrten.",
+            en: "Professional, reliable and discreet — for business, events and private drives.",
           },
+          cta: { de: "Jetzt anfragen", en: "Request now" },
+        }}
+        leistungen={{
+          title: { de: "Unsere Leistungen", en: "Our services" },
+          cards: [
+            { Icon: Briefcase, label: { de: "Business-Termine", en: "Business appointments" } },
+            { Icon: Plane, label: { de: "Flughafentransfers", en: "Airport transfers" } },
+            { Icon: Calendar, label: { de: "Veranstaltungen", en: "Events" } },
+            { Icon: Car, label: { de: "Private Fahrten", en: "Private drives" } },
+            { Icon: Users, label: { de: "Kundenbetreuung", en: "Client hospitality" } },
+            { Icon: Clock, label: { de: "Tagesbuchungen", en: "Day bookings" } },
+          ],
+        }}
+        why={{
+          title: {
+            de: "Professionell. Flexibel. Stilvoll.",
+            en: "Professional. Flexible. Stylish.",
+          },
+          cards: [
+            {
+              Icon: Award,
+              title: { de: "Professionell", en: "Professional" },
+              body: {
+                de: "Erfahrene, diskrete Fahrer mit Sinn für Etikette, Sprache und Service.",
+                en: "Experienced, discreet drivers with a sense for etiquette, language and service.",
+              },
+            },
+            {
+              Icon: Zap,
+              title: { de: "Flexibel", en: "Flexible" },
+              body: {
+                de: "Kurzfristig buchbar — auch bei Planänderungen bleiben wir an Ihrer Seite.",
+                en: "Available at short notice — we stay by your side even when plans change.",
+              },
+            },
+            {
+              Icon: Gem,
+              title: { de: "Stilvoll", en: "Stylish" },
+              body: {
+                de: "Immer im richtigen Fahrzeug — passend zu Anlass, Auftritt und Erwartung.",
+                en: "Always in the right vehicle — fitting occasion, presence and expectation.",
+              },
+            },
+          ],
+        }}
+        form={{
+          title: { de: "Chauffeur anfragen", en: "Request chauffeur" },
+          submit: { de: "Anfrage senden", en: "Send request" },
+          fields,
         }}
       />
     </SiteLayout>

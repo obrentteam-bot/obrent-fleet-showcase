@@ -1,13 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceSubpage, type FieldDef } from "@/components/ServiceSubpage";
-import bg from "@/assets/hero-fleet.jpg";
+import {
+  Plane,
+  Hotel,
+  Calendar,
+  Briefcase,
+  Sparkles,
+  Route as RouteIcon,
+  Clock,
+  ShieldCheck,
+  Sofa,
+} from "lucide-react";
+import bg from "@/assets/services-vip-shuttle.jpg";
 
 export const Route = createFileRoute("/services/vip-shuttle")({
   head: () => ({
     meta: [
       { title: "VIP Shuttle — OBRENT" },
-      { name: "description", content: "Exklusiver Transfer-Service für höchste Ansprüche und diskretes Reisen." },
+      {
+        name: "description",
+        content:
+          "Diskreter VIP Shuttle für Flughafen, Hotel, Event und Geschäftstermine — pünktlich und komfortabel.",
+      },
     ],
   }),
   component: VipShuttlePage,
@@ -17,10 +32,11 @@ const fields: FieldDef[] = [
   { type: "text", key: "name", label: { de: "Name", en: "Name" }, required: true },
   { type: "tel", key: "phone", label: { de: "Telefon", en: "Phone" }, required: true },
   { type: "email", key: "email", label: { de: "E-Mail", en: "Email" }, required: true, colSpan: 2 },
-  { type: "datetime-local", key: "pickupAt", label: { de: "Abholdatum & Uhrzeit", en: "Pick-up date & time" } },
-  { type: "number", key: "passengers", label: { de: "Anzahl Personen", en: "Number of passengers" } },
+  { type: "date", key: "pickupDate", label: { de: "Abholdatum", en: "Pick-up date" } },
+  { type: "time", key: "pickupTime", label: { de: "Abholzeit", en: "Pick-up time" } },
   { type: "text", key: "pickup", label: { de: "Abholort", en: "Pick-up location" } },
   { type: "text", key: "destination", label: { de: "Zielort", en: "Destination" } },
+  { type: "number", key: "passengers", label: { de: "Anzahl Personen", en: "Number of passengers" }, colSpan: 2 },
   { type: "textarea", key: "message", label: { de: "Nachricht", en: "Message" }, colSpan: 2 },
 ];
 
@@ -28,51 +44,67 @@ function VipShuttlePage() {
   return (
     <SiteLayout>
       <ServiceSubpage
-        serviceKey="vip-shuttle"
+        serviceTitleEn="VIP Shuttle"
         bgImage={bg}
-        fields={fields}
-        submitLabel={{ de: "Shuttle anfragen", en: "Request shuttle" }}
-        copy={{
-          de: {
-            crumb: "VIP Shuttle",
-            servicesLabel: "Services",
-            title: "VIP Shuttle",
-            subline: "Exklusiver Transfer-Service für höchste Ansprüche und diskretes Reisen.",
-            whatTitle: "Was inbegriffen ist",
-            whatItems: ["Flughafentransfers", "Hoteltransfers", "Event-Transfers", "Geschäftsreisen", "Sonderanlässe"],
-            whyTagline: "Pünktlich. Diskret. Komfortabel.",
-            whyCards: [
-              { title: "Pünktlich", body: "Wir planen jede Fahrt mit Puffer. Sie kommen entspannt und planmäßig an." },
-              { title: "Diskret", body: "Vertraulichkeit ist Standard. Geschulte Fahrer, neutrale Fahrzeuge, keine Details nach außen." },
-              { title: "Komfortabel", body: "Premium-Fahrzeuge mit Wasser, Klimakomfort und ruhigem Innenraum." },
-            ],
-            formEyebrow: "Anfrage",
-            formTitle: "Shuttle",
-            formItalic: "anfragen",
-            formLead: "Wir melden uns innerhalb weniger Stunden persönlich bei Ihnen.",
-            successMsg: "Vielen Dank! Ihre Anfrage wurde übermittelt.",
-            back: "Zurück zu Services",
+        hero={{
+          eyebrow: { de: "VIP Shuttle", en: "VIP Shuttle" },
+          headline: {
+            de: "Ankommen wie es Ihnen gebührt.",
+            en: "Arrive the way you deserve.",
           },
-          en: {
-            crumb: "VIP Shuttle",
-            servicesLabel: "Services",
-            title: "VIP Shuttle",
-            subline: "Exclusive transfer service for the highest standards and discreet travel.",
-            whatTitle: "What is included",
-            whatItems: ["Airport transfers", "Hotel transfers", "Event transfers", "Business travel", "Special occasions"],
-            whyTagline: "Punctual. Discreet. Comfortable.",
-            whyCards: [
-              { title: "Punctual", body: "Every ride is planned with buffer time. You arrive relaxed and on schedule." },
-              { title: "Discreet", body: "Confidentiality is standard. Trained drivers, neutral vehicles, nothing leaves the car." },
-              { title: "Comfortable", body: "Premium vehicles with water, climate comfort and a quiet interior." },
-            ],
-            formEyebrow: "Request",
-            formTitle: "Request a",
-            formItalic: "shuttle",
-            formLead: "We will personally get back to you within a few hours.",
-            successMsg: "Thank you! Your request has been submitted.",
-            back: "Back to Services",
+          subline: {
+            de: "Diskret, pünktlich und komfortabel — für Flughäfen, Hotels, Events und Geschäftstermine.",
+            en: "Discreet, punctual and comfortable — for airports, hotels, events and business meetings.",
           },
+          cta: { de: "Jetzt anfragen", en: "Request now" },
+        }}
+        leistungen={{
+          title: { de: "Unsere Leistungen", en: "Our services" },
+          cards: [
+            { Icon: Plane, label: { de: "Flughafentransfer", en: "Airport transfer" } },
+            { Icon: Hotel, label: { de: "Hoteltransfer", en: "Hotel transfer" } },
+            { Icon: Calendar, label: { de: "Event-Transfer", en: "Event transfer" } },
+            { Icon: Briefcase, label: { de: "Geschäftsreisen", en: "Business travel" } },
+            { Icon: Sparkles, label: { de: "Sonderanlässe", en: "Special occasions" } },
+            { Icon: RouteIcon, label: { de: "Fernstrecken", en: "Long-distance" } },
+          ],
+        }}
+        why={{
+          title: {
+            de: "Pünktlich. Diskret. Komfortabel.",
+            en: "Punctual. Discreet. Comfortable.",
+          },
+          cards: [
+            {
+              Icon: Clock,
+              title: { de: "Pünktlich", en: "Punctual" },
+              body: {
+                de: "Wir sind immer zur Stelle — geplant mit Puffer, abgesichert in Echtzeit.",
+                en: "We are always on time — planned with buffer, monitored in real time.",
+              },
+            },
+            {
+              Icon: ShieldCheck,
+              title: { de: "Diskret", en: "Discreet" },
+              body: {
+                de: "Ihre Privatsphäre hat Priorität. Geschulte Fahrer, neutrale Fahrzeuge.",
+                en: "Your privacy has priority. Trained drivers, neutral vehicles.",
+              },
+            },
+            {
+              Icon: Sofa,
+              title: { de: "Komfortabel", en: "Comfortable" },
+              body: {
+                de: "Erstklassige Fahrzeuge, entspanntes Reisen — Wasser, Klima, ruhiger Innenraum.",
+                en: "First-class vehicles for relaxed travel — water, climate, quiet interior.",
+              },
+            },
+          ],
+        }}
+        form={{
+          title: { de: "Shuttle anfragen", en: "Request shuttle" },
+          submit: { de: "Anfrage senden", en: "Send request" },
+          fields,
         }}
       />
     </SiteLayout>
