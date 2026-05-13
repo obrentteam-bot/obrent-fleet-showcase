@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ImpressumRouteImport } from './routes/impressum'
 import { Route as DatenschutzRouteImport } from './routes/datenschutz'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -20,6 +21,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImpressumRoute = ImpressumRouteImport.update({
   id: '/impressum',
   path: '/impressum',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
+  '/services': typeof ServicesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
+  '/services': typeof ServicesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin': typeof AdminIndexRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
+  '/services': typeof ServicesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/datenschutz'
     | '/impressum'
+    | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
     | '/admin/'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/datenschutz'
     | '/impressum'
+    | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
     | '/admin'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/datenschutz'
     | '/impressum'
+    | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
     | '/admin/'
@@ -152,12 +164,20 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DatenschutzRoute: typeof DatenschutzRoute
   ImpressumRoute: typeof ImpressumRoute
+  ServicesRoute: typeof ServicesRoute
   FleetVehicleIdRoute: typeof FleetVehicleIdRoute
   FleetIndexRoute: typeof FleetIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/impressum': {
       id: '/impressum'
       path: '/impressum'
@@ -250,6 +270,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DatenschutzRoute: DatenschutzRoute,
   ImpressumRoute: ImpressumRoute,
+  ServicesRoute: ServicesRoute,
   FleetVehicleIdRoute: FleetVehicleIdRoute,
   FleetIndexRoute: FleetIndexRoute,
 }
