@@ -242,7 +242,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
           </div>
 
           {submitted ? (
-            <div className="py-16 border border-gold/30 bg-onyx/40 text-center">
+            <div className="py-16 border border-gold/30 bg-muted/40 text-center">
               <div className="text-[0.7rem] tracking-[0.28em] uppercase text-gold mb-4">
                 ✓
               </div>
