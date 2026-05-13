@@ -1,9 +1,8 @@
-import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
-import { ChevronRight, ArrowLeft, ArrowDown } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import {
   Select,
   SelectContent,
