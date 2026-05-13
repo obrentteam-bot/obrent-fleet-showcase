@@ -90,9 +90,9 @@ function ServicesPage() {
   };
 
   const serviceCards = [
-    { id: "vip-shuttle", title: s.vip.title, body: s.vip.body, Icon: Plane },
-    { id: "chauffeur-service", title: s.chauffeur.title, body: s.chauffeur.body, Icon: UserCheck },
-    { id: "business-langzeitmiete", title: s.longterm.title, body: s.longterm.body, Icon: Briefcase },
+    { id: "vip-shuttle", path: "/services/vip-shuttle" as const, title: s.vip.title, body: s.vip.body, Icon: Plane },
+    { id: "chauffeur-service", path: "/services/chauffeur-service" as const, title: s.chauffeur.title, body: s.chauffeur.body, Icon: UserCheck },
+    { id: "business-langzeitmiete", path: "/services/business-langzeitmiete" as const, title: s.longterm.title, body: s.longterm.body, Icon: Briefcase },
   ];
 
   return (
