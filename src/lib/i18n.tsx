@@ -351,9 +351,10 @@ export const translations = {
         body: "Flexible long-term rental solutions for companies, executives, project teams and corporate fleets — individually planned and reliably managed.",
       },
       enquire: "Request now",
-      formEyebrow: "Enquiry",
-      formTitle: "Request a",
-      formItalic: "service",
+      formEyebrow: "Contact",
+      formTitle: "Get in",
+      formItalic: "touch",
+      contactSubline: "We will personally get back to you within a few hours.",
       form: {
         name: "Name",
         company: "Company (optional)",
