@@ -47,7 +47,6 @@ function ServicesPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Smooth scroll to hash on mount / hash change
   useEffect(() => {
     const scrollToHash = () => {
       const hash = window.location.hash.replace("#", "");
@@ -59,15 +58,6 @@ function ServicesPage() {
     window.addEventListener("hashchange", scrollToHash);
     return () => window.removeEventListener("hashchange", scrollToHash);
   }, []);
-
-  const scrollToForm = () => {
-    document.getElementById("anfrage")?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const preselect = (val: string) => {
-    setService(val);
-    scrollToForm();
-  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,10 +89,10 @@ function ServicesPage() {
     else setSubmitted(true);
   };
 
-  const serviceSections = [
-    { id: "vip-shuttle", title: s.vip.title, body: s.vip.body, Icon: Plane, value: "vip-shuttle" },
-    { id: "chauffeur-service", title: s.chauffeur.title, body: s.chauffeur.body, Icon: UserCheck, value: "chauffeur-service" },
-    { id: "business-langzeitmiete", title: s.longterm.title, body: s.longterm.body, Icon: Briefcase, value: "business-langzeitmiete" },
+  const serviceCards = [
+    { id: "vip-shuttle", title: s.vip.title, body: s.vip.body, Icon: Plane },
+    { id: "chauffeur-service", title: s.chauffeur.title, body: s.chauffeur.body, Icon: UserCheck },
+    { id: "business-langzeitmiete", title: s.longterm.title, body: s.longterm.body, Icon: Briefcase },
   ];
 
   return (
@@ -125,58 +115,50 @@ function ServicesPage() {
           <p className="mt-8 text-lg text-cream/70 font-light max-w-2xl leading-relaxed">
             {s.heroLead}
           </p>
-          <button onClick={scrollToForm} className="btn-gold mt-10 inline-block">
-            {s.heroCta}
-          </button>
+          <div className="mt-12 h-px w-24 bg-gold/60" />
         </div>
       </section>
 
-      {/* SERVICE SECTIONS */}
+      {/* SERVICE CARDS */}
       <section className="py-24 px-6 md:px-12">
-        <div className="max-w-[1200px] mx-auto space-y-24">
-          {serviceSections.map(({ id, title, body, Icon, value }, i) => (
-            <div
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {serviceCards.map(({ id, title, body, Icon }, i) => (
+            <article
               key={id}
               id={id}
-              className={`grid grid-cols-1 lg:grid-cols-12 gap-12 items-center scroll-mt-32 ${
-                i % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
-              }`}
+              className="group relative scroll-mt-32 border border-border/60 bg-[#1A1A1A] p-10 lg:p-12 transition-all duration-500 hover:border-gold/60"
             >
-              <div className="lg:col-span-5">
-                <div className="aspect-square max-w-[360px] border border-gold/30 bg-onyx/40 flex items-center justify-center">
-                  <Icon className="w-24 h-24 text-gold/80" strokeWidth={1} />
-                </div>
+              <div className="flex items-center gap-3 mb-10">
+                <span className="font-display italic text-gold/70 text-sm">0{i + 1}</span>
+                <span className="h-px w-8 bg-gold/40" />
               </div>
-              <div className="lg:col-span-7">
-                <div className="flex items-center gap-4 mb-6">
-                  <span className="gold-rule" />
-                  <span className="eyebrow">0{i + 1}</span>
-                </div>
-                <h2 className="font-display text-4xl md:text-5xl text-cream leading-tight mb-6">
-                  {title}
-                </h2>
-                <p className="text-cream/70 text-lg leading-relaxed font-light max-w-xl">
-                  {body}
-                </p>
-                <button onClick={() => preselect(value)} className="btn-gold mt-8 inline-block">
-                  {s.enquire}
-                </button>
-              </div>
-            </div>
+              <Icon className="w-10 h-10 text-gold mb-8" strokeWidth={1.25} />
+              <h3 className="font-display text-2xl md:text-3xl text-cream leading-tight mb-5">
+                {title}
+              </h3>
+              <p className="text-cream/60 text-sm leading-relaxed font-light">
+                {body}
+              </p>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* FORM */}
-      <section id="anfrage" className="py-24 px-6 md:px-12 border-t border-border bg-onyx/40 scroll-mt-32">
+      {/* TRANSITION + FORM */}
+      <section id="anfrage" className="py-24 px-6 md:px-12 scroll-mt-32">
         <div className="max-w-[900px] mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <span className="gold-rule" />
-            <span className="eyebrow">{s.formEyebrow}</span>
+          <div className="flex justify-center mb-16">
+            <span className="h-px w-32 bg-gold/60" />
           </div>
-          <h2 className="font-display text-4xl md:text-6xl text-cream leading-[0.95] mb-12">
-            {s.formTitle} <span className="italic text-gold/90 font-light">{s.formItalic}</span>.
-          </h2>
+          <div className="text-center mb-14">
+            <div className="eyebrow text-gold/80 mb-6">{s.formEyebrow}</div>
+            <h2 className="font-display text-4xl md:text-6xl text-cream leading-[0.95] mb-6">
+              {s.formTitle} <span className="italic text-gold/90 font-light">{s.formItalic}</span>
+            </h2>
+            <p className="text-cream/60 font-light max-w-xl mx-auto">
+              {s.contactSubline}
+            </p>
+          </div>
 
           {submitted ? (
             <div className="py-16 border border-gold/30 bg-onyx/40 text-center">
