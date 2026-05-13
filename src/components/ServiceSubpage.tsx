@@ -150,19 +150,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-onyx/85 via-onyx/60 to-onyx" />
         </div>
 
-        {/* Breadcrumb */}
-        <div className="relative max-w-[1280px] mx-auto w-full">
-          <div className="flex items-center gap-2 mb-12 text-[0.65rem] tracking-[0.3em] uppercase">
-            <Link
-              to="/services"
-              className="text-gold/70 hover:text-gold transition-colors"
-            >
-              {labels.services}
-            </Link>
-            <ChevronRight className="w-3 h-3 text-gold/50" />
-            <span className="text-gold">{props.hero.eyebrow[lang]}</span>
-          </div>
-        </div>
+        {/* spacer above hero */}
 
         <div className="relative max-w-[1280px] mx-auto w-full">
           <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-8">
