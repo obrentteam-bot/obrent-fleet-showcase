@@ -16,6 +16,7 @@ type SelectFieldDef = {
   key: string;
   label: { de: string; en: string };
   placeholder: { de: string; en: string };
+  colSpan?: 1 | 2;
   options: { value: string; label: { de: string; en: string } }[];
 };
 
