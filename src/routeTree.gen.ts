@@ -18,6 +18,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FleetIndexRouteImport } from './routes/fleet.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ServicesVipShuttleRouteImport } from './routes/services.vip-shuttle'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
@@ -66,6 +67,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ServicesVipShuttleRoute = ServicesVipShuttleRouteImport.update({
+  id: '/vip-shuttle',
+  path: '/vip-shuttle',
+  getParentRoute: () => ServicesRoute,
+} as any)
 const FleetVehicleIdRoute = FleetVehicleIdRouteImport.update({
   id: '/fleet/$vehicleId',
   path: '/fleet/$vehicleId',
@@ -84,9 +90,10 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
-  '/services': typeof ServicesRoute
+  '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
 }
@@ -96,9 +103,10 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
-  '/services': typeof ServicesRoute
+  '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin': typeof AdminIndexRoute
   '/fleet': typeof FleetIndexRoute
 }
@@ -110,9 +118,10 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
-  '/services': typeof ServicesRoute
+  '/services': typeof ServicesRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
+  '/services/vip-shuttle': typeof ServicesVipShuttleRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
 }
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/vip-shuttle'
     | '/admin/'
     | '/fleet/'
   fileRoutesByTo: FileRoutesByTo
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/vip-shuttle'
     | '/admin'
     | '/fleet'
   id:
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
+    | '/services/vip-shuttle'
     | '/admin/'
     | '/fleet/'
   fileRoutesById: FileRoutesById
@@ -164,7 +176,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DatenschutzRoute: typeof DatenschutzRoute
   ImpressumRoute: typeof ImpressumRoute
-  ServicesRoute: typeof ServicesRoute
+  ServicesRoute: typeof ServicesRouteWithChildren
   FleetVehicleIdRoute: typeof FleetVehicleIdRoute
   FleetIndexRoute: typeof FleetIndexRoute
 }
@@ -234,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/services/vip-shuttle': {
+      id: '/services/vip-shuttle'
+      path: '/vip-shuttle'
+      fullPath: '/services/vip-shuttle'
+      preLoaderRoute: typeof ServicesVipShuttleRouteImport
+      parentRoute: typeof ServicesRoute
+    }
     '/fleet/$vehicleId': {
       id: '/fleet/$vehicleId'
       path: '/fleet/$vehicleId'
@@ -263,6 +282,18 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ServicesRouteChildren {
+  ServicesVipShuttleRoute: typeof ServicesVipShuttleRoute
+}
+
+const ServicesRouteChildren: ServicesRouteChildren = {
+  ServicesVipShuttleRoute: ServicesVipShuttleRoute,
+}
+
+const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
+  ServicesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -270,7 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DatenschutzRoute: DatenschutzRoute,
   ImpressumRoute: ImpressumRoute,
-  ServicesRoute: ServicesRoute,
+  ServicesRoute: ServicesRouteWithChildren,
   FleetVehicleIdRoute: FleetVehicleIdRoute,
   FleetIndexRoute: FleetIndexRoute,
 }
