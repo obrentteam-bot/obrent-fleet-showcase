@@ -22,7 +22,7 @@ function AboutPage() {
   return (
     <SiteLayout>
       {/* CINEMATIC HERO with full-bleed Wasserturm */}
-      <section className="relative min-h-[100svh] w-full overflow-hidden">
+      <section className="dark relative min-h-[100svh] w-full overflow-hidden bg-onyx text-cream">
         {/* Background image */}
         <img
           src={aboutImage}
