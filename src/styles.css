@@ -356,3 +356,9 @@ body {
   60%  { opacity: 0.85; transform: translate(-50%, -50%) scale(1.02); }
   100% { opacity: 0;    transform: translate(-50%, -50%) scale(0.85); }
 }
+
+/* Prevent fixed header from shifting when Radix locks body scroll
+   (Radix adds padding-right to <body> equal to scrollbar width; mirror it on the header). */
+body[data-scroll-locked] header[data-site-header] {
+  padding-right: var(--removed-body-scroll-bar-size, 0px);
+}

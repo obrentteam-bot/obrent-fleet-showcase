@@ -37,6 +37,7 @@ export function SiteHeader() {
 
   return (
     <header
+      data-site-header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? "bg-onyx/85 backdrop-blur-xl border-b border-border"
