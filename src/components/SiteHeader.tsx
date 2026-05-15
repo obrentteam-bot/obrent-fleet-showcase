@@ -14,6 +14,13 @@ export function SiteHeader() {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Routes whose hero sits beneath the transparent header on a dark photo
+  // background. On these routes, force light header text even in light mode
+  // until the user scrolls and the header gains its solid backdrop.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const darkHeroRoutes = ["/", "/about", "/vip-shuttle", "/chauffeur-service", "/business-langzeitmiete"];
+  const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
+
   const services = [
     { path: "/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
     { path: "/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
