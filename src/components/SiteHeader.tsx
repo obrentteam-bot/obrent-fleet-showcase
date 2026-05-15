@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useI18n } from "@/lib/i18n";
@@ -13,6 +13,13 @@ export function SiteHeader() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Routes whose hero sits beneath the transparent header on a dark photo
+  // background. On these routes, force light header text even in light mode
+  // until the user scrolls and the header gains its solid backdrop.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const darkHeroRoutes = ["/", "/about", "/vip-shuttle", "/chauffeur-service", "/business-langzeitmiete"];
+  const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
 
   const services = [
     { path: "/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
@@ -39,6 +46,7 @@ export function SiteHeader() {
   return (
     <header
       data-site-header
+      data-over-dark={overDarkHero ? "true" : undefined}
       className={`${zeroRightClassName} fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? "bg-onyx/85 backdrop-blur-xl border-b border-border"
