@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { adaptVehicle, supabase, type DbVehicle, type UiVehicle } from "./supabase";
+import { adaptVehicle, isSupabaseConfigured, supabase, type DbVehicle, type UiVehicle } from "./supabase";
 
 export function useVehicles() {
   const [vehicles, setVehicles] = useState<UiVehicle[]>([]);
@@ -9,6 +9,12 @@ export function useVehicles() {
   useEffect(() => {
     let mounted = true;
     (async () => {
+      if (!isSupabaseConfigured) {
+        if (!mounted) return;
+        setVehicles([]);
+        setLoading(false);
+        return;
+      }
       const { data, error } = await supabase
         .from("vehicles")
         .select("*")
@@ -35,6 +41,12 @@ export function useVehicle(id: string) {
   useEffect(() => {
     let mounted = true;
     (async () => {
+      if (!isSupabaseConfigured) {
+        if (!mounted) return;
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
       const { data, error } = await supabase.from("vehicles").select("*").eq("id", id).maybeSingle();
       if (!mounted) return;
       if (error || !data) setNotFound(true);
