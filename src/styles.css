@@ -379,3 +379,11 @@ html body[data-scroll-locked][data-scroll-locked] {
 }
 
 /* Header no longer needs compensation — body lock is neutralized above. */
+
+/* When the header sits over a dark hero (regardless of theme), keep its
+   text/icon colors light so they stay legible on the dark photo backdrop. */
+header[data-site-header][data-over-dark="true"] {
+  --cream: oklch(0.93 0.015 80);
+  --gold: oklch(0.68 0.08 80);
+  --gold-soft: oklch(0.78 0.06 80);
+}
