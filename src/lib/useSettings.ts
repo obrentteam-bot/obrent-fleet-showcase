@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "./supabase";
+import { isSupabaseConfigured, supabase } from "./supabase";
 
 export type AppSettings = {
   id?: string;
@@ -22,6 +22,7 @@ let cache: AppSettings | null = null;
 const listeners = new Set<(s: AppSettings) => void>();
 
 async function fetchSettings(): Promise<AppSettings> {
+  if (!isSupabaseConfigured) return DEFAULT_SETTINGS;
   const { data } = await supabase.from("app_settings").select("*").limit(1).maybeSingle();
   if (data) return data as AppSettings;
   return DEFAULT_SETTINGS;
@@ -50,6 +51,7 @@ export function useSettings() {
 }
 
 export async function saveSettings(s: AppSettings) {
+  if (!isSupabaseConfigured) return new Error("Supabase is not configured.");
   const { data: existing } = await supabase.from("app_settings").select("id").limit(1).maybeSingle();
   const payload = {
     company_name: s.company_name,
