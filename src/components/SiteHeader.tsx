@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
@@ -38,7 +39,7 @@ export function SiteHeader() {
   return (
     <header
       data-site-header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`${zeroRightClassName} fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? "bg-onyx/85 backdrop-blur-xl border-b border-border"
           : "bg-transparent"
