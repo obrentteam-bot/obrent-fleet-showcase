@@ -114,8 +114,8 @@
   --ring: oklch(0.62 0.085 80);
 
   /* Brand tokens — invert onyx/cream/jet for light surfaces */
-  --gold: oklch(0.62 0.085 80);              /* keep gold #B8975A */
-  --gold-soft: oklch(0.7 0.07 80);
+  --gold: oklch(0.5 0.095 75);               /* deeper bronze for contrast on light surfaces */
+  --gold-soft: oklch(0.6 0.085 78);
   --cream: oklch(0.18 0.005 80);             /* "cream" now acts as primary text */
   --onyx: oklch(0.94 0.012 85);              /* "onyx" surfaces become warm light #F0EBE3 */
   --jet: oklch(1 0 0);                       /* card surface white */
