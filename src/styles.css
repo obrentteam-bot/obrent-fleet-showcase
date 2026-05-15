@@ -85,9 +85,17 @@
 }
 
 .dark {
-  /* Mirror :root dark defaults */
+  /* Mirror :root dark defaults — also reset brand tokens so any nested
+     element wrapped in `.dark` (e.g. a hero over a dark photo while the
+     site is in light mode) renders with the dark palette. */
   --background: oklch(0.12 0 0);
   --foreground: oklch(0.93 0.015 80);
+  --gold: oklch(0.68 0.08 80);
+  --gold-soft: oklch(0.78 0.06 80);
+  --cream: oklch(0.93 0.015 80);
+  --onyx: oklch(0.12 0 0);
+  --jet: oklch(0.16 0 0);
+  --border: oklch(0.93 0.015 80 / 12%);
 }
 
 .light {
