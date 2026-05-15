@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "./supabase";
+import { isSupabaseConfigured, supabase } from "./supabase";
 import type { Session } from "@supabase/supabase-js";
 
 export function useAuth() {
@@ -9,6 +9,13 @@ export function useAuth() {
 
   useEffect(() => {
     let mounted = true;
+
+    if (!isSupabaseConfigured) {
+      setSession(null);
+      setIsAdmin(false);
+      setLoading(false);
+      return;
+    }
 
     const checkRole = async (s: Session | null) => {
       if (!s) {
