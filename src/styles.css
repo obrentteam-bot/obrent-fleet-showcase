@@ -370,9 +370,4 @@ html body[data-scroll-locked][data-scroll-locked] {
   100% { opacity: 0;    transform: translate(-50%, -50%) scale(0.85); }
 }
 
-/* Prevent visible header jump when Radix locks body scroll. */
-@supports not (scrollbar-gutter: stable) {
-  body[data-scroll-locked] header[data-site-header] {
-    padding-right: var(--removed-body-scroll-bar-size, 0px);
-  }
-}
+/* Header no longer needs compensation — body lock is neutralized above. */
