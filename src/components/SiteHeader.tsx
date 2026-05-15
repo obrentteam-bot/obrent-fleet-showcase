@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useI18n } from "@/lib/i18n";
