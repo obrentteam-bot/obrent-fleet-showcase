@@ -162,17 +162,16 @@ body {
   transition: background-color 400ms ease, color 400ms ease;
 }
 
-@supports (scrollbar-gutter: stable) {
-  html {
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-  }
-
-  body[data-scroll-locked] {
-    padding-right: 0 !important;
-    margin-right: 0 !important;
-    --removed-body-scroll-bar-size: 0px !important;
-  }
+/* Neutralize Radix / react-remove-scroll body lock compensation.
+   Scrollbar is always reserved via `overflow-y: scroll` on <html>, so no
+   shift compensation is needed. Higher specificity + !important to beat
+   the JS-injected stylesheet. */
+html body[data-scroll-locked],
+html body[data-scroll-locked][data-scroll-locked] {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  overflow: visible !important;
+  --removed-body-scroll-bar-size: 0px !important;
 }
 
 @layer base {
@@ -371,9 +370,4 @@ body {
   100% { opacity: 0;    transform: translate(-50%, -50%) scale(0.85); }
 }
 
-/* Prevent visible header jump when Radix locks body scroll. */
-@supports not (scrollbar-gutter: stable) {
-  body[data-scroll-locked] header[data-site-header] {
-    padding-right: var(--removed-body-scroll-bar-size, 0px);
-  }
-}
+/* Header no longer needs compensation — body lock is neutralized above. */
