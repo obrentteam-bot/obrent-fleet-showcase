@@ -1,4 +1,5 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouter } from "@tanstack/react-router";
+import { AppErrorState } from "@/components/AppErrorState";
 import { I18nProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import { SplashScreen } from "@/components/SplashScreen";
@@ -24,6 +25,22 @@ function NotFoundComponent() {
         </div>
       </div>
     </div>
+  );
+}
+
+function RootErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  const router = useRouter();
+
+  console.error(error);
+
+  return (
+    <AppErrorState
+      error={error}
+      onRetry={() => {
+        router.invalidate();
+        reset();
+      }}
+    />
   );
 }
 
@@ -54,6 +71,7 @@ export const Route = createRootRoute({
   }),
   shellComponent: RootShell,
   component: RootComponent,
+  errorComponent: RootErrorComponent,
   notFoundComponent: NotFoundComponent,
 });
 
