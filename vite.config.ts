@@ -20,9 +20,6 @@ export default defineConfig({
     tsConfigPaths(),
     tailwindcss(),
     tanstackStart({
-      server: {
-        entry: "./src/server.ts",
-      },
       spa: {
         enabled: true,
         prerender: {
