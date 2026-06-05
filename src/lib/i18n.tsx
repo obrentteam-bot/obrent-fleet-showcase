@@ -64,7 +64,7 @@ export const translations = {
     common: {
       from: "Ab",
       perDay: "/ Tag",
-      reserve: "Reservieren",
+      reserve: "Anfragen",
       viewAll: "Gesamte Flotte ansehen →",
       filter: "Filter",
       all: "Alle",
@@ -320,7 +320,7 @@ export const translations = {
       services: "Services",
       about: "About",
       contact: "Contact",
-      reserve: "Reserve",
+      reserve: "Enquire",
       concierge: "Admin",
     },
     servicesMenu: {
