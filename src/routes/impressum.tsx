@@ -32,8 +32,8 @@ function ImpressumPage() {
               <h2 className="font-display text-2xl text-cream mb-3">Angaben gemäß § 5 DDG</h2>
               <p>
                 OBRENT GmbH<br />
-                Käferthaler Straße 40<br />
-                68167 Mannheim<br />
+                Industriestraße 60<br />
+                67063 Ludwigshafen am Rhein<br />
                 Deutschland
               </p>
             </div>
@@ -74,8 +74,8 @@ function ImpressumPage() {
               </h2>
               <p>
                 Osman Boyraz<br />
-                Käferthaler Straße 40<br />
-                68167 Mannheim
+                Industriestraße 60<br />
+                67063 Ludwigshafen am Rhein
               </p>
             </div>
 
