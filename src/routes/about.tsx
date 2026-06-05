@@ -72,7 +72,7 @@ function AboutPage() {
           <span>49°29′N</span>
           <span className="h-24 w-px bg-cream/30" />
           <span className="[writing-mode:vertical-rl] rotate-180">
-            Mannheim · Est MMXXVI
+            Ludwigshafen am Rhein · Est MMXXVI
           </span>
           <span className="h-24 w-px bg-cream/30" />
           <span>08°28′E</span>

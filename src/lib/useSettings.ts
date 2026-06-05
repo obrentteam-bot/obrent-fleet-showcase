@@ -12,7 +12,7 @@ export type AppSettings = {
 
 export const DEFAULT_SETTINGS: AppSettings = {
   company_name: "OBRENT",
-  address: "Käferthaler Straße 40, 68167 Mannheim",
+  address: "Industriestraße 60, 67063 Ludwigshafen am Rhein",
   phone: "+49 15569 459633",
   email: "concierge@obrent.com",
   hours: "Mo–So: 24/7 Concierge",
