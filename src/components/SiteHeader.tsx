@@ -2,12 +2,14 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import logo from "@/assets/obrent-logo-header.png";
 
 export function SiteHeader() {
   const { t } = useI18n();
+  const { theme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -15,11 +17,12 @@ export function SiteHeader() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Routes whose hero sits beneath the transparent header on a dark photo
-  // background. On these routes, force light header text even in light mode
-  // until the user scrolls and the header gains its solid backdrop.
+  // background. Only force light header text in dark mode; in light mode
+  // we keep the regular dark text so the navbar stays legible.
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const darkHeroRoutes = ["/", "/about", "/vip-shuttle", "/chauffeur-service", "/business-langzeitmiete"];
-  const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
+  const overDarkHero = theme === "dark" && !scrolled && darkHeroRoutes.includes(pathname);
+
 
   const services = [
     { path: "/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
