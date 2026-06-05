@@ -92,9 +92,9 @@ export function SiteHeader() {
                 servicesOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
               }`}
             >
-              <div className="relative w-[440px] bg-onyx/90 backdrop-blur-2xl border border-gold/30 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden">
+              <div className="relative w-[440px] bg-[#0a0a0a]/95 backdrop-blur-2xl border border-[#B8975A]/30 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden">
                 {/* Top accent edge */}
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-[#B8975A]/60 to-transparent" />
 
                 <div className="p-2">
                   {services.map((s, i) => (
@@ -102,17 +102,17 @@ export function SiteHeader() {
                       key={s.path}
                       to={s.path}
                       onClick={() => setServicesOpen(false)}
-                      className="group block relative p-6 transition-all duration-500 hover:bg-gold/5"
+                      className="group block relative p-6 transition-all duration-500 hover:bg-[#B8975A]/10"
                     >
                       <div className="flex items-start gap-6">
-                        <span className="font-display text-gold text-xl italic opacity-60 group-hover:opacity-100 transition-opacity duration-500 select-none leading-none mt-1">
+                        <span className="font-display text-[#B8975A] text-xl italic opacity-60 group-hover:opacity-100 transition-opacity duration-500 select-none leading-none mt-1">
                           0{i + 1}
                         </span>
                         <div className="flex flex-col gap-1.5">
-                          <h3 className="text-cream text-[0.78rem] font-medium tracking-[0.25em] uppercase transition-all duration-500 group-hover:translate-x-2 group-hover:text-gold">
+                          <h3 className="text-[#F5F0E8] text-[0.78rem] font-medium tracking-[0.25em] uppercase transition-all duration-500 group-hover:translate-x-2 group-hover:text-[#B8975A]">
                             {s.label}
                           </h3>
-                          <p className="text-cream/45 text-[11px] leading-relaxed tracking-wide group-hover:text-cream/70 transition-colors duration-500 normal-case">
+                          <p className="text-[#F5F0E8]/50 text-[11px] leading-relaxed tracking-wide group-hover:text-[#F5F0E8]/75 transition-colors duration-500 normal-case">
                             {s.desc}
                           </p>
                         </div>
