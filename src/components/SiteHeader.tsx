@@ -118,9 +118,10 @@ export function SiteHeader() {
                         </div>
                       </div>
                       {/* Animated bottom underline */}
-                      <div className="absolute bottom-0 left-6 right-6 h-px bg-gold/15">
-                        <div className="h-full w-0 bg-gold group-hover:w-full transition-all duration-700 ease-out" />
+                      <div className="absolute bottom-0 left-6 right-6 h-px bg-[#B8975A]/15">
+                        <div className="h-full w-0 bg-[#B8975A] group-hover:w-full transition-all duration-700 ease-out" />
                       </div>
+
                     </Link>
                   ))}
                 </div>
