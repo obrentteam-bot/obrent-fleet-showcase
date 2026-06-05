@@ -6,10 +6,10 @@ import aboutImage from "@/assets/about-mannheim.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Über uns — OBRENT Mannheim" },
-      { name: "description", content: "OBRENT — Luxus-Autovermietung aus Mannheim. Hochwertige Fahrzeuge zu fairen Preisen, persönlich übergeben." },
-      { property: "og:title", content: "Über uns — OBRENT Mannheim" },
-      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Mannheim. Fair, persönlich, schnell verfügbar." },
+      { title: "Über uns — OBRENT Ludwigshafen am Rhein" },
+      { name: "description", content: "OBRENT — Luxus-Autovermietung aus Ludwigshafen am Rhein. Hochwertige Fahrzeuge zu fairen Preisen, persönlich übergeben." },
+      { property: "og:title", content: "Über uns — OBRENT Ludwigshafen am Rhein" },
+      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Ludwigshafen am Rhein. Fair, persönlich, schnell verfügbar." },
     ],
   }),
   component: AboutPage,

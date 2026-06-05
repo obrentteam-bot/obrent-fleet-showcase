@@ -36,8 +36,8 @@ function DatenschutzPage() {
               <p className="mt-3">
                 OBRENT GmbH<br />
                 vertreten durch den Geschäftsführer Osman Boyraz<br />
-                Käferthaler Straße 40<br />
-                68167 Mannheim<br />
+                Industriestraße 60<br />
+                67063 Ludwigshafen am Rhein<br />
                 Deutschland<br />
                 E-Mail: concierge@obrent.com
               </p>

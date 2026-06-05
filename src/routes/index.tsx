@@ -9,10 +9,10 @@ import heroImage from "@/assets/hero-fleet.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "OBRENT — Luxus Autovermietung Mannheim" },
-      { name: "description", content: "OBRENT vermietet Premium-Fahrzeuge von Porsche, BMW und Audi in Mannheim — fair, schnell verfügbar und persönlich übergeben." },
-      { property: "og:title", content: "OBRENT — Luxus Autovermietung Mannheim" },
-      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Mannheim — Porsche, BMW, Audi." },
+      { title: "OBRENT — Luxus Autovermietung Ludwigshafen am Rhein" },
+      { name: "description", content: "OBRENT vermietet Premium-Fahrzeuge von Porsche, BMW und Audi in Ludwigshafen am Rhein — fair, schnell verfügbar und persönlich übergeben." },
+      { property: "og:title", content: "OBRENT — Luxus Autovermietung Ludwigshafen am Rhein" },
+      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Ludwigshafen am Rhein — Porsche, BMW, Audi." },
     ],
   }),
   component: HomePage,
@@ -115,7 +115,7 @@ function HomePage() {
           <div className="absolute bottom-10 left-6 md:left-12 right-6 md:right-12 flex items-end justify-between text-cream/50">
             <div className="text-xs tracking-[0.3em] uppercase">{t.home.scroll}</div>
             <div className="hidden md:block text-xs tracking-[0.3em] uppercase">
-              Mannheim · Deutschland
+              Ludwigshafen am Rhein · Deutschland
             </div>
           </div>
         </div>
