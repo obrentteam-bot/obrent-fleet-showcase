@@ -60,13 +60,16 @@ function HomePage() {
     const el = scrollerRef.current;
     if (!el) return;
     drag.current = { active: true, startX: e.clientX, startScroll: el.scrollLeft, moved: false };
-    el.setPointerCapture(e.pointerId);
   };
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!drag.current.active || !scrollerRef.current) return;
     const dx = e.clientX - drag.current.startX;
-    if (Math.abs(dx) > 4) drag.current.moved = true;
-    scrollerRef.current.scrollLeft = drag.current.startScroll - dx;
+    if (Math.abs(dx) > 6) {
+      drag.current.moved = true;
+      // Only capture once we know it's a drag, so simple clicks still reach the link
+      try { scrollerRef.current.setPointerCapture(e.pointerId); } catch {}
+      scrollerRef.current.scrollLeft = drag.current.startScroll - dx;
+    }
   };
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     drag.current.active = false;
