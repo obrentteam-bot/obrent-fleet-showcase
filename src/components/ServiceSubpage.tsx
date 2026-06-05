@@ -138,7 +138,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
   return (
     <>
       {/* HERO — full screen */}
-      <section className="dark relative min-h-screen flex flex-col justify-end pt-32 pb-16 px-6 md:px-12 overflow-hidden bg-onyx text-cream">
+      <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-16 px-6 md:px-12 overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={props.bgImage}

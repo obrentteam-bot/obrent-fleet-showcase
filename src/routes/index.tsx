@@ -84,7 +84,7 @@ function HomePage() {
   return (
     <SiteLayout>
       {/* HERO */}
-      <section className="dark relative h-screen min-h-[720px] w-full overflow-hidden bg-onyx text-cream">
+      <section className="relative h-screen min-h-[720px] w-full overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center scale-105"
           style={{ backgroundImage: `url(${heroImage})` }}
