@@ -100,6 +100,8 @@ type ChatMessage = {
   settings?: SettingsRow;
   settingsError?: string;
   capabilityNotice?: { areaLabel: string; message: string };
+  logId?: string | null;
+  logError?: string | null;
   ts: number;
 };
 
