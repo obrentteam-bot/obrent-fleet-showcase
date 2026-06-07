@@ -589,11 +589,55 @@ function AiEditorPage() {
       return;
     }
 
+    // WEBSITE page lookup → use the static content index, never hallucinate.
+    // Triggers when the user mentions a specific page (route or name) AND
+    // either asks to "see" it (read) or to optimize/translate/seo it.
+    const detectedPage = detectPageFromText(text);
+    const isWebsiteRead =
+      detectedPage &&
+      (intent.kind === "read" ||
+        /(zeig|show|anzeig|details|info|content|inhalt|übersicht|uebersicht)/i.test(text));
+
+    if (isWebsiteRead && detectedPage) {
+      const reply: ChatMessage = {
+        id: replyId,
+        role: "assistant",
+        ts: Date.now(),
+        content: `Bereich: Website · Intent: Lesen · Seite: ${detectedPage.route}\nGefunden im Content-Index — keine AI-Halluzination.`,
+        intent: { ...intent, area: "website", kind: "read", target: detectedPage.route },
+        page: detectedPage,
+      };
+      await pushAndLog(
+        reply,
+        {
+          action: "read",
+          status: "info",
+          targetTable: null,
+          error: null,
+          extra: {
+            intent,
+            page_route: detectedPage.route,
+            page_name: detectedPage.name,
+            source: "website_content_index",
+          },
+        },
+        text,
+      );
+      setSending(false);
+      return;
+    }
+
     // All non-read intents → server-side AI proposal generation.
     // The server fn: validates admin, calls Lovable AI, applies capability gate,
     // and logs into ai_editor_logs. No DB writes to vehicles/app_settings.
     try {
-      const result = await callGenerateProposal({ data: { prompt: text } });
+      // If we detected a page, send its serialized context so the AI grounds
+      // its proposal in real content instead of inventing copy.
+      const pageContext = detectedPage ? summarizePageForAi(detectedPage) : undefined;
+      const pageRoute = detectedPage?.route;
+      const result = await callGenerateProposal({
+        data: { prompt: text, pageContext, pageRoute },
+      });
 
       const aiIntent: DetectedIntent = {
         kind: result.intent.kind as IntentKind,
