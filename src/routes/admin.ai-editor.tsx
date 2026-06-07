@@ -811,7 +811,7 @@ function MessageBubble({
   const isUser = msg.role === "user";
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div className={`${msg.vehicles || msg.settings ? "max-w-full w-full" : "max-w-[85%]"} ${isUser ? "items-end" : "items-start"} flex flex-col gap-3`}>
+      <div className={`${msg.vehicles || msg.settings || msg.page ? "max-w-full w-full" : "max-w-[85%]"} ${isUser ? "items-end" : "items-start"} flex flex-col gap-3`}>
         <div
           className={`px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap border ${
             isUser
@@ -827,6 +827,7 @@ function MessageBubble({
 
         {msg.intent && !isUser && <IntentBadge intent={msg.intent} />}
         {msg.capabilityNotice && <CapabilityNotice notice={msg.capabilityNotice} />}
+        {msg.page && <PageCard page={msg.page} />}
         {msg.vehicles && <VehicleTable rows={msg.vehicles} />}
         {msg.settings && <SettingsCard row={msg.settings} />}
 
