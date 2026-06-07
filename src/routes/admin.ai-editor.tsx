@@ -596,19 +596,26 @@ function AiEditorPage() {
     // Triggers when the user mentions a specific page (route or name) AND
     // either asks to "see" it (read) or to optimize/translate/seo it.
     const detectedPage = detectPageFromText(text);
+    const detectedSection: PageSection | undefined = detectedPage
+      ? detectSectionFromText(detectedPage, text)
+      : undefined;
     const isWebsiteRead =
       detectedPage &&
       (intent.kind === "read" ||
-        /(zeig|show|anzeig|details|info|content|inhalt|übersicht|uebersicht)/i.test(text));
+        /(zeig|show|anzeig|details|info|content|inhalt|übersicht|uebersicht|was steht|what content|what.+display)/i.test(text));
 
     if (isWebsiteRead && detectedPage) {
+      const sectionNote = detectedSection
+        ? ` · Section: ${detectedSection.id}`
+        : "";
       const reply: ChatMessage = {
         id: replyId,
         role: "assistant",
         ts: Date.now(),
-        content: `Bereich: Website · Intent: Lesen · Seite: ${detectedPage.route}\nGefunden im Content-Index — keine AI-Halluzination.`,
+        content: `Bereich: Website · Intent: Lesen · Seite: ${detectedPage.route}${sectionNote}\nVollständiger Inhalt aus dem Content-Index — keine AI-Halluzination.`,
         intent: { ...intent, area: "website", kind: "read", target: detectedPage.route },
         page: detectedPage,
+        sectionFocusId: detectedSection?.id,
       };
       await pushAndLog(
         reply,
@@ -621,6 +628,7 @@ function AiEditorPage() {
             intent,
             page_route: detectedPage.route,
             page_name: detectedPage.name,
+            section_focus: detectedSection?.id ?? null,
             source: "website_content_index",
           },
         },
@@ -635,8 +643,12 @@ function AiEditorPage() {
     // and logs into ai_editor_logs. No DB writes to vehicles/app_settings.
     try {
       // If we detected a page, send its serialized context so the AI grounds
-      // its proposal in real content instead of inventing copy.
-      const pageContext = detectedPage ? summarizePageForAi(detectedPage) : undefined;
+      // its proposal in real content instead of inventing copy. If the admin
+      // asked about a specific section (e.g. "hero"), narrow the context to
+      // just that section to keep the prompt sharp.
+      const pageContext = detectedPage
+        ? summarizePageForAi(detectedPage, detectedSection?.id)
+        : undefined;
       const pageRoute = detectedPage?.route;
       const result = await callGenerateProposal({
         data: { prompt: text, pageContext, pageRoute },
