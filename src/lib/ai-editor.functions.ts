@@ -401,7 +401,6 @@ function buildSrvProposalFromAi(raw: RawAiResult): SrvProposal | null {
         },
       };
     case "translate":
-    default:
       return {
         ...base,
         action: "translate",
@@ -411,6 +410,9 @@ function buildSrvProposalFromAi(raw: RawAiResult): SrvProposal | null {
           suggestion: raw.suggestion ?? "(keine Übersetzung generiert)",
         },
       };
+    case "read":
+    default:
+      return null;
   }
 }
 
