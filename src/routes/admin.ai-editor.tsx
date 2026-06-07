@@ -1,7 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
+import { supabase, formatPrice, type DbVehicle } from "@/lib/supabase";
 import logo from "@/assets/obrent-logo.png";
+
+type VehicleRow = Pick<
+  DbVehicle,
+  "id" | "name" | "category" | "price_per_day" | "available" | "description"
+>;
+
 
 export const Route = createFileRoute("/admin/ai-editor")({
   head: () => ({
@@ -42,8 +49,11 @@ type ChatMessage = {
   role: "user" | "assistant";
   content: string;
   proposals?: Proposal[];
+  vehicles?: VehicleRow[];
+  vehiclesError?: string;
   ts: number;
 };
+
 
 const RISK_STYLE: Record<Risk, string> = {
   low: "bg-green-500/10 text-green-400 border-green-500/30",
@@ -128,10 +138,28 @@ function mockReply(tab: TabKey, prompt: string): { content: string; proposals: P
   };
 
   return {
-    content: `Ich habe deinen Wunsch verstanden:\n\n"${prompt}"\n\nHier sind meine Vorschläge für den Bereich ${TABS.find((t) => t.key === tab)?.label}. Du kannst sie einzeln annehmen oder ablehnen.`,
+    content: `Vorschläge für den Bereich ${TABS.find((t) => t.key === tab)?.label} basierend auf:\n\n"${prompt}"`,
     proposals: [make(1), make(2)].map((p, idx) => ({ ...p, id: `${p.id}-${idx}` })),
   };
 }
+
+const LIST_KEYWORDS = [
+  "zeig", "zeige", "liste", "list", "alle", "übersicht", "uebersicht",
+  "anzeigen", "show", "display", "welche", "preise", "preis",
+];
+const OPTIMIZE_KEYWORDS = [
+  "optimier", "verbesser", "vorschlag", "vorschläge", "ändere", "aendere",
+  "anpassen", "formulier", "umschreib", "schreib um", "neuer text",
+  "besseren text", "verfeiner", "kürzen", "kuerzen",
+];
+
+function detectIntent(prompt: string): "list" | "optimize" | "info" {
+  const p = prompt.toLowerCase();
+  if (OPTIMIZE_KEYWORDS.some((k) => p.includes(k))) return "optimize";
+  if (LIST_KEYWORDS.some((k) => p.includes(k))) return "list";
+  return "info";
+}
+
 
 function AiEditorPage() {
   const navigate = useNavigate();
@@ -168,7 +196,7 @@ function AiEditorPage() {
     );
   }
 
-  const send = () => {
+  const send = async () => {
     const text = prompt.trim();
     if (!text || sending) return;
     const userMsg: ChatMessage = { id: `u-${Date.now()}`, role: "user", content: text, ts: Date.now() };
@@ -176,15 +204,65 @@ function AiEditorPage() {
     setPrompt("");
     setSending(true);
 
-    setTimeout(() => {
+    const intent = detectIntent(text);
+    const replyId = `a-${Date.now()}`;
+
+    // Fahrzeuge + list intent → real read-only data from legacy Supabase.
+    if (tab === "fahrzeuge" && intent === "list") {
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("id, name, category, price_per_day, available, description")
+        .order("category", { ascending: true })
+        .order("name", { ascending: true });
+
+      setMessages((m) => [
+        ...m,
+        error
+          ? {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `Konnte die Fahrzeuge nicht laden: ${error.message}`,
+              vehiclesError: error.message,
+            }
+          : {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `Hier ist die aktuelle Fahrzeugliste aus der Datenbank (${data?.length ?? 0} Einträge). Nur-Lese — keine Vorschläge generiert.`,
+              vehicles: (data ?? []) as VehicleRow[],
+            },
+      ]);
+      setSending(false);
+      return;
+    }
+
+    // Mock proposals ONLY when the user explicitly asks for optimization.
+    await new Promise((r) => setTimeout(r, 700));
+    if (intent === "optimize") {
       const { content, proposals } = mockReply(tab, text);
       setMessages((m) => [
         ...m,
-        { id: `a-${Date.now()}`, role: "assistant", content, proposals, ts: Date.now() },
+        { id: replyId, role: "assistant", content, proposals, ts: Date.now() },
       ]);
-      setSending(false);
-    }, 900);
+    } else {
+      const hint =
+        tab === "fahrzeuge"
+          ? 'Frage z. B. "Zeig mir alle Fahrzeuge und Preise" für eine Liste, oder "Optimiere die Beschreibung von …" für Vorschläge.'
+          : "Beschreibe konkret, was optimiert oder geändert werden soll, damit ich Vorschläge generieren kann.";
+      setMessages((m) => [
+        ...m,
+        {
+          id: replyId,
+          role: "assistant",
+          ts: Date.now(),
+          content: `Verstanden. Ich erstelle keine Vorschläge ohne expliziten Optimierungs-Auftrag.\n\n${hint}`,
+        },
+      ]);
+    }
+    setSending(false);
   };
+
 
   const updateProposal = (msgId: string, propId: string, status: ProposalStatus) => {
     setMessages((msgs) =>
@@ -311,7 +389,7 @@ function MessageBubble({
   const isUser = msg.role === "user";
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div className={`max-w-[85%] ${isUser ? "items-end" : "items-start"} flex flex-col gap-3`}>
+      <div className={`${msg.vehicles ? "max-w-full w-full" : "max-w-[85%]"} ${isUser ? "items-end" : "items-start"} flex flex-col gap-3`}>
         <div
           className={`px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap border ${
             isUser
@@ -324,6 +402,9 @@ function MessageBubble({
           </div>
           {msg.content}
         </div>
+
+        {msg.vehicles && <VehicleTable rows={msg.vehicles} />}
+
 
         {msg.proposals?.map((p) => (
           <ProposalCard
@@ -408,6 +489,70 @@ function ProposalCard({
           {status === "applied" ? "✓ Im Mock angewendet" : "✕ Abgelehnt"}
         </div>
       )}
+    </div>
+  );
+}
+
+function VehicleTable({ rows }: { rows: VehicleRow[] }) {
+  if (rows.length === 0) {
+    return (
+      <div className="w-full border border-border bg-jet/60 p-5 text-cream/60 text-sm">
+        Keine Fahrzeuge in der Datenbank.
+      </div>
+    );
+  }
+  return (
+    <div className="w-full border border-border bg-jet/60">
+      <div className="px-5 py-3 border-b border-border flex items-center justify-between">
+        <div className="text-[0.55rem] tracking-[0.3em] uppercase text-gold/70">
+          Fahrzeuge · Nur-Lese · {rows.length}
+        </div>
+        <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/40">
+          Quelle: vehicles (Legacy DB)
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/45 border-b border-border">
+              <th className="text-left font-normal px-4 py-2.5">Name</th>
+              <th className="text-left font-normal px-4 py-2.5">Kategorie</th>
+              <th className="text-right font-normal px-4 py-2.5">Preis / Tag</th>
+              <th className="text-left font-normal px-4 py-2.5">Status</th>
+              <th className="text-left font-normal px-4 py-2.5">Beschreibung</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((v) => (
+              <tr key={v.id} className="border-b border-border/40 last:border-0 align-top">
+                <td className="px-4 py-3 text-cream font-light">{v.name}</td>
+                <td className="px-4 py-3 text-cream/70">{v.category}</td>
+                <td className="px-4 py-3 text-right text-gold font-light tabular-nums">
+                  {formatPrice(Number(v.price_per_day))}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-block text-[0.55rem] tracking-[0.25em] uppercase px-2 py-0.5 border ${
+                      v.available
+                        ? "bg-green-500/10 text-green-400 border-green-500/30"
+                        : "bg-cream/5 text-cream/50 border-cream/20"
+                    }`}
+                  >
+                    {v.available ? "Verfügbar" : "Inaktiv"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-cream/60 font-light max-w-md">
+                  {v.description ? (
+                    <span className="line-clamp-2">{v.description}</span>
+                  ) : (
+                    <span className="text-cream/30">—</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
