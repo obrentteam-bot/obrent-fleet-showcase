@@ -266,7 +266,7 @@ type RawAiResult = {
   notEditable?: boolean;
 };
 
-async function callAi(prompt: string): Promise<{
+async function callAi(prompt: string, pageContext?: string): Promise<{
   raw: RawAiResult | null;
   rawText: string;
   error: string | null;
@@ -275,6 +275,10 @@ async function callAi(prompt: string): Promise<{
   if (!apiKey) {
     return { raw: null, rawText: "", error: "LOVABLE_API_KEY missing" };
   }
+
+  const userContent = pageContext
+    ? `WEBSITE_PAGE_CONTEXT (read-only, do NOT invent content beyond this):\n${pageContext}\n\nADMIN_PROMPT:\n${prompt}`
+    : prompt;
 
   let res: Response;
   try {
@@ -288,7 +292,7 @@ async function callAi(prompt: string): Promise<{
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: prompt },
+          { role: "user", content: userContent },
         ],
         tools: [AI_TOOL],
         tool_choice: {
