@@ -675,6 +675,7 @@ function AiEditorPage() {
         proposals: result.proposal ? [result.proposal as Proposal] : undefined,
         capabilityNotice: result.capabilityNotice ?? undefined,
         page: detectedPage,
+        sectionFocusId: detectedSection?.id,
         logId: result.logId,
         logError: result.logError,
       };
