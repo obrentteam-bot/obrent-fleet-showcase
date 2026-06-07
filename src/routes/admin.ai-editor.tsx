@@ -425,6 +425,8 @@ function AiEditorPage() {
   const navigate = useNavigate();
   const { session, isAdmin, loading } = useAuth();
 
+  const callGenerateProposal = useServerFn(generateProposalFn);
+
   const [prompt, setPrompt] = useState("");
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
