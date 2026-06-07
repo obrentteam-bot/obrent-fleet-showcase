@@ -455,6 +455,38 @@ function AiEditorPage() {
     );
   }
 
+  const pushAndLog = async (
+    reply: ChatMessage,
+    logArgs: {
+      action: string;
+      status: "pending" | "applied" | "rejected" | "info" | "error";
+      targetTable?: string | null;
+      error?: string | null;
+      extra?: Record<string, unknown>;
+    },
+    userPrompt: string,
+  ) => {
+    setMessages((m) => [...m, reply]);
+
+    const adminUserId = session?.user?.id;
+    if (!adminUserId) return;
+
+    const { id: logId, error: logErr } = await logPrompt({
+      adminUserId,
+      action: logArgs.action,
+      prompt: userPrompt,
+      response: reply.content,
+      targetTable: logArgs.targetTable ?? null,
+      status: logArgs.status,
+      error: logArgs.error ?? null,
+      extra: logArgs.extra,
+    });
+
+    setMessages((m) =>
+      m.map((x) => (x.id === reply.id ? { ...x, logId, logError: logErr } : x)),
+    );
+  };
+
   const submit = async (textRaw: string) => {
     const text = textRaw.trim();
     if (!text || sending) return;
@@ -475,26 +507,35 @@ function AiEditorPage() {
         .order("category", { ascending: true })
         .order("name", { ascending: true });
 
-      setMessages((m) => [
-        ...m,
-        error
-          ? {
-              id: replyId,
-              role: "assistant",
-              ts: Date.now(),
-              content: `${header}\nKonnte die Fahrzeuge nicht laden: ${error.message}`,
-              intent,
-              vehiclesError: error.message,
-            }
-          : {
-              id: replyId,
-              role: "assistant",
-              ts: Date.now(),
-              content: `${header}\n${data?.length ?? 0} Einträge geladen (nur Lese-Zugriff).`,
-              intent,
-              vehicles: (data ?? []) as VehicleRow[],
-            },
-      ]);
+      const reply: ChatMessage = error
+        ? {
+            id: replyId,
+            role: "assistant",
+            ts: Date.now(),
+            content: `${header}\nKonnte die Fahrzeuge nicht laden: ${error.message}`,
+            intent,
+            vehiclesError: error.message,
+          }
+        : {
+            id: replyId,
+            role: "assistant",
+            ts: Date.now(),
+            content: `${header}\n${data?.length ?? 0} Einträge geladen (nur Lese-Zugriff).`,
+            intent,
+            vehicles: (data ?? []) as VehicleRow[],
+          };
+
+      await pushAndLog(
+        reply,
+        {
+          action: "read",
+          status: error ? "error" : "info",
+          targetTable: "vehicles",
+          error: error?.message ?? null,
+          extra: { intent, count: data?.length ?? 0 },
+        },
+        text,
+      );
       setSending(false);
       return;
     }
@@ -507,26 +548,35 @@ function AiEditorPage() {
         .limit(1)
         .maybeSingle();
 
-      setMessages((m) => [
-        ...m,
-        error
-          ? {
-              id: replyId,
-              role: "assistant",
-              ts: Date.now(),
-              content: `${header}\nKonnte die Einstellungen nicht laden: ${error.message}`,
-              intent,
-              settingsError: error.message,
-            }
-          : {
-              id: replyId,
-              role: "assistant",
-              ts: Date.now(),
-              content: `${header}\n${data ? "Einstellungen geladen (nur Lese-Zugriff)." : "Keine Einstellungen gefunden."}`,
-              intent,
-              settings: (data ?? undefined) as SettingsRow | undefined,
-            },
-      ]);
+      const reply: ChatMessage = error
+        ? {
+            id: replyId,
+            role: "assistant",
+            ts: Date.now(),
+            content: `${header}\nKonnte die Einstellungen nicht laden: ${error.message}`,
+            intent,
+            settingsError: error.message,
+          }
+        : {
+            id: replyId,
+            role: "assistant",
+            ts: Date.now(),
+            content: `${header}\n${data ? "Einstellungen geladen (nur Lese-Zugriff)." : "Keine Einstellungen gefunden."}`,
+            intent,
+            settings: (data ?? undefined) as SettingsRow | undefined,
+          };
+
+      await pushAndLog(
+        reply,
+        {
+          action: "read",
+          status: error ? "error" : "info",
+          targetTable: "app_settings",
+          error: error?.message ?? null,
+          extra: { intent },
+        },
+        text,
+      );
       setSending(false);
       return;
     }
@@ -534,22 +584,24 @@ function AiEditorPage() {
     await new Promise((r) => setTimeout(r, 500));
 
     if (intent.kind === "unknown") {
-      setMessages((m) => [
-        ...m,
-        {
-          id: replyId,
-          role: "assistant",
-          ts: Date.now(),
-          content:
-            `${header}\nIch konnte keine klare Absicht erkennen.\n\nBeispiele:\n· "Zeig mir alle Fahrzeuge und Preise"\n· "Füge einen Ferrari 812 Superfast hinzu"\n· "Ändere den Audi RS6 auf 499 € pro Tag"\n· "Deaktiviere die Mercedes G-Klasse"\n· "Optimiere die Startseite für SEO"`,
-          intent,
-        },
-      ]);
+      const reply: ChatMessage = {
+        id: replyId,
+        role: "assistant",
+        ts: Date.now(),
+        content:
+          `${header}\nIch konnte keine klare Absicht erkennen.\n\nBeispiele:\n· "Zeig mir alle Fahrzeuge und Preise"\n· "Füge einen Ferrari 812 Superfast hinzu"\n· "Ändere den Audi RS6 auf 499 € pro Tag"\n· "Deaktiviere die Mercedes G-Klasse"\n· "Optimiere die Startseite für SEO"`,
+        intent,
+      };
+      await pushAndLog(
+        reply,
+        { action: "unknown", status: "info", extra: { intent } },
+        text,
+      );
       setSending(false);
       return;
     }
 
-    // Capability gate: consult the central map before proposing anything.
+    // Capability gate
     const capKey = toCapabilityKey(intent.area);
     const actionKind = intentToActionKind(intent.kind);
     const field =
@@ -568,7 +620,6 @@ function AiEditorPage() {
       const reason = check?.reason ?? NOT_EDITABLE_HINT;
       notice = { areaLabel, message: reason };
       extraContent = `\n${reason}`;
-      // Downgrade any proposal to advisory-only.
       if (proposal) proposal = { ...proposal, status: "info", risk: "low" };
     } else if (check.needsConfirmation && proposal) {
       proposal = {
@@ -581,32 +632,56 @@ function AiEditorPage() {
       extraContent = `\nFeld "${field}" ist als kritisch markiert (zusätzliche Bestätigung nötig).`;
     }
 
-    setMessages((m) => [
-      ...m,
+    const reply: ChatMessage = {
+      id: replyId,
+      role: "assistant",
+      ts: Date.now(),
+      content:
+        `${header}\n${proposal ? "Vorschlag erstellt (Mock — wird nicht angewendet)." : "Kein Vorschlag erzeugt."}${extraContent}`,
+      intent,
+      proposals: proposal ? [proposal] : undefined,
+      capabilityNotice: notice,
+    };
+
+    const targetTable =
+      capKey && CAPABILITY_MAP[capKey].source === "database"
+        ? (CAPABILITY_MAP[capKey].table ?? null)
+        : null;
+
+    await pushAndLog(
+      reply,
       {
-        id: replyId,
-        role: "assistant",
-        ts: Date.now(),
-        content:
-          `${header}\n${proposal ? "Vorschlag erstellt (Mock — wird nicht angewendet)." : "Kein Vorschlag erzeugt."}${extraContent}`,
-        intent,
-        proposals: proposal ? [proposal] : undefined,
-        capabilityNotice: notice,
+        action: intent.kind,
+        status: proposal ? proposal.status : "info",
+        targetTable,
+        extra: {
+          intent,
+          capability: check
+            ? { allowed: check.allowed, needsConfirmation: check.needsConfirmation ?? false, reason: check.reason ?? null }
+            : null,
+          proposals: proposal ? [proposal] : [],
+        },
       },
-    ]);
+      text,
+    );
     setSending(false);
   };
 
-
   const updateProposalStatus = (msgId: string, propId: string, status: ProposalStatus) => {
+    let logId: string | null | undefined;
     setMessages((msgs) =>
-      msgs.map((m) =>
-        m.id !== msgId || !m.proposals
-          ? m
-          : { ...m, proposals: m.proposals.map((p) => (p.id === propId ? { ...p, status } : p)) },
-      ),
+      msgs.map((m) => {
+        if (m.id !== msgId || !m.proposals) return m;
+        logId = m.logId;
+        return { ...m, proposals: m.proposals.map((p) => (p.id === propId ? { ...p, status } : p)) };
+      }),
     );
+    if (logId && (status === "applied" || status === "rejected")) {
+      // Fire-and-forget — UI is already updated locally.
+      void updateLogStatus(logId, status);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-onyx text-cream flex flex-col">
