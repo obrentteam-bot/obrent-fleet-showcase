@@ -918,9 +918,14 @@ function CardShell({
         </div>
       ) : (
         <div className="text-[0.6rem] tracking-[0.25em] uppercase text-cream/40 text-right">
-          {p.status === "applied" ? "✓ Im Mock angewendet" : "✕ Abgelehnt"}
+          {p.status === "applied"
+            ? "✓ Im Mock angewendet"
+            : p.status === "rejected"
+            ? "✕ Abgelehnt"
+            : "ℹ Nur Vorschlag — Bereich nicht direkt bearbeitbar"}
         </div>
       ))}
+
     </div>
   );
 }
