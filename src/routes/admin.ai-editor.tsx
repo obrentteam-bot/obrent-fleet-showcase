@@ -1,15 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
 import { supabase, formatPrice, type DbVehicle } from "@/lib/supabase";
 import {
   CAPABILITY_MAP,
-  NOT_EDITABLE_HINT,
-  checkCapability,
   type AreaKey,
   type ActionKind,
 } from "@/lib/ai-editor-capabilities";
 import { logPrompt, updateLogStatus } from "@/lib/ai-editor-log";
+import { generateProposalFn } from "@/lib/ai-editor.functions";
 import logo from "@/assets/obrent-logo.png";
 
 // ---------------------------------------------------------------------------
