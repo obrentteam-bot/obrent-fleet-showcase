@@ -4,10 +4,88 @@ import { useAuth } from "@/lib/useAuth";
 import { supabase, formatPrice, type DbVehicle } from "@/lib/supabase";
 import logo from "@/assets/obrent-logo.png";
 
+// ---------------------------------------------------------------------------
+// Types: Intent / Proposal architecture
+// ---------------------------------------------------------------------------
+
 type VehicleRow = Pick<
   DbVehicle,
   "id" | "name" | "category" | "price_per_day" | "available" | "description"
 >;
+
+export type Area =
+  | "vehicles"
+  | "website"
+  | "settings"
+  | "seo"
+  | "translations"
+  | "unknown";
+
+export type IntentKind =
+  | "read"            // list/show data
+  | "create"          // add new entity
+  | "update"          // modify existing entity (incl. price)
+  | "delete"          // delete / deactivate
+  | "optimize"        // rewrite copy / improve content
+  | "translate"       // localize / translate
+  | "settings_update" // change global settings
+  | "seo_suggestion"  // metadata / search optimization
+  | "unknown";
+
+export type ProposalAction =
+  | "read"
+  | "create"
+  | "update"
+  | "delete"
+  | "optimize"
+  | "translate";
+
+export type ProposalStatus = "pending" | "applied" | "rejected" | "info";
+
+export type Risk = "low" | "medium" | "high";
+
+export type DetectedIntent = {
+  kind: IntentKind;
+  area: Area;
+  action: ProposalAction | "none";
+  confidence: number;        // 0..1
+  target?: string;           // e.g. "Audi RS6"
+  fields?: Record<string, string | number>; // e.g. { price_per_day: 499 }
+  raw: string;
+};
+
+type BaseProposal = {
+  id: string;
+  area: Area;
+  summary: string;
+  target: string;
+  risk: Risk;
+  status: ProposalStatus;
+  rationale?: string;
+};
+
+export type Proposal =
+  | (BaseProposal & { action: "create"; payload: Record<string, string | number | boolean> })
+  | (BaseProposal & { action: "update"; payload: { field: string; from?: string | number; to: string | number } })
+  | (BaseProposal & { action: "delete"; payload: { mode: "delete" | "deactivate" } })
+  | (BaseProposal & { action: "optimize"; payload: { current?: string; suggestion: string } })
+  | (BaseProposal & { action: "translate"; payload: { language: string; key?: string; suggestion: string } })
+  | (BaseProposal & { action: "read"; payload: { resource: string } });
+
+type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  intent?: DetectedIntent;
+  proposals?: Proposal[];
+  vehicles?: VehicleRow[];
+  vehiclesError?: string;
+  ts: number;
+};
+
+// ---------------------------------------------------------------------------
+// Constants / Labels
+// ---------------------------------------------------------------------------
 
 export const Route = createFileRoute("/admin/ai-editor")({
   head: () => ({
@@ -19,28 +97,34 @@ export const Route = createFileRoute("/admin/ai-editor")({
   component: AiEditorPage,
 });
 
-type Risk = "low" | "medium" | "high";
-type ProposalStatus = "pending" | "applied" | "rejected";
-type ProposalType = "copy" | "price" | "metadata" | "translation" | "setting" | "create";
-
-type Proposal = {
-  id: string;
-  summary: string;
-  target: string;
-  type: ProposalType;
-  change: string;
-  risk: Risk;
-  status: ProposalStatus;
+const AREA_LABEL: Record<Area, string> = {
+  vehicles: "Fahrzeuge",
+  website: "Website",
+  settings: "Einstellungen",
+  seo: "SEO",
+  translations: "Übersetzungen",
+  unknown: "Unbekannt",
 };
 
-type ChatMessage = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  proposals?: Proposal[];
-  vehicles?: VehicleRow[];
-  vehiclesError?: string;
-  ts: number;
+const INTENT_LABEL: Record<IntentKind, string> = {
+  read: "Lesen",
+  create: "Anlegen",
+  update: "Aktualisieren",
+  delete: "Löschen / Deaktivieren",
+  optimize: "Optimieren",
+  translate: "Übersetzen",
+  settings_update: "Einstellung ändern",
+  seo_suggestion: "SEO-Vorschlag",
+  unknown: "Unklar",
+};
+
+const ACTION_LABEL: Record<ProposalAction, string> = {
+  read: "Lesen",
+  create: "Anlegen",
+  update: "Aktualisieren",
+  delete: "Löschen",
+  optimize: "Optimieren",
+  translate: "Übersetzen",
 };
 
 const RISK_STYLE: Record<Risk, string> = {
@@ -50,140 +134,237 @@ const RISK_STYLE: Record<Risk, string> = {
 };
 const RISK_LABEL: Record<Risk, string> = { low: "Niedrig", medium: "Mittel", high: "Hoch" };
 
-const TYPE_LABEL: Record<ProposalType, string> = {
-  copy: "Text",
-  price: "Preis",
-  metadata: "Metadaten",
-  translation: "Übersetzung",
-  setting: "Einstellung",
-  create: "Neuanlage",
-};
-
 const STATUS_STYLE: Record<ProposalStatus, string> = {
   pending: "bg-cream/5 text-cream/70 border-cream/20",
   applied: "bg-gold/10 text-gold border-gold/30",
   rejected: "bg-red-500/10 text-red-400 border-red-500/30",
+  info: "bg-cream/5 text-cream/60 border-cream/20",
 };
 const STATUS_LABEL: Record<ProposalStatus, string> = {
   pending: "Vorschlag",
   applied: "Angewendet",
   rejected: "Abgelehnt",
+  info: "Information",
+};
+
+const ACTION_ACCENT: Record<ProposalAction, string> = {
+  read: "border-cream/30",
+  create: "border-green-500/40",
+  update: "border-gold/50",
+  delete: "border-red-500/50",
+  optimize: "border-blue-400/40",
+  translate: "border-purple-400/40",
 };
 
 const SUGGESTIONS: string[] = [
   "Fahrzeuge anzeigen",
   "Preis ändern",
   "Fahrzeug hinzufügen",
+  "Fahrzeug deaktivieren",
   "SEO prüfen",
   "Text optimieren",
   "Einstellungen ändern",
 ];
 
-type Area = "vehicles" | "settings" | "seo" | "translation" | "website";
-type Action = "list" | "add" | "price" | "optimize" | "change" | "info";
+// ---------------------------------------------------------------------------
+// Intent detection
+// ---------------------------------------------------------------------------
 
-const AREA_LABEL: Record<Area, string> = {
-  vehicles: "Fahrzeuge",
-  settings: "Einstellungen",
-  seo: "SEO",
-  translation: "Übersetzungen",
-  website: "Website",
-};
-
-function detect(prompt: string): { area: Area; action: Action } {
-  const p = prompt.toLowerCase();
-
-  // Area
-  let area: Area = "website";
-  if (/(fahrzeug|auto|wagen|modell|audi|bmw|mercedes|ferrari|porsche|lamborghini|rs\d|g-klasse|preis|€|eur)/.test(p)) area = "vehicles";
-  else if (/(seo|meta|description|titel|og:|sitemap|keyword)/.test(p)) area = "seo";
-  else if (/(übersetz|uebersetz|translate|englisch|english|französisch|franzoesisch|i18n|sprache)/.test(p)) area = "translation";
-  else if (/(einstellung|telefon|adresse|öffnungszeit|oeffnungszeit|kontakt|impressum|email|e-mail)/.test(p)) area = "settings";
-  else if (/(startseite|hero|seite|website|landing|sektion|über uns|ueber uns)/.test(p)) area = "website";
-
-  // Action
-  let action: Action = "info";
-  if (/(zeig|liste|alle|übersicht|uebersicht|anzeigen|show|display|welche)/.test(p)) action = "list";
-  else if (/(hinzufüg|hinzufueg|neu anleg|anlegen|erstell|add|füge.*hinzu|fuege.*hinzu)/.test(p)) action = "add";
-  else if (/(preis|€|eur|pro tag|tagespreis)/.test(p) && /(ändere|aendere|setze|update|neuer preis|auf \d)/.test(p)) action = "price";
-  else if (/(optimier|verbesser|vorschlag|umschreib|verfeiner|kürzen|kuerzen|prüf|pruef|check)/.test(p)) action = "optimize";
-  else if (/(ändere|aendere|update|anpassen|setze|change)/.test(p)) action = "change";
-
-  // Heuristic: if user mentions a price assignment, ensure area = vehicles
-  if (action === "price") area = "vehicles";
-
-  return { area, action };
+function detectArea(p: string): Area {
+  if (/(fahrzeug|auto|wagen|modell|audi|bmw|mercedes|ferrari|porsche|lamborghini|rs\d|g-klasse|tagespreis|preis|€|eur)/.test(p)) return "vehicles";
+  if (/(seo|meta|description|titel|og:|sitemap|keyword)/.test(p)) return "seo";
+  if (/(übersetz|uebersetz|translate|englisch|english|französisch|franzoesisch|i18n|sprache)/.test(p)) return "translations";
+  if (/(einstellung|telefon|adresse|öffnungszeit|oeffnungszeit|kontakt|impressum|email|e-mail)/.test(p)) return "settings";
+  if (/(startseite|hero|seite|website|landing|sektion|über uns|ueber uns)/.test(p)) return "website";
+  return "unknown";
 }
 
-function makeProposal(area: Area, action: Action, prompt: string): Proposal {
-  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+function extractPrice(p: string): number | undefined {
+  const m = p.match(/(\d{2,5})\s*(?:€|eur|euro)/i) ?? p.match(/auf\s+(\d{2,5})/i);
+  return m ? Number(m[1]) : undefined;
+}
 
-  if (area === "vehicles" && action === "price") {
-    return {
-      id,
-      summary: "Tagespreis eines Fahrzeugs anpassen",
-      target: "Fahrzeug · (aus Eingabe extrahiert)",
-      type: "price",
-      change: `Auftrag: "${prompt}"\nGeplante Aktion: price_per_day im Eintrag des genannten Fahrzeugs aktualisieren.`,
-      risk: "medium",
-      status: "pending",
-    };
+function extractTarget(p: string): string | undefined {
+  // Best-effort: capture a capitalized model token after keywords or in quotes.
+  const quoted = p.match(/["„»]([^"“«»]{2,60})["“«»]/);
+  if (quoted) return quoted[1].trim();
+  const after = p.match(/(?:fahrzeug|auto|modell|den|die|das|the)\s+([A-Z][\w\- ]{1,40}?)(?:\s+(?:auf|hinzu|löschen|loeschen|deaktivieren|aktualisieren|ändern|aendern|optimieren)|[.,!?]|$)/);
+  if (after) return after[1].trim();
+  // Last resort: longest run of Capitalized words
+  const cap = p.match(/[A-ZÄÖÜ][\wÄÖÜäöüß]+(?:\s+[A-Z0-9][\wÄÖÜäöüß0-9]+){0,4}/);
+  return cap ? cap[0].trim() : undefined;
+}
+
+function detectIntent(raw: string): DetectedIntent {
+  const p = raw.toLowerCase();
+  let area = detectArea(p);
+  let kind: IntentKind = "unknown";
+  let action: ProposalAction | "none" = "none";
+  let confidence = 0.4;
+  const fields: Record<string, string | number> = {};
+
+  const isDelete = /(lösch|loesch|entfern|deaktivier|archivier|delete|remove)/.test(p);
+  const isCreate = /(hinzufüg|hinzufueg|neu anleg|anlegen|erstell|add|füge.*hinzu|fuege.*hinzu|create)/.test(p);
+  const isList = /(zeig|liste|alle|übersicht|uebersicht|anzeigen|show|display|welche|gib mir|list)/.test(p);
+  const isOptimize = /(optimier|verbesser|vorschlag|umschreib|verfeiner|kürzen|kuerzen|prüf|pruef|check|improve)/.test(p);
+  const isTranslate = /(übersetz|uebersetz|translate|englisch|english|französisch|franzoesisch|spanisch)/.test(p);
+  const priceVal = extractPrice(p);
+  const isPriceUpdate = priceVal !== undefined && /(preis|€|eur|euro|pro tag|tagespreis|auf\s+\d)/.test(p);
+  const isGenericUpdate = /(ändere|aendere|update|anpassen|setze|change|aktualisier|umstellen)/.test(p);
+
+  if (isDelete) {
+    kind = "delete"; action = "delete"; confidence = 0.85;
+  } else if (isCreate) {
+    kind = "create"; action = "create"; confidence = 0.8;
+  } else if (isPriceUpdate) {
+    kind = "update"; action = "update"; confidence = 0.9;
+    fields.price_per_day = priceVal!;
+    area = "vehicles";
+  } else if (isTranslate && area !== "vehicles") {
+    kind = "translate"; action = "translate"; confidence = 0.75;
+    area = "translations";
+  } else if (isOptimize && area === "seo") {
+    kind = "seo_suggestion"; action = "optimize"; confidence = 0.8;
+  } else if (isOptimize) {
+    kind = "optimize"; action = "optimize"; confidence = 0.75;
+  } else if (area === "settings" && isGenericUpdate) {
+    kind = "settings_update"; action = "update"; confidence = 0.8;
+  } else if (isGenericUpdate) {
+    kind = "update"; action = "update"; confidence = 0.7;
+  } else if (isList) {
+    kind = "read"; action = "read"; confidence = 0.85;
   }
-  if (area === "vehicles" && action === "add") {
-    return {
-      id,
-      summary: "Neues Fahrzeug anlegen",
-      target: "Tabelle · vehicles",
-      type: "create",
-      change: `Auftrag: "${prompt}"\nGeplante Aktion: Neuer Eintrag in vehicles (Name, Kategorie, Preis, Beschreibung, Bilder fehlen noch).`,
-      risk: "high",
-      status: "pending",
-    };
-  }
-  if (area === "seo") {
-    return {
-      id,
-      summary: "SEO-Metadaten optimieren",
-      target: "SEO · (Seite aus Eingabe ableiten)",
-      type: "metadata",
-      change: `Auftrag: "${prompt}"\nGeplante Aktion: Meta-Title (<60), Description (<160), OG-Tags überarbeiten.`,
-      risk: "low",
-      status: "pending",
-    };
-  }
-  if (area === "translation") {
-    return {
-      id,
-      summary: "Übersetzung ergänzen / anpassen",
-      target: "i18n · (Schlüssel aus Eingabe ableiten)",
-      type: "translation",
-      change: `Auftrag: "${prompt}"\nGeplante Aktion: Sprachvariante (DE/EN/FR) hinzufügen oder korrigieren.`,
-      risk: "low",
-      status: "pending",
-    };
-  }
-  if (area === "settings") {
-    return {
-      id,
-      summary: "Globale Einstellung aktualisieren",
-      target: "Einstellungen · (Feld aus Eingabe ableiten)",
-      type: "setting",
-      change: `Auftrag: "${prompt}"\nGeplante Aktion: Kontakt / Öffnungszeiten / Stammdaten anpassen.`,
-      risk: "medium",
-      status: "pending",
-    };
-  }
-  // website / fallback
+
+  // If user clearly asked for a price update, normalize area.
+  if (kind === "update" && fields.price_per_day !== undefined) area = "vehicles";
+  // Defaults for unknown area on actionable intents:
+  if (kind === "create" && area === "unknown") area = "vehicles";
+
+  const target = extractTarget(raw);
+
   return {
-    id,
-    summary: "Website-Text überarbeiten",
-    target: "Website · (Sektion aus Eingabe ableiten)",
-    type: "copy",
-    change: `Auftrag: "${prompt}"\nGeplante Aktion: Headline / Body-Text klarer und nutzenorientierter formulieren.`,
-    risk: "low",
-    status: "pending",
+    kind,
+    area,
+    action,
+    confidence,
+    target,
+    fields: Object.keys(fields).length ? fields : undefined,
+    raw,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Proposal building (mock — no writes)
+// ---------------------------------------------------------------------------
+
+function newId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function buildProposal(intent: DetectedIntent): Proposal | null {
+  const { kind, area, target, fields, raw } = intent;
+  const base = { id: newId(), area, status: "pending" as ProposalStatus };
+
+  switch (kind) {
+    case "create":
+      return {
+        ...base,
+        action: "create",
+        summary: area === "vehicles" ? `Neues Fahrzeug anlegen${target ? `: ${target}` : ""}` : `Neuen Eintrag anlegen`,
+        target: area === "vehicles" ? `vehicles · ${target ?? "(unbenannt)"}` : `${AREA_LABEL[area]} · (Eintrag)`,
+        risk: "high",
+        payload: { name: target ?? "(unbekannt)", category: "(fehlt)", price_per_day: 0, available: true },
+        rationale: `Aus Eingabe: "${raw}"`,
+      };
+
+    case "update": {
+      if (fields?.price_per_day !== undefined) {
+        return {
+          ...base,
+          action: "update",
+          summary: `Tagespreis aktualisieren${target ? ` für ${target}` : ""}`,
+          target: `vehicles · ${target ?? "(Fahrzeug?)"} · price_per_day`,
+          risk: "medium",
+          payload: { field: "price_per_day", to: fields.price_per_day },
+          rationale: `Aus Eingabe: "${raw}"`,
+        };
+      }
+      return {
+        ...base,
+        action: "update",
+        summary: `Eintrag aktualisieren${target ? `: ${target}` : ""}`,
+        target: `${AREA_LABEL[area]} · ${target ?? "(Ziel?)"}`,
+        risk: "medium",
+        payload: { field: "(unbestimmt)", to: "(unbestimmt)" },
+        rationale: `Aus Eingabe: "${raw}"`,
+      };
+    }
+
+    case "delete":
+      return {
+        ...base,
+        action: "delete",
+        summary: `Eintrag deaktivieren${target ? `: ${target}` : ""}`,
+        target: area === "vehicles" ? `vehicles · ${target ?? "(Fahrzeug?)"}` : `${AREA_LABEL[area]} · ${target ?? "(Ziel?)"}`,
+        risk: "high",
+        payload: { mode: "deactivate" },
+        rationale: `Aus Eingabe: "${raw}"`,
+      };
+
+    case "optimize":
+      return {
+        ...base,
+        action: "optimize",
+        summary: `Text in ${AREA_LABEL[area]} optimieren`,
+        target: `${AREA_LABEL[area]} · ${target ?? "(Sektion?)"}`,
+        risk: "low",
+        payload: { suggestion: "Klarere, nutzenorientierte Formulierung mit aktivem Satzbau." },
+        rationale: `Aus Eingabe: "${raw}"`,
+      };
+
+    case "seo_suggestion":
+      return {
+        ...base,
+        action: "optimize",
+        summary: `SEO-Metadaten überarbeiten`,
+        target: `seo · ${target ?? "(Seite?)"}`,
+        risk: "low",
+        payload: { suggestion: "Title < 60 Zeichen, Description < 160 Zeichen, OG-Bild & Canonical prüfen." },
+        rationale: `Aus Eingabe: "${raw}"`,
+      };
+
+    case "translate":
+      return {
+        ...base,
+        action: "translate",
+        summary: `Übersetzung vorbereiten`,
+        target: `i18n · ${target ?? "(Key?)"}`,
+        risk: "low",
+        payload: { language: "en", suggestion: "(Übersetzung wird generiert, sobald AI angebunden ist.)" },
+        rationale: `Aus Eingabe: "${raw}"`,
+      };
+
+    case "settings_update":
+      return {
+        ...base,
+        action: "update",
+        summary: `Globale Einstellung ändern`,
+        target: `settings · ${target ?? "(Feld?)"}`,
+        risk: "medium",
+        payload: { field: "(unbestimmt)", to: "(unbestimmt)" },
+        rationale: `Aus Eingabe: "${raw}"`,
+      };
+
+    case "read":
+    case "unknown":
+    default:
+      return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 
 function AiEditorPage() {
   const navigate = useNavigate();
@@ -197,7 +378,7 @@ function AiEditorPage() {
       role: "assistant",
       ts: Date.now(),
       content:
-        "Willkommen im AI Editor. Schreib einfach, was du ändern möchtest — z. B. \"Zeig mir alle Fahrzeuge und Preise\", \"Ändere den Audi RS6 auf 499 € pro Tag\" oder \"Optimiere die Startseite für SEO\". Ich erkenne Bereich und Absicht automatisch. (Mock-Modus: keine Änderungen werden gespeichert.)",
+        "Willkommen im AI Editor. Schreib einfach, was du ändern möchtest — z. B. \"Zeig mir alle Fahrzeuge und Preise\", \"Ändere den Audi RS6 auf 499 € pro Tag\", \"Füge einen Ferrari 812 Superfast hinzu\" oder \"Deaktiviere die Mercedes G-Klasse\". Ich erkenne Bereich und Absicht automatisch. (Mock-Modus: keine Änderungen werden gespeichert.)",
     },
   ]);
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -227,11 +408,12 @@ function AiEditorPage() {
     setPrompt("");
     setSending(true);
 
-    const { area, action } = detect(text);
+    const intent = detectIntent(text);
     const replyId = `a-${Date.now()}`;
+    const header = `Bereich: ${AREA_LABEL[intent.area]} · Intent: ${INTENT_LABEL[intent.kind]}${intent.target ? ` · Ziel: ${intent.target}` : ""}`;
 
-    // Real read of vehicles when listing.
-    if (area === "vehicles" && action === "list") {
+    // READ → real legacy Supabase fetch for vehicles
+    if (intent.kind === "read" && intent.area === "vehicles") {
       const { data, error } = await supabase
         .from("vehicles")
         .select("id, name, category, price_per_day, available, description")
@@ -245,14 +427,16 @@ function AiEditorPage() {
               id: replyId,
               role: "assistant",
               ts: Date.now(),
-              content: `Konnte die Fahrzeuge nicht laden: ${error.message}`,
+              content: `${header}\nKonnte die Fahrzeuge nicht laden: ${error.message}`,
+              intent,
               vehiclesError: error.message,
             }
           : {
               id: replyId,
               role: "assistant",
               ts: Date.now(),
-              content: `Bereich erkannt: ${AREA_LABEL[area]} · Aktion: Liste.\nHier sind die aktuellen Fahrzeuge aus der Datenbank (${data?.length ?? 0} Einträge). Nur-Lese — keine Vorschläge.`,
+              content: `${header}\n${data?.length ?? 0} Einträge geladen (nur Lese-Zugriff).`,
+              intent,
               vehicles: (data ?? []) as VehicleRow[],
             },
       ]);
@@ -260,37 +444,40 @@ function AiEditorPage() {
       return;
     }
 
-    await new Promise((r) => setTimeout(r, 600));
+    await new Promise((r) => setTimeout(r, 500));
 
-    if (action === "info") {
+    if (intent.kind === "unknown") {
       setMessages((m) => [
         ...m,
         {
           id: replyId,
           role: "assistant",
           ts: Date.now(),
-          content: `Bereich erkannt: ${AREA_LABEL[area]}. Ich erstelle keinen Vorschlag ohne klare Absicht.\n\nBeispiele:\n· "Zeig mir alle Fahrzeuge und Preise"\n· "Ändere den Audi RS6 auf 499 € pro Tag"\n· "Optimiere die Startseite für SEO"`,
+          content:
+            `${header}\nIch konnte keine klare Absicht erkennen.\n\nBeispiele:\n· "Zeig mir alle Fahrzeuge und Preise"\n· "Füge einen Ferrari 812 Superfast hinzu"\n· "Ändere den Audi RS6 auf 499 € pro Tag"\n· "Deaktiviere die Mercedes G-Klasse"\n· "Optimiere die Startseite für SEO"`,
+          intent,
         },
       ]);
       setSending(false);
       return;
     }
 
-    const proposal = makeProposal(area, action, text);
+    const proposal = buildProposal(intent);
     setMessages((m) => [
       ...m,
       {
         id: replyId,
         role: "assistant",
         ts: Date.now(),
-        content: `Bereich erkannt: ${AREA_LABEL[area]} · Aktion: ${action}.\nVorschlag erstellt (Mock — wird nicht angewendet).`,
-        proposals: [proposal],
+        content: `${header}\nVorschlag erstellt (Mock — wird nicht angewendet).`,
+        intent,
+        proposals: proposal ? [proposal] : undefined,
       },
     ]);
     setSending(false);
   };
 
-  const updateProposal = (msgId: string, propId: string, status: ProposalStatus) => {
+  const updateProposalStatus = (msgId: string, propId: string, status: ProposalStatus) => {
     setMessages((msgs) =>
       msgs.map((m) =>
         m.id !== msgId || !m.proposals
@@ -325,10 +512,10 @@ function AiEditorPage() {
 
       <main className="flex-1 px-6 md:px-12 py-8 max-w-5xl w-full mx-auto flex flex-col min-h-0">
         <div className="mb-6">
-          <div className="eyebrow mb-2">Unified Chat</div>
+          <div className="eyebrow mb-2">Admin Copilot</div>
           <div className="font-display text-2xl text-cream">Was möchtest du ändern?</div>
           <p className="text-cream/55 text-sm mt-1">
-            Schreib natürlich — ich erkenne Bereich (Fahrzeuge, SEO, Einstellungen, Übersetzungen, Website) und Absicht automatisch.
+            Schreib natürlich — ich erkenne Bereich (Fahrzeuge, Website, Einstellungen, SEO, Übersetzungen) und Intent (Lesen, Anlegen, Aktualisieren, Löschen, Optimieren, Übersetzen) automatisch.
           </p>
         </div>
 
@@ -337,7 +524,7 @@ function AiEditorPage() {
           className="flex-1 border border-border bg-jet/30 p-5 md:p-7 overflow-y-auto space-y-6 min-h-[420px]"
         >
           {messages.map((m) => (
-            <MessageBubble key={m.id} msg={m} onProposalAction={updateProposal} />
+            <MessageBubble key={m.id} msg={m} onProposalAction={updateProposalStatus} />
           ))}
           {sending && (
             <div className="flex items-center gap-3 text-cream/50 text-xs tracking-[0.25em] uppercase">
@@ -362,7 +549,7 @@ function AiEditorPage() {
               }
             }}
             rows={3}
-            placeholder='z. B. "Zeig mir alle Fahrzeuge und Preise" (⌘/Ctrl + Enter zum Senden)'
+            placeholder='z. B. "Ändere den Audi RS6 auf 499 € pro Tag" (⌘/Ctrl + Enter zum Senden)'
             className="w-full bg-transparent text-cream placeholder:text-cream/30 text-sm font-light leading-relaxed resize-none focus:outline-none"
           />
           <div className="flex items-center justify-between gap-4 mt-3 pt-3 border-t border-border/60">
@@ -397,6 +584,10 @@ function AiEditorPage() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Chat bubble + proposal renderer
+// ---------------------------------------------------------------------------
+
 function MessageBubble({
   msg,
   onProposalAction,
@@ -421,6 +612,7 @@ function MessageBubble({
           {msg.content}
         </div>
 
+        {msg.intent && !isUser && <IntentBadge intent={msg.intent} />}
         {msg.vehicles && <VehicleTable rows={msg.vehicles} />}
 
         {msg.proposals?.map((p) => (
@@ -436,6 +628,30 @@ function MessageBubble({
   );
 }
 
+function IntentBadge({ intent }: { intent: DetectedIntent }) {
+  const conf = Math.round(intent.confidence * 100);
+  return (
+    <div className="flex flex-wrap gap-2 text-[0.55rem] tracking-[0.25em] uppercase">
+      <span className="border border-border px-2 py-1 text-cream/55">
+        Area · {AREA_LABEL[intent.area]}
+      </span>
+      <span className="border border-gold/30 px-2 py-1 text-gold/80">
+        Intent · {INTENT_LABEL[intent.kind]}
+      </span>
+      {intent.target && (
+        <span className="border border-border px-2 py-1 text-cream/55">
+          Ziel · {intent.target}
+        </span>
+      )}
+      <span className="border border-border px-2 py-1 text-cream/45">
+        Konfidenz · {conf}%
+      </span>
+    </div>
+  );
+}
+
+// --- Proposal cards (per action) ---
+
 function ProposalCard({
   proposal,
   onAccept,
@@ -445,48 +661,65 @@ function ProposalCard({
   onAccept: () => void;
   onReject: () => void;
 }) {
-  const { summary, target, type, change, risk, status } = proposal;
+  switch (proposal.action) {
+    case "create":   return <CreateCard p={proposal} onAccept={onAccept} onReject={onReject} />;
+    case "update":   return <UpdateCard p={proposal} onAccept={onAccept} onReject={onReject} />;
+    case "delete":   return <DeleteCard p={proposal} onAccept={onAccept} onReject={onReject} />;
+    case "optimize": return <OptimizeCard p={proposal} onAccept={onAccept} onReject={onReject} />;
+    case "translate":return <TranslateCard p={proposal} onAccept={onAccept} onReject={onReject} />;
+    case "read":     return <ReadCard p={proposal} />;
+  }
+}
+
+function CardShell({
+  p, onAccept, onReject, children, destructive = false,
+}: {
+  p: Proposal;
+  onAccept?: () => void;
+  onReject?: () => void;
+  children: React.ReactNode;
+  destructive?: boolean;
+}) {
   return (
-    <div className="w-full border border-border bg-jet/60 p-5">
+    <div className={`w-full border bg-jet/60 p-5 ${ACTION_ACCENT[p.action]}`}>
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1">
           <div className="text-[0.55rem] tracking-[0.3em] uppercase text-gold/70 mb-1">
-            Vorschlag · {TYPE_LABEL[type]}
+            Vorschlag · {ACTION_LABEL[p.action]} · {AREA_LABEL[p.area]}
           </div>
-          <div className="font-display text-lg text-cream leading-snug">{summary}</div>
+          <div className="font-display text-lg text-cream leading-snug">{p.summary}</div>
         </div>
-        <span
-          className={`shrink-0 text-[0.55rem] tracking-[0.25em] uppercase px-2 py-1 border ${STATUS_STYLE[status]}`}
-        >
-          {STATUS_LABEL[status]}
+        <span className={`shrink-0 text-[0.55rem] tracking-[0.25em] uppercase px-2 py-1 border ${STATUS_STYLE[p.status]}`}>
+          {STATUS_LABEL[p.status]}
         </span>
       </div>
 
       <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-xs mb-4">
         <div>
           <dt className="text-cream/40 tracking-[0.2em] uppercase text-[0.55rem] mb-0.5">Ziel</dt>
-          <dd className="text-cream/80">{target}</dd>
+          <dd className="text-cream/80">{p.target}</dd>
         </div>
         <div>
           <dt className="text-cream/40 tracking-[0.2em] uppercase text-[0.55rem] mb-0.5">Risiko</dt>
           <dd>
-            <span className={`inline-block text-[0.55rem] tracking-[0.25em] uppercase px-2 py-0.5 border ${RISK_STYLE[risk]}`}>
-              {RISK_LABEL[risk]}
+            <span className={`inline-block text-[0.55rem] tracking-[0.25em] uppercase px-2 py-0.5 border ${RISK_STYLE[p.risk]}`}>
+              {RISK_LABEL[p.risk]}
             </span>
           </dd>
         </div>
       </dl>
 
       <div className="border-l-2 border-gold/40 pl-4 mb-4">
-        <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/40 mb-1">
-          Vorgeschlagene Änderung
-        </div>
-        <pre className="text-sm text-cream/85 whitespace-pre-wrap font-light leading-relaxed font-sans">
-          {change}
-        </pre>
+        {children}
       </div>
 
-      {status === "pending" ? (
+      {p.rationale && (
+        <div className="text-[0.6rem] tracking-[0.2em] uppercase text-cream/35 mb-3">
+          {p.rationale}
+        </div>
+      )}
+
+      {onAccept && onReject && (p.status === "pending" ? (
         <div className="flex flex-wrap gap-2 justify-end">
           <button
             onClick={onReject}
@@ -496,19 +729,105 @@ function ProposalCard({
           </button>
           <button
             onClick={onAccept}
-            className="text-[0.6rem] tracking-[0.28em] uppercase border border-gold text-gold px-4 py-2 hover:bg-gold hover:text-onyx"
+            className={`text-[0.6rem] tracking-[0.28em] uppercase px-4 py-2 border ${
+              destructive
+                ? "border-red-500/60 text-red-400 hover:bg-red-500/10"
+                : "border-gold text-gold hover:bg-gold hover:text-onyx"
+            }`}
           >
-            Annehmen (Mock)
+            {destructive ? "Bestätigen (Mock)" : "Annehmen (Mock)"}
           </button>
         </div>
       ) : (
         <div className="text-[0.6rem] tracking-[0.25em] uppercase text-cream/40 text-right">
-          {status === "applied" ? "✓ Im Mock angewendet" : "✕ Abgelehnt"}
+          {p.status === "applied" ? "✓ Im Mock angewendet" : "✕ Abgelehnt"}
         </div>
-      )}
+      ))}
     </div>
   );
 }
+
+function Label({ children }: { children: React.ReactNode }) {
+  return <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/40 mb-1">{children}</div>;
+}
+
+function CreateCard({ p, onAccept, onReject }: { p: Extract<Proposal, { action: "create" }>; onAccept: () => void; onReject: () => void; }) {
+  return (
+    <CardShell p={p} onAccept={onAccept} onReject={onReject}>
+      <Label>Neuer Eintrag</Label>
+      <pre className="text-sm text-cream/85 whitespace-pre-wrap font-light leading-relaxed font-sans">
+        {JSON.stringify(p.payload, null, 2)}
+      </pre>
+    </CardShell>
+  );
+}
+
+function UpdateCard({ p, onAccept, onReject }: { p: Extract<Proposal, { action: "update" }>; onAccept: () => void; onReject: () => void; }) {
+  return (
+    <CardShell p={p} onAccept={onAccept} onReject={onReject}>
+      <Label>Feldänderung</Label>
+      <div className="text-sm text-cream/85 font-light leading-relaxed">
+        <span className="text-cream/55">{p.payload.field}</span>{" "}
+        {p.payload.from !== undefined && (
+          <>
+            <span className="text-cream/40">von</span>{" "}
+            <span className="text-cream/80">{String(p.payload.from)}</span>{" "}
+          </>
+        )}
+        <span className="text-cream/40">→</span>{" "}
+        <span className="text-gold">{String(p.payload.to)}</span>
+      </div>
+    </CardShell>
+  );
+}
+
+function DeleteCard({ p, onAccept, onReject }: { p: Extract<Proposal, { action: "delete" }>; onAccept: () => void; onReject: () => void; }) {
+  return (
+    <CardShell p={p} onAccept={onAccept} onReject={onReject} destructive>
+      <Label>Destruktive Aktion</Label>
+      <div className="text-sm text-red-300/90 font-light leading-relaxed">
+        Modus: <span className="uppercase tracking-wider">{p.payload.mode}</span> — der Eintrag wird {p.payload.mode === "delete" ? "endgültig entfernt" : "deaktiviert (Soft-Delete)"}.
+      </div>
+    </CardShell>
+  );
+}
+
+function OptimizeCard({ p, onAccept, onReject }: { p: Extract<Proposal, { action: "optimize" }>; onAccept: () => void; onReject: () => void; }) {
+  return (
+    <CardShell p={p} onAccept={onAccept} onReject={onReject}>
+      {p.payload.current && (
+        <>
+          <Label>Aktuell</Label>
+          <pre className="text-sm text-cream/65 whitespace-pre-wrap font-light leading-relaxed font-sans mb-3">{p.payload.current}</pre>
+        </>
+      )}
+      <Label>Vorschlag</Label>
+      <pre className="text-sm text-cream/85 whitespace-pre-wrap font-light leading-relaxed font-sans">{p.payload.suggestion}</pre>
+    </CardShell>
+  );
+}
+
+function TranslateCard({ p, onAccept, onReject }: { p: Extract<Proposal, { action: "translate" }>; onAccept: () => void; onReject: () => void; }) {
+  return (
+    <CardShell p={p} onAccept={onAccept} onReject={onReject}>
+      <Label>Sprache · {p.payload.language.toUpperCase()}{p.payload.key ? ` · ${p.payload.key}` : ""}</Label>
+      <pre className="text-sm text-cream/85 whitespace-pre-wrap font-light leading-relaxed font-sans">{p.payload.suggestion}</pre>
+    </CardShell>
+  );
+}
+
+function ReadCard({ p }: { p: Extract<Proposal, { action: "read" }>; }) {
+  return (
+    <CardShell p={p}>
+      <Label>Ressource</Label>
+      <div className="text-sm text-cream/85 font-light leading-relaxed">{p.payload.resource}</div>
+    </CardShell>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Vehicle table (real legacy data)
+// ---------------------------------------------------------------------------
 
 function VehicleTable({ rows }: { rows: VehicleRow[] }) {
   if (rows.length === 0) {
