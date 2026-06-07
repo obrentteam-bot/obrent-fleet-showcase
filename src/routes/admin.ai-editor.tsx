@@ -186,9 +186,10 @@ const ACTION_ACCENT: Record<ProposalAction, string> = {
 
 const SUGGESTIONS: string[] = [
   "Fahrzeuge anzeigen",
+  "Zeig mir die Seite /business-langzeitmiete",
+  "Optimiere die Seite /chauffeur-service",
   "Preis ändern",
   "Fahrzeug hinzufügen",
-  "Fahrzeug deaktivieren",
   "SEO prüfen",
   "Text optimieren",
   "Einstellungen ändern",
