@@ -492,3 +492,67 @@ function ProposalCard({
     </div>
   );
 }
+
+function VehicleTable({ rows }: { rows: VehicleRow[] }) {
+  if (rows.length === 0) {
+    return (
+      <div className="w-full border border-border bg-jet/60 p-5 text-cream/60 text-sm">
+        Keine Fahrzeuge in der Datenbank.
+      </div>
+    );
+  }
+  return (
+    <div className="w-full border border-border bg-jet/60">
+      <div className="px-5 py-3 border-b border-border flex items-center justify-between">
+        <div className="text-[0.55rem] tracking-[0.3em] uppercase text-gold/70">
+          Fahrzeuge · Nur-Lese · {rows.length}
+        </div>
+        <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/40">
+          Quelle: vehicles (Legacy DB)
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/45 border-b border-border">
+              <th className="text-left font-normal px-4 py-2.5">Name</th>
+              <th className="text-left font-normal px-4 py-2.5">Kategorie</th>
+              <th className="text-right font-normal px-4 py-2.5">Preis / Tag</th>
+              <th className="text-left font-normal px-4 py-2.5">Status</th>
+              <th className="text-left font-normal px-4 py-2.5">Beschreibung</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((v) => (
+              <tr key={v.id} className="border-b border-border/40 last:border-0 align-top">
+                <td className="px-4 py-3 text-cream font-light">{v.name}</td>
+                <td className="px-4 py-3 text-cream/70">{v.category}</td>
+                <td className="px-4 py-3 text-right text-gold font-light tabular-nums">
+                  {formatPrice(Number(v.price_per_day))}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-block text-[0.55rem] tracking-[0.25em] uppercase px-2 py-0.5 border ${
+                      v.available
+                        ? "bg-green-500/10 text-green-400 border-green-500/30"
+                        : "bg-cream/5 text-cream/50 border-cream/20"
+                    }`}
+                  >
+                    {v.available ? "Verfügbar" : "Inaktiv"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-cream/60 font-light max-w-md">
+                  {v.description ? (
+                    <span className="line-clamp-2">{v.description}</span>
+                  ) : (
+                    <span className="text-cream/30">—</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
