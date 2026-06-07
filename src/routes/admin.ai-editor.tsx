@@ -658,6 +658,7 @@ function AiEditorPage() {
         intent: aiIntent,
         proposals: result.proposal ? [result.proposal as Proposal] : undefined,
         capabilityNotice: result.capabilityNotice ?? undefined,
+        page: detectedPage,
         logId: result.logId,
         logError: result.logError,
       };
