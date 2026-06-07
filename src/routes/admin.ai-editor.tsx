@@ -902,6 +902,92 @@ function SettingsCard({ row }: { row: SettingsRow }) {
   );
 }
 
+function PageCard({ page }: { page: PageEntry }) {
+  const editableTone =
+    page.editable === "editable"
+      ? "border-emerald-400/40 text-emerald-300/85"
+      : page.editable === "locked"
+      ? "border-red-400/40 text-red-300/85"
+      : "border-yellow-500/40 text-yellow-300/85";
+  return (
+    <div className="w-full border border-border bg-jet/60">
+      <div className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
+        <div className="text-[0.55rem] tracking-[0.3em] uppercase text-gold/70">
+          Website-Seite · Content Index
+        </div>
+        <div className="flex gap-2">
+          <span className={`text-[0.5rem] tracking-[0.25em] uppercase border px-2 py-0.5 ${editableTone}`}>
+            {page.editable}
+          </span>
+          <span className="text-[0.5rem] tracking-[0.25em] uppercase border border-border text-cream/55 px-2 py-0.5">
+            Source · {page.contentSource}
+          </span>
+        </div>
+      </div>
+      <div className="px-5 py-4 space-y-4">
+        <div>
+          <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Route</div>
+          <div className="font-mono text-sm text-gold">{page.route}</div>
+          <div className="text-[0.6rem] tracking-[0.2em] uppercase text-cream/40 mt-1">{page.name}</div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Meta-Title</div>
+            <div className="text-sm text-cream/85 font-light">{page.meta.title}</div>
+          </div>
+          <div>
+            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Meta-Description</div>
+            <div className="text-sm text-cream/85 font-light">{page.meta.description}</div>
+          </div>
+          <div>
+            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">SEO-Quelle</div>
+            <div className="text-sm text-cream/75 font-mono">{page.seoSource}</div>
+          </div>
+          <div>
+            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Übersetzung</div>
+            <div className="text-sm text-cream/75 font-mono">{page.translationSource}</div>
+          </div>
+        </div>
+
+        <div>
+          <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-2">
+            Erkannte Sektionen ({page.sections.length})
+          </div>
+          <ul className="divide-y divide-border/40 border border-border/40">
+            {page.sections.map((s) => (
+              <li key={s.id} className="px-3 py-2 flex items-center justify-between gap-3 text-xs">
+                <div className="min-w-0">
+                  <div className="text-cream/85 font-light truncate">
+                    <span className="font-mono text-cream/55">{s.id}</span> · {s.label}
+                  </div>
+                  {s.heading && (
+                    <div className="text-cream/55 italic truncate">"{s.heading}"</div>
+                  )}
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-border text-cream/45 px-1.5 py-0.5">
+                    {s.source}
+                  </span>
+                  {s.i18nKey && (
+                    <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-gold/30 text-gold/70 px-1.5 py-0.5 font-mono">
+                      {s.i18nKey}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/35 pt-1">
+          Datei: <span className="font-mono">{page.file}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function IntentBadge({ intent }: { intent: DetectedIntent }) {
   const conf = Math.round(intent.confidence * 100);
   return (
