@@ -401,6 +401,7 @@ function buildSrvProposalFromAi(raw: RawAiResult): SrvProposal | null {
         },
       };
     case "translate":
+    default:
       return {
         ...base,
         action: "translate",
