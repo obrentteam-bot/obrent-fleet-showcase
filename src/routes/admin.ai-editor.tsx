@@ -9,6 +9,7 @@ import {
   type AreaKey,
   type ActionKind,
 } from "@/lib/ai-editor-capabilities";
+import { logPrompt, updateLogStatus } from "@/lib/ai-editor-log";
 import logo from "@/assets/obrent-logo.png";
 
 // ---------------------------------------------------------------------------
