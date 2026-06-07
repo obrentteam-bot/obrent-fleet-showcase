@@ -843,7 +843,7 @@ function MessageBubble({
 
         {msg.intent && !isUser && <IntentBadge intent={msg.intent} />}
         {msg.capabilityNotice && <CapabilityNotice notice={msg.capabilityNotice} />}
-        {msg.page && <PageCard page={msg.page} />}
+        {msg.page && <PageCard page={msg.page} focusId={msg.sectionFocusId} />}
         {msg.vehicles && <VehicleTable rows={msg.vehicles} />}
         {msg.settings && <SettingsCard row={msg.settings} />}
 
