@@ -10,6 +10,11 @@ import {
 } from "@/lib/ai-editor-capabilities";
 import { logPrompt, updateLogStatus } from "@/lib/ai-editor-log";
 import { generateProposalFn } from "@/lib/ai-editor.functions";
+import {
+  detectPageFromText,
+  summarizePageForAi,
+  type PageEntry,
+} from "@/lib/website-content-index";
 import logo from "@/assets/obrent-logo.png";
 
 // ---------------------------------------------------------------------------
