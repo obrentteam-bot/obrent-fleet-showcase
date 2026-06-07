@@ -2,6 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
 import { supabase, formatPrice, type DbVehicle } from "@/lib/supabase";
+import {
+  CAPABILITY_MAP,
+  NOT_EDITABLE_HINT,
+  checkCapability,
+  type AreaKey,
+  type ActionKind,
+} from "@/lib/ai-editor-capabilities";
 import logo from "@/assets/obrent-logo.png";
 
 // ---------------------------------------------------------------------------
@@ -12,6 +19,15 @@ type VehicleRow = Pick<
   DbVehicle,
   "id" | "name" | "category" | "price_per_day" | "available" | "description"
 >;
+
+type SettingsRow = {
+  id: string;
+  company_name: string | null;
+  address: string | null;
+  phone: string | null;
+  email: string | null;
+  hours: string | null;
+};
 
 export type Area =
   | "vehicles"
