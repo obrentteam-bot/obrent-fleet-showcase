@@ -1,15 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
 import { supabase, formatPrice, type DbVehicle } from "@/lib/supabase";
 import {
   CAPABILITY_MAP,
-  NOT_EDITABLE_HINT,
-  checkCapability,
   type AreaKey,
   type ActionKind,
 } from "@/lib/ai-editor-capabilities";
 import { logPrompt, updateLogStatus } from "@/lib/ai-editor-log";
+import { generateProposalFn } from "@/lib/ai-editor.functions";
 import logo from "@/assets/obrent-logo.png";
 
 // ---------------------------------------------------------------------------
@@ -425,6 +425,8 @@ function AiEditorPage() {
   const navigate = useNavigate();
   const { session, isAdmin, loading } = useAuth();
 
+  const callGenerateProposal = useServerFn(generateProposalFn);
+
   const [prompt, setPrompt] = useState("");
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -581,89 +583,52 @@ function AiEditorPage() {
       return;
     }
 
-    await new Promise((r) => setTimeout(r, 500));
+    // All non-read intents → server-side AI proposal generation.
+    // The server fn: validates admin, calls Lovable AI, applies capability gate,
+    // and logs into ai_editor_logs. No DB writes to vehicles/app_settings.
+    try {
+      const result = await callGenerateProposal({ data: { prompt: text } });
 
-    if (intent.kind === "unknown") {
+      const aiIntent: DetectedIntent = {
+        kind: result.intent.kind as IntentKind,
+        area: result.intent.area as Area,
+        action: result.intent.action as DetectedIntent["action"],
+        confidence: result.intent.confidence,
+        target: result.intent.target,
+        fields: result.intent.fields,
+        raw: result.intent.raw,
+      };
+      const aiHeader = `Bereich: ${AREA_LABEL[aiIntent.area]} · Intent: ${INTENT_LABEL[aiIntent.kind]}${aiIntent.target ? ` · Ziel: ${aiIntent.target}` : ""}`;
+
       const reply: ChatMessage = {
         id: replyId,
         role: "assistant",
         ts: Date.now(),
-        content:
-          `${header}\nIch konnte keine klare Absicht erkennen.\n\nBeispiele:\n· "Zeig mir alle Fahrzeuge und Preise"\n· "Füge einen Ferrari 812 Superfast hinzu"\n· "Ändere den Audi RS6 auf 499 € pro Tag"\n· "Deaktiviere die Mercedes G-Klasse"\n· "Optimiere die Startseite für SEO"`,
-        intent,
+        content: `${aiHeader}\n${result.message}`,
+        intent: aiIntent,
+        proposals: result.proposal ? [result.proposal as Proposal] : undefined,
+        capabilityNotice: result.capabilityNotice ?? undefined,
+        logId: result.logId,
+        logError: result.logError,
       };
+      setMessages((m) => [...m, reply]);
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : "Unbekannter Fehler";
+      const reply: ChatMessage = {
+        id: replyId,
+        role: "assistant",
+        ts: Date.now(),
+        content: `${header}\nAI-Aufruf fehlgeschlagen: ${errMsg}`,
+        intent,
+        logError: errMsg,
+      };
+      // Best-effort log via client (server fn never ran).
       await pushAndLog(
         reply,
-        { action: "unknown", status: "info", extra: { intent } },
+        { action: "ai_error", status: "error", error: errMsg, extra: { intent } },
         text,
       );
-      setSending(false);
-      return;
     }
-
-    // Capability gate
-    const capKey = toCapabilityKey(intent.area);
-    const actionKind = intentToActionKind(intent.kind);
-    const field =
-      intent.fields?.price_per_day !== undefined ? "price_per_day" : undefined;
-    const check =
-      capKey && actionKind
-        ? checkCapability(capKey, actionKind, field)
-        : null;
-
-    let proposal = buildProposal(intent);
-    let extraContent = "";
-    let notice: ChatMessage["capabilityNotice"];
-
-    if (!check || !check.allowed) {
-      const areaLabel = capKey ? CAPABILITY_MAP[capKey].label : AREA_LABEL[intent.area];
-      const reason = check?.reason ?? NOT_EDITABLE_HINT;
-      notice = { areaLabel, message: reason };
-      extraContent = `\n${reason}`;
-      if (proposal) proposal = { ...proposal, status: "info", risk: "low" };
-    } else if (check.needsConfirmation && proposal) {
-      proposal = {
-        ...proposal,
-        risk: "high",
-        rationale:
-          (proposal.rationale ? proposal.rationale + " · " : "") +
-          `Feld "${field}" gilt als kritisch — zusätzliche Bestätigung erforderlich.`,
-      };
-      extraContent = `\nFeld "${field}" ist als kritisch markiert (zusätzliche Bestätigung nötig).`;
-    }
-
-    const reply: ChatMessage = {
-      id: replyId,
-      role: "assistant",
-      ts: Date.now(),
-      content:
-        `${header}\n${proposal ? "Vorschlag erstellt (Mock — wird nicht angewendet)." : "Kein Vorschlag erzeugt."}${extraContent}`,
-      intent,
-      proposals: proposal ? [proposal] : undefined,
-      capabilityNotice: notice,
-    };
-
-    const targetTable =
-      capKey && CAPABILITY_MAP[capKey].source === "database"
-        ? (CAPABILITY_MAP[capKey].table ?? null)
-        : null;
-
-    await pushAndLog(
-      reply,
-      {
-        action: intent.kind,
-        status: proposal ? proposal.status : "info",
-        targetTable,
-        extra: {
-          intent,
-          capability: check
-            ? { allowed: check.allowed, needsConfirmation: check.needsConfirmation ?? false, reason: check.reason ?? null }
-            : null,
-          proposals: proposal ? [proposal] : [],
-        },
-      },
-      text,
-    );
     setSending(false);
   };
 
