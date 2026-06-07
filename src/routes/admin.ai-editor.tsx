@@ -96,6 +96,9 @@ type ChatMessage = {
   proposals?: Proposal[];
   vehicles?: VehicleRow[];
   vehiclesError?: string;
+  settings?: SettingsRow;
+  settingsError?: string;
+  capabilityNotice?: { areaLabel: string; message: string };
   ts: number;
 };
 
