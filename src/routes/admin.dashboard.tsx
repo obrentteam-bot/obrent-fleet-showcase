@@ -469,6 +469,7 @@ function AdminDashboard() {
             <div className="text-xs text-cream/60">{session.user.email}</div>
             {lastSignIn && <div className="text-[0.6rem] text-cream/40 mt-0.5">Letzter Login: {fmtDateTime(lastSignIn)}</div>}
           </div>
+          <Link to="/admin/ai-editor" className="text-[0.65rem] tracking-[0.28em] uppercase text-gold/80 hover:text-gold border border-gold/40 px-4 py-2">✦ AI Editor</Link>
           <button onClick={signOut} className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold border border-border px-4 py-2">Abmelden</button>
         </div>
       </header>
