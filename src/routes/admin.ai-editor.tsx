@@ -496,6 +496,38 @@ function AiEditorPage() {
       return;
     }
 
+    // READ → real legacy Supabase fetch for app_settings
+    if (intent.kind === "read" && intent.area === "settings") {
+      const { data, error } = await supabase
+        .from("app_settings")
+        .select("id, company_name, address, phone, email, hours")
+        .limit(1)
+        .maybeSingle();
+
+      setMessages((m) => [
+        ...m,
+        error
+          ? {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `${header}\nKonnte die Einstellungen nicht laden: ${error.message}`,
+              intent,
+              settingsError: error.message,
+            }
+          : {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `${header}\n${data ? "Einstellungen geladen (nur Lese-Zugriff)." : "Keine Einstellungen gefunden."}`,
+              intent,
+              settings: (data ?? undefined) as SettingsRow | undefined,
+            },
+      ]);
+      setSending(false);
+      return;
+    }
+
     await new Promise((r) => setTimeout(r, 500));
 
     if (intent.kind === "unknown") {
@@ -514,20 +546,54 @@ function AiEditorPage() {
       return;
     }
 
-    const proposal = buildProposal(intent);
+    // Capability gate: consult the central map before proposing anything.
+    const capKey = toCapabilityKey(intent.area);
+    const actionKind = intentToActionKind(intent.kind);
+    const field =
+      intent.fields?.price_per_day !== undefined ? "price_per_day" : undefined;
+    const check =
+      capKey && actionKind
+        ? checkCapability(capKey, actionKind, field)
+        : null;
+
+    let proposal = buildProposal(intent);
+    let extraContent = "";
+    let notice: ChatMessage["capabilityNotice"];
+
+    if (!check || !check.allowed) {
+      const areaLabel = capKey ? CAPABILITY_MAP[capKey].label : AREA_LABEL[intent.area];
+      const reason = check?.reason ?? NOT_EDITABLE_HINT;
+      notice = { areaLabel, message: reason };
+      extraContent = `\n${reason}`;
+      // Downgrade any proposal to advisory-only.
+      if (proposal) proposal = { ...proposal, status: "info", risk: "low" };
+    } else if (check.needsConfirmation && proposal) {
+      proposal = {
+        ...proposal,
+        risk: "high",
+        rationale:
+          (proposal.rationale ? proposal.rationale + " · " : "") +
+          `Feld "${field}" gilt als kritisch — zusätzliche Bestätigung erforderlich.`,
+      };
+      extraContent = `\nFeld "${field}" ist als kritisch markiert (zusätzliche Bestätigung nötig).`;
+    }
+
     setMessages((m) => [
       ...m,
       {
         id: replyId,
         role: "assistant",
         ts: Date.now(),
-        content: `${header}\nVorschlag erstellt (Mock — wird nicht angewendet).`,
+        content:
+          `${header}\n${proposal ? "Vorschlag erstellt (Mock — wird nicht angewendet)." : "Kein Vorschlag erzeugt."}${extraContent}`,
         intent,
         proposals: proposal ? [proposal] : undefined,
+        capabilityNotice: notice,
       },
     ]);
     setSending(false);
   };
+
 
   const updateProposalStatus = (msgId: string, propId: string, status: ProposalStatus) => {
     setMessages((msgs) =>
