@@ -1,7 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
+import { supabase, formatPrice, type DbVehicle } from "@/lib/supabase";
 import logo from "@/assets/obrent-logo.png";
+
+type VehicleRow = Pick<
+  DbVehicle,
+  "id" | "name" | "category" | "price_per_day" | "available" | "description"
+>;
+
 
 export const Route = createFileRoute("/admin/ai-editor")({
   head: () => ({
