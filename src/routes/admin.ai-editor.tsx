@@ -105,6 +105,7 @@ type ChatMessage = {
   settings?: SettingsRow;
   settingsError?: string;
   capabilityNotice?: { areaLabel: string; message: string };
+  page?: PageEntry;
   logId?: string | null;
   logError?: string | null;
   ts: number;
