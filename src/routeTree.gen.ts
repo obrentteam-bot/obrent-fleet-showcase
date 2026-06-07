@@ -22,6 +22,7 @@ import { Route as FleetIndexRouteImport } from './routes/fleet.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminAiEditorRouteImport } from './routes/admin.ai-editor'
 
 const VipShuttleRoute = VipShuttleRouteImport.update({
   id: '/vip-shuttle',
@@ -88,6 +89,11 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAiEditorRoute = AdminAiEditorRouteImport.update({
+  id: '/ai-editor',
+  path: '/ai-editor',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
   '/vip-shuttle': typeof VipShuttleRoute
+  '/admin/ai-editor': typeof AdminAiEditorRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
   '/vip-shuttle': typeof VipShuttleRoute
+  '/admin/ai-editor': typeof AdminAiEditorRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin': typeof AdminIndexRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/datenschutz': typeof DatenschutzRoute
   '/impressum': typeof ImpressumRoute
   '/vip-shuttle': typeof VipShuttleRoute
+  '/admin/ai-editor': typeof AdminAiEditorRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/datenschutz'
     | '/impressum'
     | '/vip-shuttle'
+    | '/admin/ai-editor'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
     | '/admin/'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/datenschutz'
     | '/impressum'
     | '/vip-shuttle'
+    | '/admin/ai-editor'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
     | '/admin'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/datenschutz'
     | '/impressum'
     | '/vip-shuttle'
+    | '/admin/ai-editor'
     | '/admin/dashboard'
     | '/fleet/$vehicleId'
     | '/admin/'
@@ -288,15 +300,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/ai-editor': {
+      id: '/admin/ai-editor'
+      path: '/ai-editor'
+      fullPath: '/admin/ai-editor'
+      preLoaderRoute: typeof AdminAiEditorRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAiEditorRoute: typeof AdminAiEditorRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAiEditorRoute: AdminAiEditorRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
