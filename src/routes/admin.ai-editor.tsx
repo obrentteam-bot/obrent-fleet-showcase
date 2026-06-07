@@ -2,6 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
 import { supabase, formatPrice, type DbVehicle } from "@/lib/supabase";
+import {
+  CAPABILITY_MAP,
+  NOT_EDITABLE_HINT,
+  checkCapability,
+  type AreaKey,
+  type ActionKind,
+} from "@/lib/ai-editor-capabilities";
 import logo from "@/assets/obrent-logo.png";
 
 // ---------------------------------------------------------------------------
@@ -12,6 +19,15 @@ type VehicleRow = Pick<
   DbVehicle,
   "id" | "name" | "category" | "price_per_day" | "available" | "description"
 >;
+
+type SettingsRow = {
+  id: string;
+  company_name: string | null;
+  address: string | null;
+  phone: string | null;
+  email: string | null;
+  hours: string | null;
+};
 
 export type Area =
   | "vehicles"
@@ -80,6 +96,9 @@ type ChatMessage = {
   proposals?: Proposal[];
   vehicles?: VehicleRow[];
   vehiclesError?: string;
+  settings?: SettingsRow;
+  settingsError?: string;
+  capabilityNotice?: { areaLabel: string; message: string };
   ts: number;
 };
 
@@ -254,8 +273,41 @@ function detectIntent(raw: string): DetectedIntent {
 }
 
 // ---------------------------------------------------------------------------
+// Area ↔ Capability mapping
+// ---------------------------------------------------------------------------
+
+/** Map the chat-side `Area` to a capability-map `AreaKey` (or null). */
+function toCapabilityKey(area: Area): AreaKey | null {
+  switch (area) {
+    case "vehicles":     return "vehicles";
+    case "settings":     return "app_settings";
+    case "website":      return "website_copy";
+    case "seo":          return "seo";
+    case "translations": return "translations";
+    case "unknown":      return null;
+  }
+}
+
+function intentToActionKind(kind: IntentKind): ActionKind | null {
+  switch (kind) {
+    case "read":             return "read";
+    case "create":           return "create";
+    case "update":
+    case "settings_update":  return "update";
+    case "delete":           return "delete";
+    // Pure content ops are advisory in the mock — treat as "update" gate.
+    case "optimize":
+    case "seo_suggestion":
+    case "translate":        return "update";
+    case "unknown":          return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Proposal building (mock — no writes)
 // ---------------------------------------------------------------------------
+
+
 
 function newId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -444,6 +496,38 @@ function AiEditorPage() {
       return;
     }
 
+    // READ → real legacy Supabase fetch for app_settings
+    if (intent.kind === "read" && intent.area === "settings") {
+      const { data, error } = await supabase
+        .from("app_settings")
+        .select("id, company_name, address, phone, email, hours")
+        .limit(1)
+        .maybeSingle();
+
+      setMessages((m) => [
+        ...m,
+        error
+          ? {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `${header}\nKonnte die Einstellungen nicht laden: ${error.message}`,
+              intent,
+              settingsError: error.message,
+            }
+          : {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `${header}\n${data ? "Einstellungen geladen (nur Lese-Zugriff)." : "Keine Einstellungen gefunden."}`,
+              intent,
+              settings: (data ?? undefined) as SettingsRow | undefined,
+            },
+      ]);
+      setSending(false);
+      return;
+    }
+
     await new Promise((r) => setTimeout(r, 500));
 
     if (intent.kind === "unknown") {
@@ -462,20 +546,54 @@ function AiEditorPage() {
       return;
     }
 
-    const proposal = buildProposal(intent);
+    // Capability gate: consult the central map before proposing anything.
+    const capKey = toCapabilityKey(intent.area);
+    const actionKind = intentToActionKind(intent.kind);
+    const field =
+      intent.fields?.price_per_day !== undefined ? "price_per_day" : undefined;
+    const check =
+      capKey && actionKind
+        ? checkCapability(capKey, actionKind, field)
+        : null;
+
+    let proposal = buildProposal(intent);
+    let extraContent = "";
+    let notice: ChatMessage["capabilityNotice"];
+
+    if (!check || !check.allowed) {
+      const areaLabel = capKey ? CAPABILITY_MAP[capKey].label : AREA_LABEL[intent.area];
+      const reason = check?.reason ?? NOT_EDITABLE_HINT;
+      notice = { areaLabel, message: reason };
+      extraContent = `\n${reason}`;
+      // Downgrade any proposal to advisory-only.
+      if (proposal) proposal = { ...proposal, status: "info", risk: "low" };
+    } else if (check.needsConfirmation && proposal) {
+      proposal = {
+        ...proposal,
+        risk: "high",
+        rationale:
+          (proposal.rationale ? proposal.rationale + " · " : "") +
+          `Feld "${field}" gilt als kritisch — zusätzliche Bestätigung erforderlich.`,
+      };
+      extraContent = `\nFeld "${field}" ist als kritisch markiert (zusätzliche Bestätigung nötig).`;
+    }
+
     setMessages((m) => [
       ...m,
       {
         id: replyId,
         role: "assistant",
         ts: Date.now(),
-        content: `${header}\nVorschlag erstellt (Mock — wird nicht angewendet).`,
+        content:
+          `${header}\n${proposal ? "Vorschlag erstellt (Mock — wird nicht angewendet)." : "Kein Vorschlag erzeugt."}${extraContent}`,
         intent,
         proposals: proposal ? [proposal] : undefined,
+        capabilityNotice: notice,
       },
     ]);
     setSending(false);
   };
+
 
   const updateProposalStatus = (msgId: string, propId: string, status: ProposalStatus) => {
     setMessages((msgs) =>
@@ -598,7 +716,7 @@ function MessageBubble({
   const isUser = msg.role === "user";
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div className={`${msg.vehicles ? "max-w-full w-full" : "max-w-[85%]"} ${isUser ? "items-end" : "items-start"} flex flex-col gap-3`}>
+      <div className={`${msg.vehicles || msg.settings ? "max-w-full w-full" : "max-w-[85%]"} ${isUser ? "items-end" : "items-start"} flex flex-col gap-3`}>
         <div
           className={`px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap border ${
             isUser
@@ -613,7 +731,9 @@ function MessageBubble({
         </div>
 
         {msg.intent && !isUser && <IntentBadge intent={msg.intent} />}
+        {msg.capabilityNotice && <CapabilityNotice notice={msg.capabilityNotice} />}
         {msg.vehicles && <VehicleTable rows={msg.vehicles} />}
+        {msg.settings && <SettingsCard row={msg.settings} />}
 
         {msg.proposals?.map((p) => (
           <ProposalCard
@@ -624,6 +744,64 @@ function MessageBubble({
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+function CapabilityNotice({
+  notice,
+}: {
+  notice: NonNullable<ChatMessage["capabilityNotice"]>;
+}) {
+  return (
+    <div className="w-full border border-yellow-500/30 bg-yellow-500/5 px-4 py-3">
+      <div className="text-[0.55rem] tracking-[0.3em] uppercase text-yellow-300/80 mb-1">
+        Capability · {notice.areaLabel}
+      </div>
+      <div className="text-sm text-cream/85 leading-relaxed">{notice.message}</div>
+    </div>
+  );
+}
+
+function SettingsCard({ row }: { row: SettingsRow }) {
+  const cap = CAPABILITY_MAP.app_settings;
+  const entries: Array<[string, string | null]> = [
+    ["company_name", row.company_name],
+    ["address", row.address],
+    ["phone", row.phone],
+    ["email", row.email],
+    ["hours", row.hours],
+  ];
+  return (
+    <div className="w-full border border-border bg-jet/60">
+      <div className="px-5 py-3 border-b border-border flex items-center justify-between">
+        <div className="text-[0.55rem] tracking-[0.3em] uppercase text-gold/70">
+          Einstellungen · Nur-Lese
+        </div>
+        <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/40">
+          Quelle: app_settings (Legacy DB)
+        </div>
+      </div>
+      <dl className="divide-y divide-border/40">
+        {entries.map(([key, val]) => {
+          const risky = cap.riskyFields.includes(key);
+          return (
+            <div key={key} className="grid grid-cols-[180px_1fr] gap-4 px-5 py-3">
+              <dt className="text-[0.6rem] tracking-[0.25em] uppercase text-cream/45 flex items-center gap-2">
+                {key}
+                {risky && (
+                  <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-yellow-500/40 text-yellow-300/80 px-1.5 py-0.5">
+                    kritisch
+                  </span>
+                )}
+              </dt>
+              <dd className="text-sm text-cream/85 font-light">
+                {val ? val : <span className="text-cream/30">—</span>}
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
     </div>
   );
 }
@@ -740,9 +918,14 @@ function CardShell({
         </div>
       ) : (
         <div className="text-[0.6rem] tracking-[0.25em] uppercase text-cream/40 text-right">
-          {p.status === "applied" ? "✓ Im Mock angewendet" : "✕ Abgelehnt"}
+          {p.status === "applied"
+            ? "✓ Im Mock angewendet"
+            : p.status === "rejected"
+            ? "✕ Abgelehnt"
+            : "ℹ Nur Vorschlag — Bereich nicht direkt bearbeitbar"}
         </div>
       ))}
+
     </div>
   );
 }
