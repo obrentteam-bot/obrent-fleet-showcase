@@ -606,6 +606,8 @@ export const generateProposalFn = createServerFn({ method: "POST" })
           capability_notice: gated.notice,
           ai_raw: raw,
           source: "ai_gateway",
+          page_route: data.pageRoute ?? null,
+          page_context_included: Boolean(data.pageContext),
         },
       })
       .select("id")
