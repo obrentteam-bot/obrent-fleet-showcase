@@ -731,7 +731,9 @@ function MessageBubble({
         </div>
 
         {msg.intent && !isUser && <IntentBadge intent={msg.intent} />}
+        {msg.capabilityNotice && <CapabilityNotice notice={msg.capabilityNotice} />}
         {msg.vehicles && <VehicleTable rows={msg.vehicles} />}
+        {msg.settings && <SettingsCard row={msg.settings} />}
 
         {msg.proposals?.map((p) => (
           <ProposalCard
@@ -742,6 +744,64 @@ function MessageBubble({
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+function CapabilityNotice({
+  notice,
+}: {
+  notice: NonNullable<ChatMessage["capabilityNotice"]>;
+}) {
+  return (
+    <div className="w-full border border-yellow-500/30 bg-yellow-500/5 px-4 py-3">
+      <div className="text-[0.55rem] tracking-[0.3em] uppercase text-yellow-300/80 mb-1">
+        Capability · {notice.areaLabel}
+      </div>
+      <div className="text-sm text-cream/85 leading-relaxed">{notice.message}</div>
+    </div>
+  );
+}
+
+function SettingsCard({ row }: { row: SettingsRow }) {
+  const cap = CAPABILITY_MAP.app_settings;
+  const entries: Array<[string, string | null]> = [
+    ["company_name", row.company_name],
+    ["address", row.address],
+    ["phone", row.phone],
+    ["email", row.email],
+    ["hours", row.hours],
+  ];
+  return (
+    <div className="w-full border border-border bg-jet/60">
+      <div className="px-5 py-3 border-b border-border flex items-center justify-between">
+        <div className="text-[0.55rem] tracking-[0.3em] uppercase text-gold/70">
+          Einstellungen · Nur-Lese
+        </div>
+        <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/40">
+          Quelle: app_settings (Legacy DB)
+        </div>
+      </div>
+      <dl className="divide-y divide-border/40">
+        {entries.map(([key, val]) => {
+          const risky = cap.riskyFields.includes(key);
+          return (
+            <div key={key} className="grid grid-cols-[180px_1fr] gap-4 px-5 py-3">
+              <dt className="text-[0.6rem] tracking-[0.25em] uppercase text-cream/45 flex items-center gap-2">
+                {key}
+                {risky && (
+                  <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-yellow-500/40 text-yellow-300/80 px-1.5 py-0.5">
+                    kritisch
+                  </span>
+                )}
+              </dt>
+              <dd className="text-sm text-cream/85 font-light">
+                {val ? val : <span className="text-cream/30">—</span>}
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
     </div>
   );
 }
