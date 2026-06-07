@@ -9,7 +9,6 @@ type VehicleRow = Pick<
   "id" | "name" | "category" | "price_per_day" | "available" | "description"
 >;
 
-
 export const Route = createFileRoute("/admin/ai-editor")({
   head: () => ({
     meta: [
@@ -20,19 +19,9 @@ export const Route = createFileRoute("/admin/ai-editor")({
   component: AiEditorPage,
 });
 
-type TabKey = "website" | "fahrzeuge" | "einstellungen" | "seo" | "uebersetzungen";
-
-const TABS: { key: TabKey; label: string; hint: string }[] = [
-  { key: "website", label: "Website", hint: "Hero-Texte, Sektionen, Kontaktdaten anpassen." },
-  { key: "fahrzeuge", label: "Fahrzeuge", hint: "Fahrzeug-Beschreibungen oder Preise vorschlagen." },
-  { key: "einstellungen", label: "Einstellungen", hint: "Globale Einstellungen, Öffnungszeiten, Kontakt." },
-  { key: "seo", label: "SEO", hint: "Meta-Titel, Descriptions, OG-Tags optimieren." },
-  { key: "uebersetzungen", label: "Übersetzungen", hint: "DE/EN/FR Strings anpassen oder ergänzen." },
-];
-
 type Risk = "low" | "medium" | "high";
 type ProposalStatus = "pending" | "applied" | "rejected";
-type ProposalType = "copy" | "price" | "metadata" | "translation" | "setting";
+type ProposalType = "copy" | "price" | "metadata" | "translation" | "setting" | "create";
 
 type Proposal = {
   id: string;
@@ -54,7 +43,6 @@ type ChatMessage = {
   ts: number;
 };
 
-
 const RISK_STYLE: Record<Risk, string> = {
   low: "bg-green-500/10 text-green-400 border-green-500/30",
   medium: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
@@ -68,6 +56,7 @@ const TYPE_LABEL: Record<ProposalType, string> = {
   metadata: "Metadaten",
   translation: "Übersetzung",
   setting: "Einstellung",
+  create: "Neuanlage",
 };
 
 const STATUS_STYLE: Record<ProposalStatus, string> = {
@@ -81,91 +70,125 @@ const STATUS_LABEL: Record<ProposalStatus, string> = {
   rejected: "Abgelehnt",
 };
 
-function mockReply(tab: TabKey, prompt: string): { content: string; proposals: Proposal[] } {
-  const base = Date.now();
-  const make = (i: number): Proposal => {
-    const map: Record<TabKey, Proposal> = {
-      website: {
-        id: `${base}-${i}`,
-        summary: "Hero-Headline klarer und nutzenorientiert formulieren",
-        target: "Startseite · Hero · Headline",
-        type: "copy",
-        change:
-          'Aktuell: "Luxusfahrzeuge mieten."\nNeu: "Luxus auf Abruf — Premium-Fahrzeuge in Frankfurt mieten."',
-        risk: "low",
-        status: "pending",
-      },
-      fahrzeuge: {
-        id: `${base}-${i}`,
-        summary: "Beschreibung für Mercedes G-Klasse verfeinern",
-        target: "Fahrzeug · Mercedes G-Klasse",
-        type: "copy",
-        change:
-          "Beschreibung um Ausstattungsmerkmale (Burmester, AMG Line, 360°-Kamera) ergänzen.",
-        risk: "low",
-        status: "pending",
-      },
-      einstellungen: {
-        id: `${base}-${i}`,
-        summary: "Öffnungszeiten Sonntag aktualisieren",
-        target: "Einstellungen · Öffnungszeiten",
-        type: "setting",
-        change: "So: geschlossen → 10:00–16:00 (nach Vereinbarung).",
-        risk: "medium",
-        status: "pending",
-      },
-      seo: {
-        id: `${base}-${i}`,
-        summary: "Meta-Description Startseite kürzen auf < 160 Zeichen",
-        target: "SEO · / · meta description",
-        type: "metadata",
-        change:
-          'Neu: "OBRENT — Premium- und Luxusfahrzeuge mieten in Frankfurt. Tageweise, mit Lieferung, ohne Kompromisse."',
-        risk: "low",
-        status: "pending",
-      },
-      uebersetzungen: {
-        id: `${base}-${i}`,
-        summary: 'EN-Übersetzung für "Jetzt anfragen" angleichen',
-        target: "i18n · en · cta.book_now",
-        type: "translation",
-        change: '"Book now" → "Request a quote"',
-        risk: "low",
-        status: "pending",
-      },
-    };
-    return map[tab];
-  };
-
-  return {
-    content: `Vorschläge für den Bereich ${TABS.find((t) => t.key === tab)?.label} basierend auf:\n\n"${prompt}"`,
-    proposals: [make(1), make(2)].map((p, idx) => ({ ...p, id: `${p.id}-${idx}` })),
-  };
-}
-
-const LIST_KEYWORDS = [
-  "zeig", "zeige", "liste", "list", "alle", "übersicht", "uebersicht",
-  "anzeigen", "show", "display", "welche", "preise", "preis",
-];
-const OPTIMIZE_KEYWORDS = [
-  "optimier", "verbesser", "vorschlag", "vorschläge", "ändere", "aendere",
-  "anpassen", "formulier", "umschreib", "schreib um", "neuer text",
-  "besseren text", "verfeiner", "kürzen", "kuerzen",
+const SUGGESTIONS: string[] = [
+  "Fahrzeuge anzeigen",
+  "Preis ändern",
+  "Fahrzeug hinzufügen",
+  "SEO prüfen",
+  "Text optimieren",
+  "Einstellungen ändern",
 ];
 
-function detectIntent(prompt: string): "list" | "optimize" | "info" {
+type Area = "vehicles" | "settings" | "seo" | "translation" | "website";
+type Action = "list" | "add" | "price" | "optimize" | "change" | "info";
+
+const AREA_LABEL: Record<Area, string> = {
+  vehicles: "Fahrzeuge",
+  settings: "Einstellungen",
+  seo: "SEO",
+  translation: "Übersetzungen",
+  website: "Website",
+};
+
+function detect(prompt: string): { area: Area; action: Action } {
   const p = prompt.toLowerCase();
-  if (OPTIMIZE_KEYWORDS.some((k) => p.includes(k))) return "optimize";
-  if (LIST_KEYWORDS.some((k) => p.includes(k))) return "list";
-  return "info";
+
+  // Area
+  let area: Area = "website";
+  if (/(fahrzeug|auto|wagen|modell|audi|bmw|mercedes|ferrari|porsche|lamborghini|rs\d|g-klasse|preis|€|eur)/.test(p)) area = "vehicles";
+  else if (/(seo|meta|description|titel|og:|sitemap|keyword)/.test(p)) area = "seo";
+  else if (/(übersetz|uebersetz|translate|englisch|english|französisch|franzoesisch|i18n|sprache)/.test(p)) area = "translation";
+  else if (/(einstellung|telefon|adresse|öffnungszeit|oeffnungszeit|kontakt|impressum|email|e-mail)/.test(p)) area = "settings";
+  else if (/(startseite|hero|seite|website|landing|sektion|über uns|ueber uns)/.test(p)) area = "website";
+
+  // Action
+  let action: Action = "info";
+  if (/(zeig|liste|alle|übersicht|uebersicht|anzeigen|show|display|welche)/.test(p)) action = "list";
+  else if (/(hinzufüg|hinzufueg|neu anleg|anlegen|erstell|add|füge.*hinzu|fuege.*hinzu)/.test(p)) action = "add";
+  else if (/(preis|€|eur|pro tag|tagespreis)/.test(p) && /(ändere|aendere|setze|update|neuer preis|auf \d)/.test(p)) action = "price";
+  else if (/(optimier|verbesser|vorschlag|umschreib|verfeiner|kürzen|kuerzen|prüf|pruef|check)/.test(p)) action = "optimize";
+  else if (/(ändere|aendere|update|anpassen|setze|change)/.test(p)) action = "change";
+
+  // Heuristic: if user mentions a price assignment, ensure area = vehicles
+  if (action === "price") area = "vehicles";
+
+  return { area, action };
 }
 
+function makeProposal(area: Area, action: Action, prompt: string): Proposal {
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+
+  if (area === "vehicles" && action === "price") {
+    return {
+      id,
+      summary: "Tagespreis eines Fahrzeugs anpassen",
+      target: "Fahrzeug · (aus Eingabe extrahiert)",
+      type: "price",
+      change: `Auftrag: "${prompt}"\nGeplante Aktion: price_per_day im Eintrag des genannten Fahrzeugs aktualisieren.`,
+      risk: "medium",
+      status: "pending",
+    };
+  }
+  if (area === "vehicles" && action === "add") {
+    return {
+      id,
+      summary: "Neues Fahrzeug anlegen",
+      target: "Tabelle · vehicles",
+      type: "create",
+      change: `Auftrag: "${prompt}"\nGeplante Aktion: Neuer Eintrag in vehicles (Name, Kategorie, Preis, Beschreibung, Bilder fehlen noch).`,
+      risk: "high",
+      status: "pending",
+    };
+  }
+  if (area === "seo") {
+    return {
+      id,
+      summary: "SEO-Metadaten optimieren",
+      target: "SEO · (Seite aus Eingabe ableiten)",
+      type: "metadata",
+      change: `Auftrag: "${prompt}"\nGeplante Aktion: Meta-Title (<60), Description (<160), OG-Tags überarbeiten.`,
+      risk: "low",
+      status: "pending",
+    };
+  }
+  if (area === "translation") {
+    return {
+      id,
+      summary: "Übersetzung ergänzen / anpassen",
+      target: "i18n · (Schlüssel aus Eingabe ableiten)",
+      type: "translation",
+      change: `Auftrag: "${prompt}"\nGeplante Aktion: Sprachvariante (DE/EN/FR) hinzufügen oder korrigieren.`,
+      risk: "low",
+      status: "pending",
+    };
+  }
+  if (area === "settings") {
+    return {
+      id,
+      summary: "Globale Einstellung aktualisieren",
+      target: "Einstellungen · (Feld aus Eingabe ableiten)",
+      type: "setting",
+      change: `Auftrag: "${prompt}"\nGeplante Aktion: Kontakt / Öffnungszeiten / Stammdaten anpassen.`,
+      risk: "medium",
+      status: "pending",
+    };
+  }
+  // website / fallback
+  return {
+    id,
+    summary: "Website-Text überarbeiten",
+    target: "Website · (Sektion aus Eingabe ableiten)",
+    type: "copy",
+    change: `Auftrag: "${prompt}"\nGeplante Aktion: Headline / Body-Text klarer und nutzenorientierter formulieren.`,
+    risk: "low",
+    status: "pending",
+  };
+}
 
 function AiEditorPage() {
   const navigate = useNavigate();
   const { session, isAdmin, loading } = useAuth();
 
-  const [tab, setTab] = useState<TabKey>("website");
   const [prompt, setPrompt] = useState("");
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -174,7 +197,7 @@ function AiEditorPage() {
       role: "assistant",
       ts: Date.now(),
       content:
-        "Willkommen im AI Editor. Wähle oben einen Bereich, beschreibe was du ändern möchtest — ich erstelle Vorschläge, die du prüfen kannst. (Mock-Modus: keine Änderungen werden gespeichert.)",
+        "Willkommen im AI Editor. Schreib einfach, was du ändern möchtest — z. B. \"Zeig mir alle Fahrzeuge und Preise\", \"Ändere den Audi RS6 auf 499 € pro Tag\" oder \"Optimiere die Startseite für SEO\". Ich erkenne Bereich und Absicht automatisch. (Mock-Modus: keine Änderungen werden gespeichert.)",
     },
   ]);
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -196,19 +219,19 @@ function AiEditorPage() {
     );
   }
 
-  const send = async () => {
-    const text = prompt.trim();
+  const submit = async (textRaw: string) => {
+    const text = textRaw.trim();
     if (!text || sending) return;
     const userMsg: ChatMessage = { id: `u-${Date.now()}`, role: "user", content: text, ts: Date.now() };
     setMessages((m) => [...m, userMsg]);
     setPrompt("");
     setSending(true);
 
-    const intent = detectIntent(text);
+    const { area, action } = detect(text);
     const replyId = `a-${Date.now()}`;
 
-    // Fahrzeuge + list intent → real read-only data from legacy Supabase.
-    if (tab === "fahrzeuge" && intent === "list") {
+    // Real read of vehicles when listing.
+    if (area === "vehicles" && action === "list") {
       const { data, error } = await supabase
         .from("vehicles")
         .select("id, name, category, price_per_day, available, description")
@@ -229,7 +252,7 @@ function AiEditorPage() {
               id: replyId,
               role: "assistant",
               ts: Date.now(),
-              content: `Hier ist die aktuelle Fahrzeugliste aus der Datenbank (${data?.length ?? 0} Einträge). Nur-Lese — keine Vorschläge generiert.`,
+              content: `Bereich erkannt: ${AREA_LABEL[area]} · Aktion: Liste.\nHier sind die aktuellen Fahrzeuge aus der Datenbank (${data?.length ?? 0} Einträge). Nur-Lese — keine Vorschläge.`,
               vehicles: (data ?? []) as VehicleRow[],
             },
       ]);
@@ -237,32 +260,35 @@ function AiEditorPage() {
       return;
     }
 
-    // Mock proposals ONLY when the user explicitly asks for optimization.
-    await new Promise((r) => setTimeout(r, 700));
-    if (intent === "optimize") {
-      const { content, proposals } = mockReply(tab, text);
-      setMessages((m) => [
-        ...m,
-        { id: replyId, role: "assistant", content, proposals, ts: Date.now() },
-      ]);
-    } else {
-      const hint =
-        tab === "fahrzeuge"
-          ? 'Frage z. B. "Zeig mir alle Fahrzeuge und Preise" für eine Liste, oder "Optimiere die Beschreibung von …" für Vorschläge.'
-          : "Beschreibe konkret, was optimiert oder geändert werden soll, damit ich Vorschläge generieren kann.";
+    await new Promise((r) => setTimeout(r, 600));
+
+    if (action === "info") {
       setMessages((m) => [
         ...m,
         {
           id: replyId,
           role: "assistant",
           ts: Date.now(),
-          content: `Verstanden. Ich erstelle keine Vorschläge ohne expliziten Optimierungs-Auftrag.\n\n${hint}`,
+          content: `Bereich erkannt: ${AREA_LABEL[area]}. Ich erstelle keinen Vorschlag ohne klare Absicht.\n\nBeispiele:\n· "Zeig mir alle Fahrzeuge und Preise"\n· "Ändere den Audi RS6 auf 499 € pro Tag"\n· "Optimiere die Startseite für SEO"`,
         },
       ]);
+      setSending(false);
+      return;
     }
+
+    const proposal = makeProposal(area, action, text);
+    setMessages((m) => [
+      ...m,
+      {
+        id: replyId,
+        role: "assistant",
+        ts: Date.now(),
+        content: `Bereich erkannt: ${AREA_LABEL[area]} · Aktion: ${action}.\nVorschlag erstellt (Mock — wird nicht angewendet).`,
+        proposals: [proposal],
+      },
+    ]);
     setSending(false);
   };
-
 
   const updateProposal = (msgId: string, propId: string, status: ProposalStatus) => {
     setMessages((msgs) =>
@@ -273,8 +299,6 @@ function AiEditorPage() {
       ),
     );
   };
-
-  const activeTab = TABS.find((t) => t.key === tab)!;
 
   return (
     <div className="min-h-screen bg-onyx text-cream flex flex-col">
@@ -299,34 +323,15 @@ function AiEditorPage() {
         </div>
       </header>
 
-      {/* Tabs */}
-      <nav className="border-b border-border px-6 md:px-12 py-4 flex flex-wrap gap-2">
-        {TABS.map((t) => {
-          const active = t.key === tab;
-          return (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`text-[0.65rem] tracking-[0.28em] uppercase px-4 py-2 border transition-colors ${
-                active
-                  ? "border-gold text-gold bg-gold/5"
-                  : "border-border text-cream/60 hover:text-cream hover:border-cream/30"
-              }`}
-            >
-              {t.label}
-            </button>
-          );
-        })}
-      </nav>
-
       <main className="flex-1 px-6 md:px-12 py-8 max-w-5xl w-full mx-auto flex flex-col min-h-0">
         <div className="mb-6">
-          <div className="eyebrow mb-2">Aktiver Bereich</div>
-          <div className="font-display text-2xl text-cream">{activeTab.label}</div>
-          <p className="text-cream/55 text-sm mt-1">{activeTab.hint}</p>
+          <div className="eyebrow mb-2">Unified Chat</div>
+          <div className="font-display text-2xl text-cream">Was möchtest du ändern?</div>
+          <p className="text-cream/55 text-sm mt-1">
+            Schreib natürlich — ich erkenne Bereich (Fahrzeuge, SEO, Einstellungen, Übersetzungen, Website) und Absicht automatisch.
+          </p>
         </div>
 
-        {/* Chat history */}
         <div
           ref={scrollerRef}
           className="flex-1 border border-border bg-jet/30 p-5 md:p-7 overflow-y-auto space-y-6 min-h-[420px]"
@@ -346,7 +351,6 @@ function AiEditorPage() {
           )}
         </div>
 
-        {/* Prompt */}
         <div className="mt-5 border border-border bg-jet/40 p-4">
           <textarea
             value={prompt}
@@ -354,11 +358,11 @@ function AiEditorPage() {
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
-                send();
+                submit(prompt);
               }
             }}
             rows={3}
-            placeholder={`Was möchtest du im Bereich ${activeTab.label} ändern? (⌘/Ctrl + Enter zum Senden)`}
+            placeholder='z. B. "Zeig mir alle Fahrzeuge und Preise" (⌘/Ctrl + Enter zum Senden)'
             className="w-full bg-transparent text-cream placeholder:text-cream/30 text-sm font-light leading-relaxed resize-none focus:outline-none"
           />
           <div className="flex items-center justify-between gap-4 mt-3 pt-3 border-t border-border/60">
@@ -366,12 +370,26 @@ function AiEditorPage() {
               Keine Änderungen werden gespeichert
             </span>
             <button
-              onClick={send}
+              onClick={() => submit(prompt)}
               disabled={sending || !prompt.trim()}
               className="text-[0.65rem] tracking-[0.28em] uppercase border border-gold text-gold px-5 py-2 hover:bg-gold hover:text-onyx transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gold"
             >
               {sending ? "Sende…" : "Senden →"}
             </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border/60">
+            {SUGGESTIONS.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setPrompt(s)}
+                disabled={sending}
+                className="text-[0.6rem] tracking-[0.25em] uppercase border border-border text-cream/65 px-3 py-1.5 hover:text-gold hover:border-gold/50 transition-colors disabled:opacity-40"
+              >
+                {s}
+              </button>
+            ))}
           </div>
         </div>
       </main>
@@ -404,7 +422,6 @@ function MessageBubble({
         </div>
 
         {msg.vehicles && <VehicleTable rows={msg.vehicles} />}
-
 
         {msg.proposals?.map((p) => (
           <ProposalCard
