@@ -49,8 +49,11 @@ type ChatMessage = {
   role: "user" | "assistant";
   content: string;
   proposals?: Proposal[];
+  vehicles?: VehicleRow[];
+  vehiclesError?: string;
   ts: number;
 };
+
 
 const RISK_STYLE: Record<Risk, string> = {
   low: "bg-green-500/10 text-green-400 border-green-500/30",
