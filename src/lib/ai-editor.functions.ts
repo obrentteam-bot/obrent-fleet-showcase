@@ -266,7 +266,7 @@ type RawAiResult = {
   notEditable?: boolean;
 };
 
-async function callAi(prompt: string): Promise<{
+async function callAi(prompt: string, pageContext?: string): Promise<{
   raw: RawAiResult | null;
   rawText: string;
   error: string | null;
@@ -275,6 +275,10 @@ async function callAi(prompt: string): Promise<{
   if (!apiKey) {
     return { raw: null, rawText: "", error: "LOVABLE_API_KEY missing" };
   }
+
+  const userContent = pageContext
+    ? `WEBSITE_PAGE_CONTEXT (read-only, do NOT invent content beyond this):\n${pageContext}\n\nADMIN_PROMPT:\n${prompt}`
+    : prompt;
 
   let res: Response;
   try {
@@ -288,7 +292,7 @@ async function callAi(prompt: string): Promise<{
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: prompt },
+          { role: "user", content: userContent },
         ],
         tools: [AI_TOOL],
         tool_choice: {
@@ -490,6 +494,8 @@ export const generateProposalFn = createServerFn({ method: "POST" })
     z
       .object({
         prompt: z.string().min(1).max(2000),
+        pageContext: z.string().max(8000).optional(),
+        pageRoute: z.string().max(200).optional(),
       })
       .parse(data),
   )
@@ -497,8 +503,8 @@ export const generateProposalFn = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const prompt = data.prompt.trim();
 
-    // 1) Ask AI for structured proposal
-    const { raw, rawText, error: aiError } = await callAi(prompt);
+    // 1) Ask AI for structured proposal (with optional website page context)
+    const { raw, rawText, error: aiError } = await callAi(prompt, data.pageContext);
 
     // Fallback intent when AI fails or returns garbage
     const fallbackIntent: SrvIntent = {
@@ -600,6 +606,8 @@ export const generateProposalFn = createServerFn({ method: "POST" })
           capability_notice: gated.notice,
           ai_raw: raw,
           source: "ai_gateway",
+          page_route: data.pageRoute ?? null,
+          page_context_included: Boolean(data.pageContext),
         },
       })
       .select("id")
