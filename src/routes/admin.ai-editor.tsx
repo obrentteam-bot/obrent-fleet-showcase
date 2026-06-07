@@ -12,8 +12,10 @@ import { logPrompt, updateLogStatus } from "@/lib/ai-editor-log";
 import { generateProposalFn } from "@/lib/ai-editor.functions";
 import {
   detectPageFromText,
+  detectSectionFromText,
   summarizePageForAi,
   type PageEntry,
+  type PageSection,
 } from "@/lib/website-content-index";
 import logo from "@/assets/obrent-logo.png";
 
