@@ -196,7 +196,7 @@ function AiEditorPage() {
     );
   }
 
-  const send = () => {
+  const send = async () => {
     const text = prompt.trim();
     if (!text || sending) return;
     const userMsg: ChatMessage = { id: `u-${Date.now()}`, role: "user", content: text, ts: Date.now() };
@@ -204,15 +204,65 @@ function AiEditorPage() {
     setPrompt("");
     setSending(true);
 
-    setTimeout(() => {
+    const intent = detectIntent(text);
+    const replyId = `a-${Date.now()}`;
+
+    // Fahrzeuge + list intent → real read-only data from legacy Supabase.
+    if (tab === "fahrzeuge" && intent === "list") {
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("id, name, category, price_per_day, available, description")
+        .order("category", { ascending: true })
+        .order("name", { ascending: true });
+
+      setMessages((m) => [
+        ...m,
+        error
+          ? {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `Konnte die Fahrzeuge nicht laden: ${error.message}`,
+              vehiclesError: error.message,
+            }
+          : {
+              id: replyId,
+              role: "assistant",
+              ts: Date.now(),
+              content: `Hier ist die aktuelle Fahrzeugliste aus der Datenbank (${data?.length ?? 0} Einträge). Nur-Lese — keine Vorschläge generiert.`,
+              vehicles: (data ?? []) as VehicleRow[],
+            },
+      ]);
+      setSending(false);
+      return;
+    }
+
+    // Mock proposals ONLY when the user explicitly asks for optimization.
+    await new Promise((r) => setTimeout(r, 700));
+    if (intent === "optimize") {
       const { content, proposals } = mockReply(tab, text);
       setMessages((m) => [
         ...m,
-        { id: `a-${Date.now()}`, role: "assistant", content, proposals, ts: Date.now() },
+        { id: replyId, role: "assistant", content, proposals, ts: Date.now() },
       ]);
-      setSending(false);
-    }, 900);
+    } else {
+      const hint =
+        tab === "fahrzeuge"
+          ? 'Frage z. B. "Zeig mir alle Fahrzeuge und Preise" für eine Liste, oder "Optimiere die Beschreibung von …" für Vorschläge.'
+          : "Beschreibe konkret, was optimiert oder geändert werden soll, damit ich Vorschläge generieren kann.";
+      setMessages((m) => [
+        ...m,
+        {
+          id: replyId,
+          role: "assistant",
+          ts: Date.now(),
+          content: `Verstanden. Ich erstelle keine Vorschläge ohne expliziten Optimierungs-Auftrag.\n\n${hint}`,
+        },
+      ]);
+    }
+    setSending(false);
   };
+
 
   const updateProposal = (msgId: string, propId: string, status: ProposalStatus) => {
     setMessages((msgs) =>
