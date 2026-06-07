@@ -138,10 +138,28 @@ function mockReply(tab: TabKey, prompt: string): { content: string; proposals: P
   };
 
   return {
-    content: `Ich habe deinen Wunsch verstanden:\n\n"${prompt}"\n\nHier sind meine Vorschläge für den Bereich ${TABS.find((t) => t.key === tab)?.label}. Du kannst sie einzeln annehmen oder ablehnen.`,
+    content: `Vorschläge für den Bereich ${TABS.find((t) => t.key === tab)?.label} basierend auf:\n\n"${prompt}"`,
     proposals: [make(1), make(2)].map((p, idx) => ({ ...p, id: `${p.id}-${idx}` })),
   };
 }
+
+const LIST_KEYWORDS = [
+  "zeig", "zeige", "liste", "list", "alle", "übersicht", "uebersicht",
+  "anzeigen", "show", "display", "welche", "preise", "preis",
+];
+const OPTIMIZE_KEYWORDS = [
+  "optimier", "verbesser", "vorschlag", "vorschläge", "ändere", "aendere",
+  "anpassen", "formulier", "umschreib", "schreib um", "neuer text",
+  "besseren text", "verfeiner", "kürzen", "kuerzen",
+];
+
+function detectIntent(prompt: string): "list" | "optimize" | "info" {
+  const p = prompt.toLowerCase();
+  if (OPTIMIZE_KEYWORDS.some((k) => p.includes(k))) return "optimize";
+  if (LIST_KEYWORDS.some((k) => p.includes(k))) return "list";
+  return "info";
+}
+
 
 function AiEditorPage() {
   const navigate = useNavigate();
