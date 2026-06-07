@@ -108,6 +108,7 @@ type ChatMessage = {
   settingsError?: string;
   capabilityNotice?: { areaLabel: string; message: string };
   page?: PageEntry;
+  sectionFocusId?: string;
   logId?: string | null;
   logError?: string | null;
   ts: number;
