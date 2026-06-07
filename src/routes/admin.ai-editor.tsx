@@ -273,8 +273,41 @@ function detectIntent(raw: string): DetectedIntent {
 }
 
 // ---------------------------------------------------------------------------
+// Area ↔ Capability mapping
+// ---------------------------------------------------------------------------
+
+/** Map the chat-side `Area` to a capability-map `AreaKey` (or null). */
+function toCapabilityKey(area: Area): AreaKey | null {
+  switch (area) {
+    case "vehicles":     return "vehicles";
+    case "settings":     return "app_settings";
+    case "website":      return "website_copy";
+    case "seo":          return "seo";
+    case "translations": return "translations";
+    case "unknown":      return null;
+  }
+}
+
+function intentToActionKind(kind: IntentKind): ActionKind | null {
+  switch (kind) {
+    case "read":             return "read";
+    case "create":           return "create";
+    case "update":
+    case "settings_update":  return "update";
+    case "delete":           return "delete";
+    // Pure content ops are advisory in the mock — treat as "update" gate.
+    case "optimize":
+    case "seo_suggestion":
+    case "translate":        return "update";
+    case "unknown":          return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Proposal building (mock — no writes)
 // ---------------------------------------------------------------------------
+
+
 
 function newId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
