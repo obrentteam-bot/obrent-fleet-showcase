@@ -494,6 +494,8 @@ export const generateProposalFn = createServerFn({ method: "POST" })
     z
       .object({
         prompt: z.string().min(1).max(2000),
+        pageContext: z.string().max(8000).optional(),
+        pageRoute: z.string().max(200).optional(),
       })
       .parse(data),
   )
@@ -501,8 +503,8 @@ export const generateProposalFn = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const prompt = data.prompt.trim();
 
-    // 1) Ask AI for structured proposal
-    const { raw, rawText, error: aiError } = await callAi(prompt);
+    // 1) Ask AI for structured proposal (with optional website page context)
+    const { raw, rawText, error: aiError } = await callAi(prompt, data.pageContext);
 
     // Fallback intent when AI fails or returns garbage
     const fallbackIntent: SrvIntent = {
