@@ -918,18 +918,23 @@ function SettingsCard({ row }: { row: SettingsRow }) {
   );
 }
 
-function PageCard({ page }: { page: PageEntry }) {
+function PageCard({ page, focusId }: { page: PageEntry; focusId?: string }) {
   const editableTone =
     page.editable === "editable"
       ? "border-emerald-400/40 text-emerald-300/85"
       : page.editable === "locked"
       ? "border-red-400/40 text-red-300/85"
       : "border-yellow-500/40 text-yellow-300/85";
+
+  const sections = focusId
+    ? page.sections.filter((s) => s.id === focusId)
+    : page.sections;
+
   return (
     <div className="w-full border border-border bg-jet/60">
       <div className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
         <div className="text-[0.55rem] tracking-[0.3em] uppercase text-gold/70">
-          Website-Seite · Content Index
+          Website-Seite · Content Index{focusId ? ` · Fokus: ${focusId}` : ""}
         </div>
         <div className="flex gap-2">
           <span className={`text-[0.5rem] tracking-[0.25em] uppercase border px-2 py-0.5 ${editableTone}`}>
@@ -940,60 +945,29 @@ function PageCard({ page }: { page: PageEntry }) {
           </span>
         </div>
       </div>
-      <div className="px-5 py-4 space-y-4">
+      <div className="px-5 py-4 space-y-5">
         <div>
           <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Route</div>
           <div className="font-mono text-sm text-gold">{page.route}</div>
           <div className="text-[0.6rem] tracking-[0.2em] uppercase text-cream/40 mt-1">{page.name}</div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Meta-Title</div>
-            <div className="text-sm text-cream/85 font-light">{page.meta.title}</div>
+        {!focusId && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Field label="Meta-Title" value={page.meta.title} />
+            <Field label="Meta-Description" value={page.meta.description} />
+            <Field label="SEO-Quelle" value={page.seoSource} mono />
+            <Field label="Übersetzung" value={page.translationSource} mono />
           </div>
-          <div>
-            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Meta-Description</div>
-            <div className="text-sm text-cream/85 font-light">{page.meta.description}</div>
-          </div>
-          <div>
-            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">SEO-Quelle</div>
-            <div className="text-sm text-cream/75 font-mono">{page.seoSource}</div>
-          </div>
-          <div>
-            <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">Übersetzung</div>
-            <div className="text-sm text-cream/75 font-mono">{page.translationSource}</div>
-          </div>
-        </div>
+        )}
 
-        <div>
-          <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-2">
-            Erkannte Sektionen ({page.sections.length})
+        <div className="space-y-3">
+          <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45">
+            {focusId ? "Sektion" : `Sektionen (${page.sections.length})`}
           </div>
-          <ul className="divide-y divide-border/40 border border-border/40">
-            {page.sections.map((s) => (
-              <li key={s.id} className="px-3 py-2 flex items-center justify-between gap-3 text-xs">
-                <div className="min-w-0">
-                  <div className="text-cream/85 font-light truncate">
-                    <span className="font-mono text-cream/55">{s.id}</span> · {s.label}
-                  </div>
-                  {s.heading && (
-                    <div className="text-cream/55 italic truncate">"{s.heading}"</div>
-                  )}
-                </div>
-                <div className="flex gap-1 shrink-0">
-                  <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-border text-cream/45 px-1.5 py-0.5">
-                    {s.source}
-                  </span>
-                  {s.i18nKey && (
-                    <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-gold/30 text-gold/70 px-1.5 py-0.5 font-mono">
-                      {s.i18nKey}
-                    </span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+          {sections.map((s) => (
+            <SectionCard key={s.id} section={s} />
+          ))}
         </div>
 
         <div className="text-[0.55rem] tracking-[0.25em] uppercase text-cream/35 pt-1">
@@ -1003,6 +977,158 @@ function PageCard({ page }: { page: PageEntry }) {
     </div>
   );
 }
+
+function Field({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div>
+      <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">{label}</div>
+      <div className={`text-sm ${mono ? "font-mono text-cream/75" : "font-light text-cream/85"}`}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function SectionCard({ section: s }: { section: PageSection }) {
+  const aboveFoldLen =
+    (s.hero?.eyebrow?.length ?? 0) +
+    (s.hero?.title.length ?? 0) +
+    (s.hero?.subtitle?.length ?? 0) +
+    (s.hero?.description?.length ?? 0);
+  const overBudget =
+    s.hero?.aboveFoldChars !== undefined && aboveFoldLen > s.hero.aboveFoldChars;
+
+  return (
+    <div className="border border-border/60 bg-onyx/40">
+      <div className="px-3 py-2 border-b border-border/40 flex items-center justify-between gap-2 flex-wrap">
+        <div className="text-xs text-cream/85 font-light">
+          <span className="font-mono text-cream/55">{s.id}</span> · {s.label}
+        </div>
+        <div className="flex gap-1 shrink-0">
+          {!s.extracted && (
+            <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-yellow-500/40 text-yellow-300/80 px-1.5 py-0.5">
+              unsupported
+            </span>
+          )}
+          <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-border text-cream/45 px-1.5 py-0.5">
+            {s.source}
+          </span>
+          {s.i18nKey && (
+            <span className="text-[0.5rem] tracking-[0.2em] uppercase border border-gold/30 text-gold/70 px-1.5 py-0.5 font-mono">
+              {s.i18nKey}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {!s.extracted ? (
+        <div className="px-3 py-3 text-xs text-cream/55 italic">
+          {s.unsupportedReason ?? "Sektion nicht eingelesen."}
+        </div>
+      ) : (
+        <div className="px-3 py-3 space-y-2 text-xs text-cream/85 font-light">
+          {s.hero ? (
+            <>
+              {s.hero.eyebrow && (
+                <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45">
+                  {s.hero.eyebrow}
+                </div>
+              )}
+              <div className="text-sm text-cream font-display leading-tight">
+                {s.hero.title}
+              </div>
+              {s.hero.subtitle && <div className="text-cream/75">{s.hero.subtitle}</div>}
+              {s.hero.description && (
+                <div className="text-cream/70">{s.hero.description}</div>
+              )}
+              {s.hero.cta && (
+                <div className="text-[0.6rem] tracking-[0.25em] uppercase text-gold/80">
+                  CTA · {s.hero.cta.label}
+                </div>
+              )}
+              {s.hero.aboveFoldChars !== undefined && (
+                <div
+                  className={`text-[0.55rem] tracking-[0.2em] uppercase ${
+                    overBudget ? "text-red-300/85" : "text-emerald-300/70"
+                  }`}
+                >
+                  Above-the-fold (mobile): {aboveFoldLen} / {s.hero.aboveFoldChars} Zeichen
+                  {overBudget ? " · über Budget" : " · ok"}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {s.eyebrow && (
+                <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45">
+                  {s.eyebrow}
+                </div>
+              )}
+              {s.heading && <div className="text-cream">{s.heading}</div>}
+              {s.subheading && <div className="text-cream/75">{s.subheading}</div>}
+              {s.body && <p className="whitespace-pre-wrap text-cream/70">{s.body}</p>}
+            </>
+          )}
+
+          {s.cards && s.cards.length > 0 && (
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              {s.cards.map((c, i) => (
+                <li key={i} className="border border-border/40 px-2 py-1.5">
+                  {c.title && <div className="text-cream/90">{c.title}</div>}
+                  {c.body && <div className="text-cream/55 text-[0.7rem]">{c.body}</div>}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {s.ctas && s.ctas.length > 0 && !s.hero && (
+            <div className="flex flex-wrap gap-1 pt-1">
+              {s.ctas.map((c, i) => (
+                <span
+                  key={i}
+                  className="text-[0.55rem] tracking-[0.25em] uppercase border border-gold/40 text-gold/80 px-2 py-0.5"
+                >
+                  CTA · {c.label}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {s.formFields && s.formFields.length > 0 && (
+            <div className="pt-1">
+              <div className="text-[0.55rem] tracking-[0.3em] uppercase text-cream/45 mb-1">
+                Formularfelder ({s.formFields.length})
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {s.formFields.map((f, i) => (
+                  <span
+                    key={i}
+                    className="text-[0.6rem] border border-border text-cream/60 px-1.5 py-0.5"
+                  >
+                    {f}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {s.faqs && s.faqs.length > 0 && (
+            <ul className="space-y-2 pt-1">
+              {s.faqs.map((f, i) => (
+                <li key={i} className="border-l border-gold/30 pl-2">
+                  <div className="text-cream/85">Q: {f.question}</div>
+                  <div className="text-cream/60">A: {f.answer}</div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 
 function IntentBadge({ intent }: { intent: DetectedIntent }) {
   const conf = Math.round(intent.confidence * 100);
