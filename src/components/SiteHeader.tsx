@@ -24,7 +24,13 @@ export function SiteHeader() {
   const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
 
   const navLinkBase = "text-[0.7rem] tracking-[0.28em] uppercase transition-colors duration-300";
-  const navLinkColor = overDarkHero ? "text-cream hover:text-gold" : "text-cream/70 hover:text-gold";
+  const navLinkColor = overDarkHero
+    ? "text-cream hover:text-gold"
+    : scrolled
+      ? "text-cream/70 hover:text-gold"
+      : theme === "light"
+        ? "text-onyx hover:text-gold"
+        : "text-cream/70 hover:text-gold";
 
 
   const services = [
