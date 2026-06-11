@@ -304,17 +304,14 @@ function VehicleDetailPage() {
                     { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
                     { icon: Palette, label: "Farbe", value: v.color },
                   ].map(({ icon: Icon, label, value }) => (
-                    <div key={label} className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border bg-jet/40">
-                      <div className="w-8 h-8 shrink-0 rounded-md border border-gold/40 flex items-center justify-center">
-                        <Icon className="w-3.5 h-3.5 text-gold" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/45 leading-tight">{label}</div>
-                        <div className="mt-0.5 text-[0.78rem] text-cream font-light leading-tight break-words">{value || "—"}</div>
-                      </div>
+                    <div key={label} className="relative p-4 rounded-xl border border-border bg-jet/40 text-center">
+                      <Icon className="absolute top-3 left-3 w-4 h-4 text-gold" />
+                      <div className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/50 leading-tight">{label}</div>
+                      <div className="mt-1 text-sm text-cream font-light leading-tight break-words">{value || "—"}</div>
                     </div>
                   ))}
                 </div>
+
               </div>
 
               {/* Features bullets — show only top 4 like reference */}
