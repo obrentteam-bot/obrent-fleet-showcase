@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Mail, Phone, MapPin, Sparkles, CheckCircle2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
+import heroSunset from "@/assets/about-hero-sunset.png.asset.json";
 
 import {
   Select,
@@ -64,27 +65,44 @@ function ContactPage() {
   const dateLocale = lang === "de" ? de : undefined;
   return (
     <SiteLayout>
-      <section className="pt-40 pb-16 px-6 md:px-12">
-        <div className="max-w-[1100px] mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="gold-rule" />
-            <span className="eyebrow">{t.contact.eyebrow}</span>
+      {/* HERO */}
+      <section className="relative w-full overflow-hidden bg-onyx">
+        <img
+          src={heroSunset.url}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-onyx/70 via-onyx/80 to-onyx" />
+        <div className="absolute inset-0 bg-gradient-to-r from-onyx/80 via-transparent to-onyx/40" />
+        <div className="relative pt-40 pb-24 px-6 md:px-12">
+          <div className="max-w-[1100px] mx-auto">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="gold-rule" />
+              <span className="eyebrow">{t.contact.eyebrow}</span>
+            </div>
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-cream leading-[0.95] tracking-tight">
+              {t.contact.title} <span className="italic text-gold/90 font-light">{t.contact.titleItalic}</span>.
+            </h1>
+            <p className="mt-8 text-lg md:text-xl text-cream/70 font-light max-w-2xl leading-relaxed">
+              {t.contact.lead}
+            </p>
           </div>
-          <h1 className="font-display text-5xl md:text-8xl text-cream leading-[0.95]">
-            {t.contact.title} <span className="italic text-gold/90 font-light">{t.contact.titleItalic}</span>.
-          </h1>
-          <p className="mt-8 text-lg text-cream/60 font-light max-w-2xl leading-relaxed">
-            {t.contact.lead}
-          </p>
         </div>
       </section>
 
-      <section className="py-20 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <section className="relative py-20 md:py-28 px-6 md:px-12 bg-onyx">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
           <div className="lg:col-span-7">
+            <div className="relative rounded-2xl border border-cream/10 bg-gradient-to-br from-cream/[0.04] via-cream/[0.02] to-transparent backdrop-blur-sm p-6 sm:p-10 md:p-12 shadow-2xl shadow-black/40">
+              <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
             {submitted ? (
-              <div className="py-16 border border-gold/30 bg-onyx/40 text-center">
-                <div className="eyebrow text-gold mb-4">✓</div>
+              <div className="py-16 text-center">
+                <div className="mx-auto w-16 h-16 rounded-full border border-gold/40 bg-gold/10 flex items-center justify-center mb-6">
+                  <CheckCircle2 className="w-8 h-8 text-gold" />
+                </div>
                 <h3 className="font-display text-3xl text-cream mb-3">Vielen Dank!</h3>
                 <p className="text-cream/60">Ihre Nachricht wurde übermittelt. Wir melden uns in Kürze.</p>
               </div>
@@ -344,22 +362,39 @@ function ContactPage() {
               </div>
             </form>
             )}
+            </div>
           </div>
 
-          <aside className="lg:col-span-5 lg:pl-8 lg:border-l lg:border-border space-y-12">
-            <div>
-              <div className="eyebrow mb-4">{t.contact.direct}</div>
-              <div className="font-display text-2xl text-cream">{settings.email}</div>
-              <div className="mt-2 text-cream/55">{settings.phone}</div>
+          <aside className="lg:col-span-5 space-y-6 lg:sticky lg:top-28 self-start">
+            <div className="rounded-2xl border border-gold/20 bg-gradient-to-br from-gold/10 via-gold/[0.03] to-transparent p-8">
+              <div className="flex items-center gap-2 mb-5">
+                <Sparkles className="w-4 h-4 text-gold" />
+                <span className="eyebrow text-gold">{t.contact.direct}</span>
+              </div>
+              <a href={`mailto:${settings.email}`} className="group flex items-center gap-4 py-4 border-b border-cream/10 hover:border-gold/40 transition-colors">
+                <span className="w-10 h-10 rounded-full bg-cream/5 border border-cream/10 flex items-center justify-center group-hover:bg-gold/10 group-hover:border-gold/40 transition-colors">
+                  <Mail className="w-4 h-4 text-gold" />
+                </span>
+                <span className="font-display text-xl text-cream group-hover:text-gold transition-colors">{settings.email}</span>
+              </a>
+              <a href={`tel:${settings.phone}`} className="group flex items-center gap-4 pt-4 hover:text-gold transition-colors">
+                <span className="w-10 h-10 rounded-full bg-cream/5 border border-cream/10 flex items-center justify-center group-hover:bg-gold/10 group-hover:border-gold/40 transition-colors">
+                  <Phone className="w-4 h-4 text-gold" />
+                </span>
+                <span className="font-display text-xl text-cream group-hover:text-gold transition-colors">{settings.phone}</span>
+              </a>
             </div>
-            <div className="space-y-8">
-              <div className="eyebrow">{t.contact.ateliers}</div>
-              <div className="border-l border-gold/30 pl-5">
-                <div className="font-display text-2xl text-cream mb-1">{settings.company_name}</div>
+
+            <div className="rounded-2xl border border-cream/10 bg-cream/[0.02] p-8">
+              <div className="flex items-center gap-2 mb-5">
+                <MapPin className="w-4 h-4 text-gold" />
+                <span className="eyebrow">{t.contact.ateliers}</span>
+              </div>
+              <div className="font-display text-2xl text-cream mb-3">{settings.company_name}</div>
+              <div className="space-y-1">
                 {addressLines.map((l, i) => (
-                  <div key={i} className="text-sm text-cream/60 font-light">{l}</div>
+                  <div key={i} className="text-sm text-cream/65 font-light">{l}</div>
                 ))}
-                
               </div>
             </div>
           </aside>
