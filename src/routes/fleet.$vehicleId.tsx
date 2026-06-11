@@ -328,8 +328,33 @@ function VehicleDetailPage() {
               </div>
             </div>
           </div>
+
+          {/* Specs — separate full-width box with breathing room */}
+          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="eyebrow">{t.vehicle.specifications}</span>
+              <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+              {[
+                { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
+                { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
+                { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
+                { icon: Palette, label: "Farbe", value: v.color },
+              ].map(({ icon: Icon, label, value }) => (
+                <div key={label} className="flex items-start gap-3 p-4 rounded-xl border border-border/70 bg-onyx/30">
+                  <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+                  <div className="min-w-0">
+                    <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
+                    <div className="mt-1.5 text-base text-cream font-light leading-snug break-words">{value || "—"}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
+
 
 
 
