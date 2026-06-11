@@ -307,7 +307,7 @@ function VehicleDetailPage() {
               )}
 
 
-              {/* CTAs */}
+
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <a
                   href="#reservation"
