@@ -33,6 +33,9 @@ export function VehicleSlideshow({ images, alt, intervalMs = 3000 }: Props) {
           key={src + i}
           src={src}
           alt={`${alt} — ${i + 1}`}
+          loading={i === 0 ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={i === 0 ? "high" : "low"}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
             i === index ? "opacity-100" : "opacity-0"
           }`}

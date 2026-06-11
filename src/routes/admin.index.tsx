@@ -4,7 +4,7 @@ import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
-import logo from "@/assets/obrent-logo.png";
+import logo from "@/assets/obrent-logo.webp";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({

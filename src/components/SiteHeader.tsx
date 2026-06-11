@@ -5,7 +5,7 @@ import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
-import logo from "@/assets/obrent-logo-header.png";
+import logo from "@/assets/obrent-logo-header.webp";
 
 export function SiteHeader() {
   const { t } = useI18n();

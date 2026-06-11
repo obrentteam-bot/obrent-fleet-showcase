@@ -4,7 +4,7 @@ import { supabase, type DbBooking, type DbVehicle, formatPrice } from "@/lib/sup
 import { useAuth } from "@/lib/useAuth";
 import { useSettings, saveSettings, type AppSettings } from "@/lib/useSettings";
 import { useMaintenance, setMaintenance } from "@/lib/useMaintenance";
-import logo from "@/assets/obrent-logo.png";
+import logo from "@/assets/obrent-logo.webp";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
@@ -117,7 +117,7 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
             <div className="space-y-2">
               {form.images.map((img, i) => (
                 <div key={i} className="flex gap-2 items-center">
-                  {img && <img src={img} alt="" className="w-12 h-10 object-cover border border-border" />}
+                  {img && <img src={img} loading="lazy" decoding="async" alt="" className="w-12 h-10 object-cover border border-border" />}
                   <input className="lux-input flex-1" placeholder="https://…" value={img} onChange={(e) => setForm((f) => ({ ...f, images: f.images.map((x, idx) => idx === i ? e.target.value : x) }))} />
                   {form.images.length > 1 && <button type="button" onClick={() => setForm((f) => ({ ...f, images: f.images.filter((_, idx) => idx !== i) }))} className="text-red-400 hover:text-gold px-3 border border-border">×</button>}
                 </div>
@@ -625,7 +625,7 @@ function AdminDashboard() {
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        {v.images?.[0] ? <img src={v.images[0]} alt={v.name} className="w-20 h-14 object-cover border border-border" /> : <div className="w-20 h-14 bg-onyx border border-border" />}
+                        {v.images?.[0] ? <img src={v.images[0]} loading="lazy" decoding="async" alt={v.name} className="w-20 h-14 object-cover border border-border" /> : <div className="w-20 h-14 bg-onyx border border-border" />}
                       </td>
                       <td className="px-4 py-4 text-cream">{v.name}</td>
                       <td className="px-4 py-4 text-cream/70">{v.category}</td>

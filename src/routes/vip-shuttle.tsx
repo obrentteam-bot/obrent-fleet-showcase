@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   Sofa,
 } from "lucide-react";
-import bg from "@/assets/services-vip-shuttle.jpg";
+import bg from "@/assets/services-vip-shuttle.webp";
 
 export const Route = createFileRoute("/vip-shuttle")({
   head: () => ({

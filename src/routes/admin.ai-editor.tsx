@@ -17,7 +17,7 @@ import {
   type PageEntry,
   type PageSection,
 } from "@/lib/website-content-index";
-import logo from "@/assets/obrent-logo.png";
+import logo from "@/assets/obrent-logo.webp";
 
 // ---------------------------------------------------------------------------
 // Types: Intent / Proposal architecture
