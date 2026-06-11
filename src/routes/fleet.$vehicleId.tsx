@@ -311,13 +311,12 @@ function VehicleDetailPage() {
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <a
                   href="#reservation"
-                  className="flex-[1.4] inline-flex items-stretch rounded-lg bg-gradient-to-r from-gold to-gold-soft text-onyx overflow-hidden hover:opacity-90 transition"
+                  className="group flex-[1.4] inline-flex items-center justify-center gap-3 px-6 py-4 rounded-lg bg-gradient-to-r from-gold to-gold-soft text-onyx font-medium text-[0.8rem] tracking-[0.2em] uppercase whitespace-nowrap hover:opacity-90 transition"
                 >
-                  <span className="flex-1 flex items-center justify-center px-5 py-4 font-medium text-[0.8rem] tracking-[0.2em] uppercase whitespace-nowrap">Jetzt anfragen</span>
-                  <span className="flex items-center px-6 border-l border-onyx/15">
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
+                  <span>Jetzt anfragen</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
+
                 <button
                   type="button"
                   className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-lg border border-cream/15 bg-jet/60 text-cream/80 text-[0.78rem] tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
