@@ -244,7 +244,7 @@ function VehicleDetailPage() {
               </div>
 
               {/* Feature pills — icon LEFT, text right */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-5 rounded-2xl border border-border bg-jet/40">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
                 {[
                   { icon: ShieldCheck, title: "Vollkasko & Service", sub: "Rundum abgesichert und sorgenfrei." },
                   { icon: CalendarDays, title: "Flexible Mietdauer", sub: "Tageweise mieten – ganz ohne Aufwand." },
