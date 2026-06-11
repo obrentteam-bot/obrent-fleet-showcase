@@ -304,10 +304,12 @@ function VehicleDetailPage() {
                     { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
                     { icon: Palette, label: "Farbe", value: v.color },
                   ].map(({ icon: Icon, label, value }) => (
-                    <div key={label} className="relative p-4 rounded-xl border border-border bg-jet/40 text-center">
-                      <Icon className="absolute top-3 left-3 w-4 h-4 text-gold" />
-                      <div className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/50 leading-tight">{label}</div>
-                      <div className="mt-1 text-sm text-cream font-light leading-tight break-words">{value || "—"}</div>
+                    <div key={label} className="p-4 rounded-xl border border-border bg-jet/40">
+                      <div className="flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-gold shrink-0" />
+                        <span className="text-[0.6rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</span>
+                      </div>
+                      <div className="mt-1.5 pl-6 text-[0.82rem] text-cream font-light leading-tight whitespace-nowrap">{value || "—"}</div>
                     </div>
                   ))}
                 </div>
@@ -331,14 +333,16 @@ function VehicleDetailPage() {
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <a
                   href="#reservation"
-                  className="flex-1 inline-flex items-center justify-between gap-3 px-7 py-4 rounded-md bg-gold text-onyx font-medium text-sm tracking-[0.22em] uppercase hover:bg-gold/90 transition"
+                  className="flex-[1.4] inline-flex items-stretch rounded-lg bg-gradient-to-r from-gold to-gold-soft text-onyx overflow-hidden hover:opacity-90 transition"
                 >
-                  <span className="flex-1 text-center">Jetzt anfragen</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span className="flex-1 flex items-center justify-center px-5 py-4 font-medium text-[0.8rem] tracking-[0.2em] uppercase whitespace-nowrap">Jetzt anfragen</span>
+                  <span className="flex items-center px-6 border-l border-onyx/15">
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
                 </a>
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-md border border-cream/20 text-cream/80 text-sm tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
+                  className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-lg border border-cream/15 bg-jet/60 text-cream/80 text-[0.78rem] tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
                 >
                   <Heart className="w-4 h-4" />
                   Merken
