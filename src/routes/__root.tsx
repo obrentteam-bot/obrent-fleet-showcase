@@ -97,7 +97,8 @@ function RootComponent() {
 
   const host = typeof window !== "undefined" ? window.location.hostname : "";
   const isPreview =
-    host.includes("lovable.app") ||
+    host.includes("id-preview") ||
+    host.includes("-dev.lovable.app") ||
     host.includes("lovable.dev") ||
     host === "localhost" ||
     host === "127.0.0.1";
