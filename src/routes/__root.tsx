@@ -94,6 +94,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { enabled: maintenance } = useMaintenance();
+  const { isAdmin: isAdminUser } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const host = typeof window !== "undefined" ? window.location.hostname : "";
@@ -103,8 +104,8 @@ function RootComponent() {
     host.includes("lovable.dev") ||
     host === "localhost" ||
     host === "127.0.0.1";
-  const isAdmin = pathname.startsWith("/admin");
-  const showMaintenance = maintenance && !isAdmin && !isPreview;
+  const isAdminRoute = pathname.startsWith("/admin");
+  const showMaintenance = maintenance && !isAdminRoute && !isAdminUser && !isPreview;
 
   return (
     <ThemeProvider>
