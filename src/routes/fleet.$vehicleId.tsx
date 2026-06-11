@@ -162,7 +162,6 @@ function VehicleDetailPage() {
     else setSubmitted(true);
   }
 
-  const [imgIndex, setImgIndex] = useState(0);
   const imgCount = v.images.length;
   const goImg = (i: number) => imgCount > 0 && setImgIndex(((i % imgCount) + imgCount) % imgCount);
 
