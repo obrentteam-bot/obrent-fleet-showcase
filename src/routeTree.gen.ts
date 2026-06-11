@@ -23,7 +23,6 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminAiEditorRouteImport } from './routes/admin.ai-editor'
-import { Route as ApiPublicMaintenanceRouteImport } from './routes/api/public/maintenance'
 
 const VipShuttleRoute = VipShuttleRouteImport.update({
   id: '/vip-shuttle',
@@ -95,11 +94,6 @@ const AdminAiEditorRoute = AdminAiEditorRouteImport.update({
   path: '/ai-editor',
   getParentRoute: () => AdminRoute,
 } as any)
-const ApiPublicMaintenanceRoute = ApiPublicMaintenanceRouteImport.update({
-  id: '/api/public/maintenance',
-  path: '/api/public/maintenance',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -116,7 +110,6 @@ export interface FileRoutesByFullPath {
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
-  '/api/public/maintenance': typeof ApiPublicMaintenanceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -132,7 +125,6 @@ export interface FileRoutesByTo {
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin': typeof AdminIndexRoute
   '/fleet': typeof FleetIndexRoute
-  '/api/public/maintenance': typeof ApiPublicMaintenanceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -150,7 +142,6 @@ export interface FileRoutesById {
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
-  '/api/public/maintenance': typeof ApiPublicMaintenanceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,7 +160,6 @@ export interface FileRouteTypes {
     | '/fleet/$vehicleId'
     | '/admin/'
     | '/fleet/'
-    | '/api/public/maintenance'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -185,7 +175,6 @@ export interface FileRouteTypes {
     | '/fleet/$vehicleId'
     | '/admin'
     | '/fleet'
-    | '/api/public/maintenance'
   id:
     | '__root__'
     | '/'
@@ -202,7 +191,6 @@ export interface FileRouteTypes {
     | '/fleet/$vehicleId'
     | '/admin/'
     | '/fleet/'
-    | '/api/public/maintenance'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,7 +205,6 @@ export interface RootRouteChildren {
   VipShuttleRoute: typeof VipShuttleRoute
   FleetVehicleIdRoute: typeof FleetVehicleIdRoute
   FleetIndexRoute: typeof FleetIndexRoute
-  ApiPublicMaintenanceRoute: typeof ApiPublicMaintenanceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -320,13 +307,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAiEditorRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/api/public/maintenance': {
-      id: '/api/public/maintenance'
-      path: '/api/public/maintenance'
-      fullPath: '/api/public/maintenance'
-      preLoaderRoute: typeof ApiPublicMaintenanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -356,7 +336,6 @@ const rootRouteChildren: RootRouteChildren = {
   VipShuttleRoute: VipShuttleRoute,
   FleetVehicleIdRoute: FleetVehicleIdRoute,
   FleetIndexRoute: FleetIndexRoute,
-  ApiPublicMaintenanceRoute: ApiPublicMaintenanceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
