@@ -1,38 +1,33 @@
 import { useEffect, useState, useCallback } from "react";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
-// Maintenance flag is stored as a row in content_revisions (used here as a
-// generic key/value store) with table_name='_app_settings' and
-// field_name='maintenance_mode'. The most recent row wins.
-
-const KEY_TABLE = "_app_settings";
-const KEY_FIELD = "maintenance_mode";
-const KEY_RECORD_ID = "00000000-0000-0000-0000-000000000001";
+const KEY = "maintenance_mode";
 
 let cache: boolean | null = null;
 const listeners = new Set<(v: boolean) => void>();
 
 async function fetchMaintenance(): Promise<boolean> {
   if (!isSupabaseConfigured) return false;
-  const { data } = await supabase
-    .from("content_revisions")
-    .select("new_value")
-    .eq("table_name", KEY_TABLE)
-    .eq("field_name", KEY_FIELD)
-    .order("created_at", { ascending: false })
-    .limit(1)
+  const { data, error } = await supabase
+    .from("site_flags")
+    .select("value")
+    .eq("key", KEY)
     .maybeSingle();
-  return data?.new_value === "true";
+  if (error) {
+    console.error("[maintenance] fetch error", error);
+    return false;
+  }
+  return data?.value === "true";
 }
 
 export async function setMaintenance(enabled: boolean): Promise<Error | null> {
   if (!isSupabaseConfigured) return new Error("Supabase nicht konfiguriert.");
-  const { error } = await supabase.from("content_revisions").insert({
-    table_name: KEY_TABLE,
-    field_name: KEY_FIELD,
-    record_id: KEY_RECORD_ID,
-    new_value: enabled ? "true" : "false",
-  });
+  const { error } = await supabase
+    .from("site_flags")
+    .upsert(
+      { key: KEY, value: enabled ? "true" : "false", updated_at: new Date().toISOString() },
+      { onConflict: "key" },
+    );
   if (!error) {
     cache = enabled;
     listeners.forEach((l) => l(enabled));
@@ -57,7 +52,6 @@ export function useMaintenance() {
     else setLoading(false);
     const l = (v: boolean) => setEnabled(v);
     listeners.add(l);
-    // Re-check periodically so visitors see updates without manual reload
     const id = setInterval(refresh, 30_000);
     return () => {
       listeners.delete(l);
