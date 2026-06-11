@@ -128,7 +128,8 @@ function placeholderFor(name: string): string {
 export function adaptVehicle(v: DbVehicle): UiVehicle {
   const marque = v.name.split(" ")[0] ?? "";
   const restName = v.name.replace(marque, "").trim() || v.name;
-  const images = (v.images ?? []).filter(Boolean);
+  const rawImages = (v.images ?? []).filter(Boolean);
+  const hasImages = rawImages.length > 0;
   const fallback = placeholderFor(v.name);
   return {
     id: v.id,
@@ -138,8 +139,9 @@ export function adaptVehicle(v: DbVehicle): UiVehicle {
     year: v.year ?? new Date().getFullYear(),
     color: v.color ?? "—",
     pricePerDay: Number(v.price_per_day),
-    image: images[0] ?? fallback,
-    images: images.length ? images : [fallback],
+    image: hasImages ? rawImages[0] : fallback,
+    images: hasImages ? rawImages : [fallback],
+    hasImages,
     tagline: v.description ?? "",
     features: v.features ?? [],
     specs: {
