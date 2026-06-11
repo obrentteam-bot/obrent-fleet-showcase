@@ -74,10 +74,38 @@ export function useMaintenance() {
     else setLoading(false);
     const l = (v: boolean) => setEnabled(v);
     listeners.add(l);
-    const id = setInterval(refresh, 30_000);
+    // Fast polling so visitors see changes within seconds.
+    const id = setInterval(refresh, 5_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    // Realtime: react immediately to new maintenance flag entries.
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    if (isSupabaseConfigured) {
+      channel = supabase
+        .channel("maintenance-flag")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "content_revisions" },
+          (payload) => {
+            const row = payload.new as Record<string, unknown> | null;
+            if (row && row.table_name === KEY_TABLE && row.field_name === KEY_FIELD) {
+              const v = row.new_value === "true" || row.new_value === true;
+              cache = v;
+              listeners.forEach((fn) => fn(v));
+            } else {
+              refresh();
+            }
+          }
+        )
+        .subscribe();
+    }
     return () => {
       listeners.delete(l);
       clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [refresh]);
 
