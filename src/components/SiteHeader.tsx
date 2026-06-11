@@ -24,7 +24,13 @@ export function SiteHeader() {
   const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
 
   const navLinkBase = "text-[0.7rem] tracking-[0.28em] uppercase transition-colors duration-300";
-  const navLinkColor = overDarkHero ? "text-cream hover:text-gold" : "text-cream/70 hover:text-gold";
+  const navLinkColor = overDarkHero
+    ? "text-cream hover:text-gold"
+    : scrolled
+      ? "text-cream/70 hover:text-gold"
+      : theme === "light"
+        ? "text-onyx hover:text-gold"
+        : "text-cream/70 hover:text-gold";
 
 
   const services = [
@@ -164,13 +170,21 @@ export function SiteHeader() {
 
         <button
           aria-label="Open menu"
-          className="md:hidden text-cream"
+          className={`md:hidden ${
+            overDarkHero
+              ? "text-cream"
+              : scrolled
+                ? "text-cream"
+                : theme === "light"
+                  ? "text-onyx"
+                  : "text-cream"
+          }`}
           onClick={() => setOpen((s) => !s)}
         >
           <div className="w-6 flex flex-col gap-1.5">
-            <span className={`h-px bg-cream transition-transform ${open ? "rotate-45 translate-y-1.5" : ""}`} />
-            <span className={`h-px bg-cream transition-opacity ${open ? "opacity-0" : ""}`} />
-            <span className={`h-px bg-cream transition-transform ${open ? "-rotate-45 -translate-y-1.5" : ""}`} />
+            <span className={`h-px transition-transform ${open ? "rotate-45 translate-y-1.5" : ""} ${overDarkHero || scrolled || theme !== 'light' ? "bg-cream" : "bg-onyx"}`} />
+            <span className={`h-px transition-opacity ${open ? "opacity-0" : ""} ${overDarkHero || scrolled || theme !== 'light' ? "bg-cream" : "bg-onyx"}`} />
+            <span className={`h-px transition-transform ${open ? "-rotate-45 -translate-y-1.5" : ""} ${overDarkHero || scrolled || theme !== 'light' ? "bg-cream" : "bg-onyx"}`} />
           </div>
         </button>
       </div>
