@@ -1,4 +1,4 @@
-import logo from "@/assets/obrent-logo.png";
+import logo from "@/assets/obrent-logo.webp";
 
 export function MaintenancePage() {
   return (

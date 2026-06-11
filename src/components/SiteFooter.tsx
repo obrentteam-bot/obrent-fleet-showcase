@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { useSettings } from "@/lib/useSettings";
-import logo from "@/assets/obrent-logo.png";
+import logo from "@/assets/obrent-logo.webp";
 
 export function SiteFooter() {
   const { t } = useI18n();

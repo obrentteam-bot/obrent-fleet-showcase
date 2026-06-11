@@ -4,7 +4,7 @@ import { supabase, type DbBooking, type DbVehicle, formatPrice } from "@/lib/sup
 import { useAuth } from "@/lib/useAuth";
 import { useSettings, saveSettings, type AppSettings } from "@/lib/useSettings";
 import { useMaintenance, setMaintenance } from "@/lib/useMaintenance";
-import logo from "@/assets/obrent-logo.png";
+import logo from "@/assets/obrent-logo.webp";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
