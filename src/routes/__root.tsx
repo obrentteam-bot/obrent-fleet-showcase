@@ -1,8 +1,10 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouter } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouter, useRouterState } from "@tanstack/react-router";
 import { AppErrorState } from "@/components/AppErrorState";
 import { I18nProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import { SplashScreen } from "@/components/SplashScreen";
+import { MaintenancePage } from "@/components/MaintenancePage";
+import { useMaintenance } from "@/lib/useMaintenance";
 
 import appCss from "../styles.css?url";
 
@@ -90,11 +92,29 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const { enabled: maintenance } = useMaintenance();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  const host = typeof window !== "undefined" ? window.location.hostname : "";
+  const isPreview =
+    host.includes("lovable.app") ||
+    host.includes("lovable.dev") ||
+    host === "localhost" ||
+    host === "127.0.0.1";
+  const isAdmin = pathname.startsWith("/admin");
+  const showMaintenance = maintenance && !isAdmin && !isPreview;
+
   return (
     <ThemeProvider>
       <I18nProvider>
-        <SplashScreen />
-        <Outlet />
+        {showMaintenance ? (
+          <MaintenancePage />
+        ) : (
+          <>
+            <SplashScreen />
+            <Outlet />
+          </>
+        )}
       </I18nProvider>
     </ThemeProvider>
   );

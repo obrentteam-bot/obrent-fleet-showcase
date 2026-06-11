@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, useMemo, Fragment } from "react";
 import { supabase, type DbBooking, type DbVehicle, formatPrice } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
 import { useSettings, saveSettings, type AppSettings } from "@/lib/useSettings";
+import { useMaintenance, setMaintenance } from "@/lib/useMaintenance";
 import logo from "@/assets/obrent-logo.png";
 
 export const Route = createFileRoute("/admin/dashboard")({
@@ -647,7 +648,10 @@ function AdminDashboard() {
             </section>
           </>
         ) : (
-          <SettingsPanel initial={settings} onSaved={refreshSettings} />
+          <div className="space-y-8">
+            <WebsiteStatusPanel />
+            <SettingsPanel initial={settings} onSaved={refreshSettings} />
+          </div>
         )}
       </main>
 
@@ -695,3 +699,80 @@ function SettingsPanel({ initial, onSaved }: { initial: AppSettings; onSaved: ()
     </div>
   );
 }
+
+function WebsiteStatusPanel() {
+  const { enabled, loading, refresh } = useMaintenance();
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const toggle = async () => {
+    setSaving(true);
+    setMsg(null);
+    const err = await setMaintenance(!enabled);
+    setSaving(false);
+    if (err) setMsg("Fehler: " + err.message);
+    else {
+      await refresh();
+      setMsg("Status aktualisiert ✓");
+      setTimeout(() => setMsg(null), 2500);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl bg-jet border border-border p-8 space-y-6">
+      <div>
+        <h2 className="font-display text-2xl text-cream mb-1">Website Status</h2>
+        <p className="text-xs text-cream/50">
+          Schaltet die öffentliche Website in den Wartungsmodus. /admin bleibt immer erreichbar.
+        </p>
+      </div>
+
+      <div className="flex items-center justify-between gap-4 border border-border bg-onyx px-5 py-4">
+        <div className="flex items-center gap-3">
+          <span
+            className={`inline-block w-2.5 h-2.5 rounded-full ${
+              enabled ? "bg-red-500 animate-pulse" : "bg-green-500"
+            }`}
+          />
+          <span
+            className={`text-[0.7rem] tracking-[0.32em] uppercase font-medium ${
+              enabled ? "text-red-400" : "text-green-400"
+            }`}
+          >
+            {loading ? "…" : enabled ? "In Bearbeitung" : "Live"}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={toggle}
+          disabled={saving || loading}
+          aria-pressed={enabled}
+          aria-label="Website in Bearbeitung"
+          className={`relative inline-flex h-7 w-14 shrink-0 items-center rounded-full border transition-colors disabled:opacity-60 ${
+            enabled ? "bg-red-500/80 border-red-400" : "bg-cream/10 border-border"
+          }`}
+        >
+          <span
+            className={`inline-block h-5 w-5 transform rounded-full bg-cream transition-transform ${
+              enabled ? "translate-x-8" : "translate-x-1"
+            }`}
+          />
+        </button>
+      </div>
+
+      <div className="text-xs text-cream/55 leading-relaxed">
+        <strong className="text-cream/80">Website in Bearbeitung:</strong>{" "}
+        Wenn aktiv, sehen alle Besucher eine Wartungsseite anstelle der normalen Inhalte.
+        Schalten Sie diesen Schalter aus, um die Website wieder live zu schalten.
+      </div>
+
+      {msg && (
+        <div className={`text-sm ${msg.startsWith("Fehler") ? "text-red-400" : "text-green-400"}`}>
+          {msg}
+        </div>
+      )}
+    </div>
+  );
+}
+
