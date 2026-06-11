@@ -65,6 +65,7 @@ export type UiVehicle = {
   pricePerDay: number;
   image: string;
   images: string[];
+  hasImages: boolean;
   tagline: string;
   features: string[];
   specs: {
