@@ -15,14 +15,30 @@ let cache: boolean | null = null;
 const listeners = new Set<(v: boolean) => void>();
 
 async function fetchMaintenance(): Promise<boolean> {
-  if (typeof window === "undefined") return false;
+  if (typeof window === "undefined") return cache ?? false;
+  // 1) Direct read (works for authenticated admins via legacy RLS).
+  if (isSupabaseConfigured) {
+    const { data, error } = await supabase
+      .from("content_revisions")
+      .select("new_value, created_at")
+      .eq("table_name", KEY_TABLE)
+      .eq("field_name", KEY_FIELD)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (!error && data) {
+      const v = (data as { new_value: unknown }).new_value;
+      return v === "true" || v === true;
+    }
+  }
+  // 2) Fallback for anonymous visitors: public server route reads via service role.
   try {
     const res = await fetch("/api/public/maintenance", { cache: "no-store" });
-    if (!res.ok) return false;
+    if (!res.ok) return cache ?? false;
     const data = (await res.json()) as { enabled?: boolean };
     return Boolean(data.enabled);
   } catch {
-    return false;
+    return cache ?? false;
   }
 }
 
