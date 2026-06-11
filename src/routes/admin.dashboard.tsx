@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, useMemo, Fragment } from "react";
 import { supabase, type DbBooking, type DbVehicle, formatPrice } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
 import { useSettings, saveSettings, type AppSettings } from "@/lib/useSettings";
+import { useMaintenance, setMaintenance } from "@/lib/useMaintenance";
 import logo from "@/assets/obrent-logo.png";
 
 export const Route = createFileRoute("/admin/dashboard")({
@@ -647,7 +648,10 @@ function AdminDashboard() {
             </section>
           </>
         ) : (
-          <SettingsPanel initial={settings} onSaved={refreshSettings} />
+          <div className="space-y-8">
+            <WebsiteStatusPanel />
+            <SettingsPanel initial={settings} onSaved={refreshSettings} />
+          </div>
         )}
       </main>
 
