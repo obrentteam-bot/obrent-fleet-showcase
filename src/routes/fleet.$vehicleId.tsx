@@ -6,7 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicle } from "@/lib/useVehicles";
-import { supabase } from "@/lib/supabase";
+import { submitBooking } from "@/lib/submitBooking";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -145,7 +145,7 @@ function VehicleDetailPage() {
       .filter(Boolean)
       .join("\n");
 
-    const { error } = await supabase.from("bookings").insert({
+    const { error } = await submitBooking({
       vehicle_id: v!.id,
       customer_name: fullName || name,
       email,
@@ -157,7 +157,7 @@ function VehicleDetailPage() {
     });
 
     setSubmitting(false);
-    if (error) setSubmitError(error.message);
+    if (error) setSubmitError(error);
     else setSubmitted(true);
   }
 
