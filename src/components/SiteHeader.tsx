@@ -24,13 +24,13 @@ export function SiteHeader() {
   const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
 
   const navLinkBase = "text-[0.7rem] tracking-[0.28em] uppercase transition-colors duration-300";
-  const navLinkColor = overDarkHero
+  // Use foreground so it inverts properly with theme (dark in light mode, light in dark mode).
+  // Only force light text when we're over a dark hero in dark mode.
+  const navLinkColor = overDarkHero && theme === "dark"
     ? "text-cream hover:text-gold"
     : scrolled
-      ? "text-cream/70 hover:text-gold"
-      : theme === "light"
-        ? "text-cream hover:text-gold"
-        : "text-cream/70 hover:text-gold";
+      ? "text-foreground/75 hover:text-gold"
+      : "text-foreground/85 hover:text-gold";
 
 
   const services = [
@@ -170,13 +170,13 @@ export function SiteHeader() {
 
         <button
           aria-label="Open menu"
-          className="md:hidden text-cream"
+          className={`md:hidden ${overDarkHero && theme === "dark" ? "text-cream" : "text-foreground"}`}
           onClick={() => setOpen((s) => !s)}
         >
           <div className="w-6 flex flex-col gap-1.5">
-            <span className={`h-px bg-cream transition-transform ${open ? "rotate-45 translate-y-1.5" : ""}`} />
-            <span className={`h-px bg-cream transition-opacity ${open ? "opacity-0" : ""}`} />
-            <span className={`h-px bg-cream transition-transform ${open ? "-rotate-45 -translate-y-1.5" : ""}`} />
+            <span className={`h-px bg-current transition-transform ${open ? "rotate-45 translate-y-1.5" : ""}`} />
+            <span className={`h-px bg-current transition-opacity ${open ? "opacity-0" : ""}`} />
+            <span className={`h-px bg-current transition-transform ${open ? "-rotate-45 -translate-y-1.5" : ""}`} />
           </div>
         </button>
       </div>
