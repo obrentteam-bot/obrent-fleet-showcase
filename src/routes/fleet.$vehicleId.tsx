@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
+import { VehicleSlideshow } from "@/components/VehicleSlideshow";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
@@ -146,8 +147,8 @@ function VehicleDetailPage() {
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-7">
               <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                <img src={v.image} alt={v.name} className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute top-6 left-6 eyebrow text-cream/80 bg-onyx/50 backdrop-blur px-3 py-2">{cats[v.category] ?? v.category}</div>
+                <VehicleSlideshow images={v.images} alt={v.name} />
+                <div className="absolute top-6 left-6 z-10 eyebrow text-cream/80 bg-onyx/50 backdrop-blur px-3 py-2">{cats[v.category] ?? v.category}</div>
               </div>
             </div>
 
