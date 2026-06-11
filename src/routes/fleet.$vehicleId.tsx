@@ -146,12 +146,16 @@ function VehicleDetailPage() {
           </Link>
 
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7">
-              <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                <VehicleSlideshow images={v.images} alt={v.name} />
-                <div className="absolute top-6 left-6 z-10 eyebrow text-cream/80 bg-onyx/50 backdrop-blur px-3 py-2">{cats[v.category] ?? v.category}</div>
+              <div className="lg:col-span-7">
+                <div className="relative aspect-[4/3] overflow-hidden bg-jet">
+                  {v.hasImages ? (
+                    <VehicleSlideshow images={v.images} alt={v.name} />
+                  ) : (
+                    <ImagePlaceholder className="w-full h-full" />
+                  )}
+                  <div className="absolute top-6 left-6 z-10 eyebrow text-cream/80 bg-onyx/50 backdrop-blur px-3 py-2">{cats[v.category] ?? v.category}</div>
+                </div>
               </div>
-            </div>
 
             <div className="lg:col-span-5 lg:pl-8 lg:sticky lg:top-28">
               <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-3">{v.marque}</div>
