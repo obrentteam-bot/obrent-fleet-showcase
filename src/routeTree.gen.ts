@@ -23,6 +23,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminAiEditorRouteImport } from './routes/admin.ai-editor'
+import { Route as ApiPublicSubmitBookingRouteImport } from './routes/api/public/submit-booking'
 
 const VipShuttleRoute = VipShuttleRouteImport.update({
   id: '/vip-shuttle',
@@ -94,6 +95,11 @@ const AdminAiEditorRoute = AdminAiEditorRouteImport.update({
   path: '/ai-editor',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicSubmitBookingRoute = ApiPublicSubmitBookingRouteImport.update({
+  id: '/api/public/submit-booking',
+  path: '/api/public/submit-booking',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
+  '/api/public/submit-booking': typeof ApiPublicSubmitBookingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin': typeof AdminIndexRoute
   '/fleet': typeof FleetIndexRoute
+  '/api/public/submit-booking': typeof ApiPublicSubmitBookingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
+  '/api/public/submit-booking': typeof ApiPublicSubmitBookingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/fleet/$vehicleId'
     | '/admin/'
     | '/fleet/'
+    | '/api/public/submit-booking'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/fleet/$vehicleId'
     | '/admin'
     | '/fleet'
+    | '/api/public/submit-booking'
   id:
     | '__root__'
     | '/'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/fleet/$vehicleId'
     | '/admin/'
     | '/fleet/'
+    | '/api/public/submit-booking'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -205,6 +217,7 @@ export interface RootRouteChildren {
   VipShuttleRoute: typeof VipShuttleRoute
   FleetVehicleIdRoute: typeof FleetVehicleIdRoute
   FleetIndexRoute: typeof FleetIndexRoute
+  ApiPublicSubmitBookingRoute: typeof ApiPublicSubmitBookingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -307,6 +320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAiEditorRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/submit-booking': {
+      id: '/api/public/submit-booking'
+      path: '/api/public/submit-booking'
+      fullPath: '/api/public/submit-booking'
+      preLoaderRoute: typeof ApiPublicSubmitBookingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -336,6 +356,7 @@ const rootRouteChildren: RootRouteChildren = {
   VipShuttleRoute: VipShuttleRoute,
   FleetVehicleIdRoute: FleetVehicleIdRoute,
   FleetIndexRoute: FleetIndexRoute,
+  ApiPublicSubmitBookingRoute: ApiPublicSubmitBookingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
