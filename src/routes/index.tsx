@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
-const heroImage = "/hero-fleet-sunset.png";
+const heroImage = "/hero-fleet-sunset.webp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
