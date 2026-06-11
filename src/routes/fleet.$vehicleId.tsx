@@ -304,23 +304,23 @@ function VehicleDetailPage() {
                     { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
                     { icon: Palette, label: "Farbe", value: v.color },
                   ].map(({ icon: Icon, label, value }) => (
-                    <div key={label} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-jet/40">
-                      <div className="w-9 h-9 shrink-0 rounded-md border border-gold/40 flex items-center justify-center">
-                        <Icon className="w-4 h-4 text-gold" />
+                    <div key={label} className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border bg-jet/40">
+                      <div className="w-8 h-8 shrink-0 rounded-md border border-gold/40 flex items-center justify-center">
+                        <Icon className="w-3.5 h-3.5 text-gold" />
                       </div>
-                      <div className="min-w-0">
-                        <div className="text-[0.58rem] tracking-[0.24em] uppercase text-cream/45 leading-tight">{label}</div>
-                        <div className="mt-0.5 text-sm text-cream font-light truncate">{value || "—"}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/45 leading-tight">{label}</div>
+                        <div className="mt-0.5 text-[0.78rem] text-cream font-light leading-tight break-words">{value || "—"}</div>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Features bullets */}
+              {/* Features bullets — show only top 4 like reference */}
               {v.features.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-cream/70 font-light">
-                  {v.features.map((feat) => (
+                  {v.features.slice(0, 4).map((feat) => (
                     <div key={feat} className="flex gap-2.5 leading-relaxed">
                       <span className="text-gold mt-1">·</span>
                       <span>{feat}</span>
@@ -328,6 +328,7 @@ function VehicleDetailPage() {
                   ))}
                 </div>
               )}
+
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
