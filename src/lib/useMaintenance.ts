@@ -81,31 +81,38 @@ export function useMaintenance() {
     };
     document.addEventListener("visibilitychange", onVisible);
     // Realtime: react immediately to new maintenance flag entries.
+    // Unique channel name per mount to avoid "tried to subscribe multiple times" crashes.
     let channel: ReturnType<typeof supabase.channel> | null = null;
     if (isSupabaseConfigured) {
-      channel = supabase
-        .channel("maintenance-flag")
-        .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "content_revisions" },
-          (payload) => {
-            const row = payload.new as Record<string, unknown> | null;
-            if (row && row.table_name === KEY_TABLE && row.field_name === KEY_FIELD) {
-              const v = row.new_value === "true" || row.new_value === true;
-              cache = v;
-              listeners.forEach((fn) => fn(v));
-            } else {
-              refresh();
+      try {
+        channel = supabase
+          .channel(`maintenance-flag-${Math.random().toString(36).slice(2)}`)
+          .on(
+            "postgres_changes",
+            { event: "INSERT", schema: "public", table: "content_revisions" },
+            (payload) => {
+              const row = payload.new as Record<string, unknown> | null;
+              if (row && row.table_name === KEY_TABLE && row.field_name === KEY_FIELD) {
+                const v = row.new_value === "true" || row.new_value === true;
+                cache = v;
+                listeners.forEach((fn) => fn(v));
+              } else {
+                refresh();
+              }
             }
-          }
-        )
-        .subscribe();
+          )
+          .subscribe();
+      } catch {
+        channel = null;
+      }
     }
     return () => {
       listeners.delete(l);
       clearInterval(id);
       document.removeEventListener("visibilitychange", onVisible);
-      if (channel) supabase.removeChannel(channel);
+      if (channel) {
+        try { supabase.removeChannel(channel); } catch { /* noop */ }
+      }
     };
   }, [refresh]);
 
