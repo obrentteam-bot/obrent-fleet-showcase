@@ -21,7 +21,10 @@ export function SiteHeader() {
   // we keep the regular dark text so the navbar stays legible.
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const darkHeroRoutes = ["/", "/about", "/vip-shuttle", "/chauffeur-service", "/business-langzeitmiete"];
-  const overDarkHero = theme === "dark" && !scrolled && darkHeroRoutes.includes(pathname);
+  const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
+
+  const navLinkBase = "text-[0.7rem] tracking-[0.28em] uppercase transition-colors duration-300";
+  const navLinkColor = overDarkHero ? "text-cream hover:text-gold" : "text-cream/70 hover:text-gold";
 
 
   const services = [
@@ -65,14 +68,14 @@ export function SiteHeader() {
           <Link
             to="/"
             activeOptions={{ exact: true }}
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.home}
           </Link>
           <Link
             to="/fleet"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.fleet}
@@ -86,7 +89,7 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setServicesOpen((s) => !s)}
-              className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+              className={`${navLinkBase} ${navLinkColor}`}
             >
               {t.nav.services}
             </button>
@@ -139,14 +142,14 @@ export function SiteHeader() {
 
           <Link
             to="/about"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.about}
           </Link>
           <Link
             to="/contact"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.contact}
