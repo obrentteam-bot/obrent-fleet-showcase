@@ -161,66 +161,187 @@ function VehicleDetailPage() {
     else setSubmitted(true);
   }
 
+  const [imgIndex, setImgIndex] = useState(0);
+  const imgCount = v.images.length;
+  const goImg = (i: number) => imgCount > 0 && setImgIndex(((i % imgCount) + imgCount) % imgCount);
+
   return (
     <SiteLayout>
-      {/* Hero image */}
-      <section className="pt-28 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto">
-          <Link to="/fleet" className="text-xs tracking-[0.28em] uppercase text-cream/50 hover:text-gold transition">
-            ← {t.nav.fleet}
-          </Link>
+      <section className="pt-24 px-4 md:px-8 lg:px-12 pb-16">
+        <div className="max-w-[1500px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-7">
-                <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                  {v.hasImages ? (
-                    <VehicleSlideshow images={v.images} alt={v.name} />
-                  ) : (
-                    <ImagePlaceholder className="w-full h-full" />
-                  )}
-                  <div className="absolute top-6 left-6 z-10 eyebrow text-cream/80 bg-onyx/50 backdrop-blur px-3 py-2">{cats[v.category] ?? v.category}</div>
+            {/* LEFT — gallery */}
+            <div className="lg:col-span-7 space-y-5">
+              <div className="relative aspect-[16/11] overflow-hidden rounded-2xl bg-jet">
+                {v.hasImages ? (
+                  <>
+                    {v.images.map((src, i) => (
+                      <img
+                        key={src + i}
+                        src={src}
+                        alt={`${v.name} — ${i + 1}`}
+                        loading={i === 0 ? "eager" : "lazy"}
+                        decoding="async"
+                        fetchPriority={i === 0 ? "high" : "low"}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <ImagePlaceholder className="w-full h-full" />
+                )}
+
+                {/* Top-left back + chip */}
+                <div className="absolute top-5 left-5 z-10 flex flex-col gap-4">
+                  <Link to="/fleet" className="text-xs tracking-[0.32em] uppercase text-cream/80 hover:text-gold transition flex items-center gap-2">
+                    <ChevronLeft className="w-3.5 h-3.5" /> {t.nav.fleet}
+                  </Link>
+                  <div className="inline-flex items-center gap-2.5 self-start px-3.5 py-2 rounded-md border border-gold/50 bg-onyx/55 backdrop-blur-sm">
+                    <Shield className="w-3.5 h-3.5 text-gold" />
+                    <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/90">{cats[v.category] ?? v.category}</span>
+                  </div>
+                </div>
+
+                {/* Counter */}
+                {imgCount > 1 && (
+                  <div className="absolute top-5 right-5 z-10 px-3 py-1.5 rounded-md border border-cream/15 bg-onyx/55 backdrop-blur-sm text-[0.7rem] tracking-[0.2em] text-cream/80">
+                    {imgIndex + 1} / {imgCount}
+                  </div>
+                )}
+
+                {/* Arrows */}
+                {imgCount > 1 && (
+                  <>
+                    <button type="button" aria-label="Vorheriges Bild" onClick={() => goImg(imgIndex - 1)} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-cream/20 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button type="button" aria-label="Nächstes Bild" onClick={() => goImg(imgIndex + 1)} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-cream/20 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </>
+                )}
+
+                {/* Thumbnails */}
+                {imgCount > 1 && (
+                  <div className="absolute bottom-5 left-5 z-10 flex gap-2.5">
+                    {v.images.slice(0, 5).map((src, i) => (
+                      <button
+                        key={src + i}
+                        type="button"
+                        onClick={() => goImg(i)}
+                        aria-label={`Bild ${i + 1}`}
+                        className={`relative w-16 h-12 md:w-20 md:h-14 overflow-hidden rounded-md border-2 transition ${i === imgIndex ? "border-gold" : "border-cream/20 hover:border-cream/50"}`}
+                      >
+                        <img src={src} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Feature pills */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 rounded-2xl border border-border bg-jet/40">
+                {[
+                  { icon: ShieldCheck, title: "Vollkasko & Service", sub: "Rundum abgesichert und sorgenfrei." },
+                  { icon: CalendarDays, title: "Flexible Mietdauer", sub: "Tageweise mieten – ganz ohne Aufwand." },
+                  { icon: MapPin, title: "Lieferung & Abholung", sub: "Wir bringen Ihr Fahrzeug direkt zu Ihnen." },
+                  { icon: Headphones, title: "Persönlicher Service", sub: "Concierge & Support jederzeit erreichbar." },
+                ].map(({ icon: Icon, title, sub }) => (
+                  <div key={title} className="flex flex-col gap-2 p-3">
+                    <Icon className="w-5 h-5 text-gold" />
+                    <div className="text-[0.7rem] tracking-[0.22em] uppercase text-cream font-medium">{title}</div>
+                    <div className="text-xs text-cream/55 leading-relaxed font-light">{sub}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT — details */}
+            <div className="lg:col-span-5 space-y-7">
+              <div>
+                <div className="text-xs tracking-[0.32em] uppercase text-gold mb-3">{v.marque}</div>
+                <h1 className="font-display text-5xl md:text-6xl text-cream leading-[1.02]">{v.name}</h1>
+                {v.tagline && (
+                  <p className="mt-5 text-base md:text-lg text-cream/55 font-light italic leading-relaxed">{v.tagline}</p>
+                )}
+              </div>
+
+              {/* Price + concierge card */}
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-0 rounded-2xl border border-border bg-jet/50 overflow-hidden">
+                <div className="sm:col-span-3 p-6 md:p-7">
+                  <div className="text-[0.65rem] tracking-[0.32em] uppercase text-cream/45 mb-3">{t.vehicle.reservationFrom}</div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-display text-5xl md:text-6xl text-gold leading-none">{formatPrice(v.pricePerDay)}</span>
+                    <span className="text-sm text-cream/40">/ {t.common.perDay.replace(/^\/?\s*/, "")}</span>
+                  </div>
+                  <p className="mt-4 text-xs text-cream/50 font-light leading-relaxed">{t.vehicle.includes}</p>
+                </div>
+                <div className="sm:col-span-2 p-6 md:p-7 border-t sm:border-t-0 sm:border-l border-border bg-onyx/40">
+                  <div className="w-10 h-10 rounded-full border border-gold/50 flex items-center justify-center mb-3">
+                    <ShieldCheck className="w-4 h-4 text-gold" />
+                  </div>
+                  <div className="text-sm text-cream font-medium">Concierge Service</div>
+                  <div className="mt-1 text-xs text-cream/50 font-light leading-relaxed">Persönliche Betreuung rund um die Uhr.</div>
                 </div>
               </div>
 
-            <div className="lg:col-span-5 lg:pl-8 lg:sticky lg:top-28">
-              <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-3">{v.marque}</div>
-              <h1 className="font-display text-5xl md:text-6xl text-cream leading-[1]">{v.name}</h1>
-              <p className="mt-6 text-lg text-cream/60 font-light italic leading-relaxed">{v.tagline}</p>
-
-              <div className="mt-10 pt-8 border-t border-border">
-                <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-2">{t.vehicle.reservationFrom}</div>
-                <div className="font-display text-5xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-base text-cream/40 ml-2 font-sans">{t.common.perDay}</span></div>
-                <div className="mt-3 text-xs text-cream/50">{t.vehicle.includes}</div>
+              {/* Specs */}
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  <span className="eyebrow">{t.vehicle.specifications}</span>
+                  <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
+                    { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
+                    { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
+                    { icon: Palette, label: "Farbe", value: v.color },
+                  ].map(({ icon: Icon, label, value }) => (
+                    <div key={label} className="p-4 rounded-xl border border-border bg-jet/40">
+                      <Icon className="w-4 h-4 text-gold mb-3" />
+                      <div className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 mb-1">{label}</div>
+                      <div className="text-sm text-cream font-light">{value || "—"}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="mt-10">
-                <div className="eyebrow mb-6">{t.vehicle.specifications}</div>
-                <table className="w-full">
-                  <tbody>
-                    {specRows.map((r) => (
-                      <tr key={r.label} className="border-b border-border/60">
-                        <td className="py-4 text-xs tracking-[0.22em] uppercase text-cream/45">{r.label}</td>
-                        <td className="py-4 text-right text-sm text-cream font-light">{r.value}</td>
-                      </tr>
-                    ))}
-                    <tr className="border-b border-border/60">
-                      <td className="py-4 text-xs tracking-[0.22em] uppercase text-cream/45">Baujahr</td>
-                      <td className="py-4 text-right text-sm text-cream font-light">{v.year}</td>
-                    </tr>
-                    <tr className="border-b border-border/60">
-                      <td className="py-4 text-xs tracking-[0.22em] uppercase text-cream/45">Farbe</td>
-                      <td className="py-4 text-right text-sm text-cream font-light">{v.color}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                {v.features.length > 0 && (
-                  <FeatureList features={v.features} />
-                )}
+              {/* Features bullets */}
+              {v.features.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-cream/70 font-light">
+                  {v.features.map((feat) => (
+                    <div key={feat} className="flex gap-2.5 leading-relaxed">
+                      <span className="text-gold mt-1">·</span>
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <a
+                  href="#reservation"
+                  className="flex-1 inline-flex items-center justify-between gap-3 px-7 py-4 rounded-md bg-gold text-onyx font-medium text-sm tracking-[0.22em] uppercase hover:bg-gold/90 transition"
+                >
+                  <span className="flex-1 text-center">Jetzt anfragen</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-md border border-cream/20 text-cream/80 text-sm tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
+                >
+                  <Heart className="w-4 h-4" />
+                  Merken
+                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Reservation form */}
       <section className="mt-28 py-24 md:py-32 px-6 md:px-12 bg-jet/40 border-y border-border">
