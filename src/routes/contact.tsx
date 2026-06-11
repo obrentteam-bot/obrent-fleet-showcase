@@ -13,7 +13,7 @@ import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
-import heroSunset from "@/assets/about-hero-sunset.png.asset.json";
+import heroSunset from "@/assets/about-hero-sunset.png";
 
 import {
   Select,
