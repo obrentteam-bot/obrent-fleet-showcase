@@ -17,7 +17,7 @@ export const Route = createFileRoute("/about")({
 function AboutPage() {
   return (
     <SiteLayout>
-      <section className="dark relative w-full bg-onyx">
+      <section className="relative w-full bg-onyx">
         <img
           src={aboutHero.url}
           alt="OBRENT — Über uns. Exzellenz. Leidenschaft. Premium Mobility."
