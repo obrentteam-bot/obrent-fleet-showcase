@@ -72,69 +72,126 @@ function FleetPage() {
         </div>
       </section>
 
-      <section className="py-20 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {loading && (
-              <div className="col-span-full text-center text-cream/50 py-20">{t.common.filter}…</div>
-            )}
-          {filtered.map((v) => (
-            <div key={v.id} className="glass-card group flex flex-col">
-              <Link
-                to="/fleet/$vehicleId"
-                params={{ vehicleId: v.id }}
-                className="relative aspect-[4/3] overflow-hidden bg-jet block"
-              >
-                {v.hasImages ? (
-                  <img
-                    src={v.image}
-                    alt={v.name}
-                    loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
-                  />
-                ) : (
-                  <ImagePlaceholder className="absolute inset-0 w-full h-full" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-onyx/70 via-transparent" />
-                <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
-              </Link>
-              <div className="p-8 flex flex-col flex-1">
-                <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
-                <h3 className="font-display text-2xl text-cream mb-3">{v.name}</h3>
-                <p className="text-sm text-cream/55 font-light italic mb-6 flex-1">{v.tagline}</p>
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mb-6">
-                  <div>
-                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Motor</dt>
-                    <dd className="text-cream/80 font-light mt-0.5">{v.specs.engine}</dd>
+      <section className="py-16 px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          {loading && (
+            <div className="text-center text-cream/50 py-20">{t.common.filter}…</div>
+          )}
+
+          {/* Featured hero card */}
+          {!loading && filtered[0] && (
+            <Link
+              to="/fleet/$vehicleId"
+              params={{ vehicleId: filtered[0].id }}
+              className="relative block group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
+            >
+              {filtered[0].hasImages ? (
+                <img
+                  src={filtered[0].image}
+                  alt={filtered[0].name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
+                />
+              ) : (
+                <ImagePlaceholder className="absolute inset-0 w-full h-full" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-onyx via-onyx/70 to-transparent" />
+              <div className="absolute inset-0 p-8 md:p-14 flex flex-col justify-between max-w-[60%]">
+                <div>
+                  <div className="eyebrow text-cream/70 mb-4">{filtered[0].marque}</div>
+                  <h2 className="font-display text-4xl md:text-6xl text-cream leading-[0.95]">{filtered[0].name}</h2>
+                </div>
+                <div>
+                  <dl className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Motor</dt>
+                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].specs.engine}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Leistung</dt>
+                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].specs.power}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Baujahr</dt>
+                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].year}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Farbe</dt>
+                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].color}</dd>
+                    </div>
+                  </dl>
+                  <div className="flex items-center gap-6 flex-wrap">
+                    <span className="bg-gold/95 text-onyx px-6 py-3 text-xs tracking-[0.28em] uppercase font-medium">
+                      {t.common.reserve}
+                    </span>
+                    <div>
+                      <div className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">{t.common.from}</div>
+                      <div className="font-display text-2xl text-gold">{formatPrice(filtered[0].pricePerDay)}<span className="text-xs text-cream/40 ml-1">{t.common.perDay}</span></div>
+                    </div>
                   </div>
-                  <div>
-                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Leistung</dt>
-                    <dd className="text-cream/80 font-light mt-0.5">{v.specs.power}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Baujahr</dt>
-                    <dd className="text-cream/80 font-light mt-0.5">{v.year}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Farbe</dt>
-                    <dd className="text-cream/80 font-light mt-0.5">{v.color}</dd>
-                  </div>
-                </dl>
-                <div className="flex items-end justify-between pt-6 border-t border-border">
-                  <div>
-                    <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
-                    <div className="font-display text-xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">{t.common.perDay}</span></div>
-                  </div>
-                  <Link
-                    to="/fleet/$vehicleId"
-                    params={{ vehicleId: v.id }}
-                    className="text-xs tracking-[0.28em] uppercase text-cream hover:text-gold transition border-b border-cream/40 hover:border-gold pb-1"
-                  >
-                    {t.common.reserve}
-                  </Link>
                 </div>
               </div>
-            </div>
-          ))}
+            </Link>
+          )}
+
+          {/* Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.slice(1).map((v) => (
+              <Link
+                key={v.id}
+                to="/fleet/$vehicleId"
+                params={{ vehicleId: v.id }}
+                className="group flex flex-col rounded-xl overflow-hidden bg-jet border border-border hover:border-gold/40 transition-colors"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-jet">
+                  {v.hasImages ? (
+                    <img
+                      src={v.image}
+                      alt={v.name}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+                    />
+                  ) : (
+                    <ImagePlaceholder className="absolute inset-0 w-full h-full" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
+                  <div className="absolute top-4 left-4 text-[0.6rem] tracking-[0.28em] uppercase text-cream/85 bg-onyx/60 backdrop-blur-sm px-3 py-1.5 rounded">
+                    {cats[v.category] ?? v.category}
+                  </div>
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/45 mb-1">{v.marque}</div>
+                  <h3 className="font-display text-xl text-cream mb-5">{v.name}</h3>
+                  <dl className="grid grid-cols-4 gap-3 mb-6">
+                    <div>
+                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Motor</dt>
+                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.specs.engine}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Leistung</dt>
+                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.specs.power}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Baujahr</dt>
+                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.year}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Farbe</dt>
+                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.color}</dd>
+                    </div>
+                  </dl>
+                  <div className="mt-auto flex items-end justify-between pt-5 border-t border-border">
+                    <div>
+                      <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
+                      <div className="font-display text-lg text-gold">{formatPrice(v.pricePerDay)}<span className="text-xs text-cream/40 ml-1">{t.common.perDay}</span></div>
+                    </div>
+                    <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream group-hover:text-gold transition inline-flex items-center gap-2">
+                      {t.common.reserve} <span aria-hidden>→</span>
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </SiteLayout>
