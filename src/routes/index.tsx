@@ -4,7 +4,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
-import heroImage from "@/assets/hero-fleet.jpg";
+import heroAsset from "@/assets/hero-fleet-sunset.png.asset.json";
+const heroImage = heroAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
