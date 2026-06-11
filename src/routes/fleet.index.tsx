@@ -135,7 +135,6 @@ function FleetPage() {
               </div>
             </div>
           ))}
-          </div>
         </div>
       </section>
     </SiteLayout>
