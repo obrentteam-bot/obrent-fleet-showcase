@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
@@ -11,6 +11,8 @@ export function VehicleSlideshow({ images, alt, intervalMs = 3000 }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const count = images.length;
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   useEffect(() => {
     if (count <= 1 || paused) return;
@@ -22,12 +24,37 @@ export function VehicleSlideshow({ images, alt, intervalMs = 3000 }: Props) {
 
   const go = (i: number) => setIndex(((i % count) + count) % count);
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStartX.current = t.clientX;
+    touchStartY.current = t.clientY;
+    setPaused(true);
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const sx = touchStartX.current;
+    const sy = touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+    setPaused(false);
+    if (sx == null || sy == null) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - sx;
+    const dy = t.clientY - sy;
+    // Horizontal swipe only — ignore mostly-vertical gestures (scrolling)
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) go(index + 1);
+    else go(index - 1);
+  };
+
   return (
     <div
-      className="relative w-full h-full"
+      className="relative w-full h-full touch-pan-y"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
+
       {images.map((src, i) => (
         <img
           key={src + i}
