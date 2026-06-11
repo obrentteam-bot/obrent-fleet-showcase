@@ -362,22 +362,39 @@ function ContactPage() {
               </div>
             </form>
             )}
+            </div>
           </div>
 
-          <aside className="lg:col-span-5 lg:pl-8 lg:border-l lg:border-border space-y-12">
-            <div>
-              <div className="eyebrow mb-4">{t.contact.direct}</div>
-              <div className="font-display text-2xl text-cream">{settings.email}</div>
-              <div className="mt-2 text-cream/55">{settings.phone}</div>
+          <aside className="lg:col-span-5 space-y-6 lg:sticky lg:top-28 self-start">
+            <div className="rounded-2xl border border-gold/20 bg-gradient-to-br from-gold/10 via-gold/[0.03] to-transparent p-8">
+              <div className="flex items-center gap-2 mb-5">
+                <Sparkles className="w-4 h-4 text-gold" />
+                <span className="eyebrow text-gold">{t.contact.direct}</span>
+              </div>
+              <a href={`mailto:${settings.email}`} className="group flex items-center gap-4 py-4 border-b border-cream/10 hover:border-gold/40 transition-colors">
+                <span className="w-10 h-10 rounded-full bg-cream/5 border border-cream/10 flex items-center justify-center group-hover:bg-gold/10 group-hover:border-gold/40 transition-colors">
+                  <Mail className="w-4 h-4 text-gold" />
+                </span>
+                <span className="font-display text-xl text-cream group-hover:text-gold transition-colors">{settings.email}</span>
+              </a>
+              <a href={`tel:${settings.phone}`} className="group flex items-center gap-4 pt-4 hover:text-gold transition-colors">
+                <span className="w-10 h-10 rounded-full bg-cream/5 border border-cream/10 flex items-center justify-center group-hover:bg-gold/10 group-hover:border-gold/40 transition-colors">
+                  <Phone className="w-4 h-4 text-gold" />
+                </span>
+                <span className="font-display text-xl text-cream group-hover:text-gold transition-colors">{settings.phone}</span>
+              </a>
             </div>
-            <div className="space-y-8">
-              <div className="eyebrow">{t.contact.ateliers}</div>
-              <div className="border-l border-gold/30 pl-5">
-                <div className="font-display text-2xl text-cream mb-1">{settings.company_name}</div>
+
+            <div className="rounded-2xl border border-cream/10 bg-cream/[0.02] p-8">
+              <div className="flex items-center gap-2 mb-5">
+                <MapPin className="w-4 h-4 text-gold" />
+                <span className="eyebrow">{t.contact.ateliers}</span>
+              </div>
+              <div className="font-display text-2xl text-cream mb-3">{settings.company_name}</div>
+              <div className="space-y-1">
                 {addressLines.map((l, i) => (
-                  <div key={i} className="text-sm text-cream/60 font-light">{l}</div>
+                  <div key={i} className="text-sm text-cream/65 font-light">{l}</div>
                 ))}
-                
               </div>
             </div>
           </aside>
