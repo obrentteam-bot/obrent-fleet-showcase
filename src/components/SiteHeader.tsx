@@ -21,7 +21,7 @@ export function SiteHeader() {
   // we keep the regular dark text so the navbar stays legible.
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const darkHeroRoutes = ["/", "/about", "/vip-shuttle", "/chauffeur-service", "/business-langzeitmiete"];
-  const overDarkHero = theme === "dark" && !scrolled && darkHeroRoutes.includes(pathname);
+  const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
 
 
   const services = [
