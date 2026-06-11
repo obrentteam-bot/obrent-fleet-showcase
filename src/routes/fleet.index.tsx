@@ -165,34 +165,38 @@ function FleetPage() {
                 <div className="p-6 flex flex-col flex-1">
                   <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/45 mb-1">{v.marque}</div>
                   <h3 className="font-display text-xl text-cream mb-5">{v.name}</h3>
-                  <dl className="grid grid-cols-4 gap-3 mb-6">
-                    <div>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-4 mb-6">
+                    <div className="min-w-0">
                       <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Motor</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.specs.engine}</dd>
+                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.specs.engine}</dd>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Leistung</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.specs.power}</dd>
+                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.specs.power}</dd>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Baujahr</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.year}</dd>
+                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.year}</dd>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Farbe</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-[0.7rem] leading-tight">{v.color}</dd>
+                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.color}</dd>
                     </div>
                   </dl>
-                  <div className="mt-auto flex items-end justify-between pt-5 border-t border-border">
-                    <div>
-                      <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
-                      <div className="font-display text-lg text-gold">{formatPrice(v.pricePerDay)}<span className="text-xs text-cream/40 ml-1">{t.common.perDay}</span></div>
+                  <div className="mt-auto pt-5 border-t border-border space-y-4">
+                    <div className="flex items-end justify-between gap-3">
+                      <div>
+                        <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
+                        <div className="font-display text-2xl text-gold leading-none">{formatPrice(v.pricePerDay)}<span className="text-xs text-cream/40 ml-1 font-sans">{t.common.perDay}</span></div>
+                      </div>
                     </div>
-                    <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream group-hover:text-gold transition inline-flex items-center gap-2">
-                      {t.common.reserve} <span aria-hidden>→</span>
+                    <span className="w-full inline-flex items-center justify-center gap-3 bg-gold text-onyx px-6 py-3.5 text-[0.7rem] tracking-[0.28em] uppercase font-medium group-hover:bg-gold/90 transition rounded-md">
+                      {t.common.reserve}
+                      <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
                 </div>
+
               </Link>
             ))}
           </div>
