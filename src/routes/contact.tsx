@@ -65,27 +65,44 @@ function ContactPage() {
   const dateLocale = lang === "de" ? de : undefined;
   return (
     <SiteLayout>
-      <section className="pt-40 pb-16 px-6 md:px-12">
-        <div className="max-w-[1100px] mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="gold-rule" />
-            <span className="eyebrow">{t.contact.eyebrow}</span>
+      {/* HERO */}
+      <section className="relative w-full overflow-hidden bg-onyx">
+        <img
+          src={heroSunset.url}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-onyx/70 via-onyx/80 to-onyx" />
+        <div className="absolute inset-0 bg-gradient-to-r from-onyx/80 via-transparent to-onyx/40" />
+        <div className="relative pt-40 pb-24 px-6 md:px-12">
+          <div className="max-w-[1100px] mx-auto">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="gold-rule" />
+              <span className="eyebrow">{t.contact.eyebrow}</span>
+            </div>
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-cream leading-[0.95] tracking-tight">
+              {t.contact.title} <span className="italic text-gold/90 font-light">{t.contact.titleItalic}</span>.
+            </h1>
+            <p className="mt-8 text-lg md:text-xl text-cream/70 font-light max-w-2xl leading-relaxed">
+              {t.contact.lead}
+            </p>
           </div>
-          <h1 className="font-display text-5xl md:text-8xl text-cream leading-[0.95]">
-            {t.contact.title} <span className="italic text-gold/90 font-light">{t.contact.titleItalic}</span>.
-          </h1>
-          <p className="mt-8 text-lg text-cream/60 font-light max-w-2xl leading-relaxed">
-            {t.contact.lead}
-          </p>
         </div>
       </section>
 
-      <section className="py-20 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <section className="relative py-20 md:py-28 px-6 md:px-12 bg-onyx">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
           <div className="lg:col-span-7">
+            <div className="relative rounded-2xl border border-cream/10 bg-gradient-to-br from-cream/[0.04] via-cream/[0.02] to-transparent backdrop-blur-sm p-6 sm:p-10 md:p-12 shadow-2xl shadow-black/40">
+              <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
             {submitted ? (
-              <div className="py-16 border border-gold/30 bg-onyx/40 text-center">
-                <div className="eyebrow text-gold mb-4">✓</div>
+              <div className="py-16 text-center">
+                <div className="mx-auto w-16 h-16 rounded-full border border-gold/40 bg-gold/10 flex items-center justify-center mb-6">
+                  <CheckCircle2 className="w-8 h-8 text-gold" />
+                </div>
                 <h3 className="font-display text-3xl text-cream mb-3">Vielen Dank!</h3>
                 <p className="text-cream/60">Ihre Nachricht wurde übermittelt. Wir melden uns in Kürze.</p>
               </div>
