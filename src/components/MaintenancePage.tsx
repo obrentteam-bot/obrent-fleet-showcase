@@ -75,7 +75,7 @@ export function MaintenancePage() {
           paddingTop: "3rem",
         }}
       >
-        OBRENT — Luxus Autovermietung Mannheim
+        OBRENT — Luxus Autovermietung · Mannheim
       </footer>
 
       <style>{`
