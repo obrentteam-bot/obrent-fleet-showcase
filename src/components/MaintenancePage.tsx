@@ -4,10 +4,14 @@ export function MaintenancePage() {
   return (
     <div
       style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
         backgroundColor: "#0A0A0A",
         color: "#F5F0E8",
-        minHeight: "100vh",
         width: "100%",
+        height: "100%",
+        overflow: "auto",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

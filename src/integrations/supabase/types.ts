@@ -61,6 +61,7 @@ export type Database = {
           email: string
           hours: string
           id: string
+          maintenance_mode: boolean
           phone: string
           updated_at: string
         }
@@ -71,6 +72,7 @@ export type Database = {
           email: string
           hours: string
           id?: string
+          maintenance_mode?: boolean
           phone: string
           updated_at?: string
         }
@@ -81,6 +83,7 @@ export type Database = {
           email?: string
           hours?: string
           id?: string
+          maintenance_mode?: boolean
           phone?: string
           updated_at?: string
         }

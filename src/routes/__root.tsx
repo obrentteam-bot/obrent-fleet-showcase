@@ -93,31 +93,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const { enabled: maintenance } = useMaintenance();
-  const { isAdmin: isAdminUser } = useAuth();
+  const { enabled: maintenance, loading: maintenanceLoading } = useMaintenance();
+  const { isAdmin: isAdminUser, loading: authLoading } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const host = typeof window !== "undefined" ? window.location.hostname : "";
-  const isPreview =
-    host.includes("id-preview") ||
-    host.includes("-dev.lovable.app") ||
-    host.includes("lovable.dev") ||
-    host === "localhost" ||
-    host === "127.0.0.1";
   const isAdminRoute = pathname.startsWith("/admin");
-  const showMaintenance = maintenance && !isAdminRoute && !isAdminUser && !isPreview;
+  const showMaintenance =
+    maintenance && !maintenanceLoading && !authLoading && !isAdminRoute && !isAdminUser;
 
   return (
     <ThemeProvider>
       <I18nProvider>
-        {showMaintenance ? (
-          <MaintenancePage />
-        ) : (
-          <>
-            <SplashScreen />
-            <Outlet />
-          </>
-        )}
+        <SplashScreen />
+        <Outlet />
+        {showMaintenance && <MaintenancePage />}
       </I18nProvider>
     </ThemeProvider>
   );
