@@ -167,8 +167,29 @@ function VehicleDetailPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-24 px-4 md:px-8 lg:px-12 pb-16">
+      <section className="pt-32 px-4 md:px-8 lg:px-12 pb-16">
         <div className="max-w-[1500px] mx-auto">
+
+          {/* Top bar: back link (left) + counter (right) — outside image */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 mb-6">
+            <div className="lg:col-span-7 flex flex-col gap-4">
+              <Link to="/fleet" className="text-[0.7rem] tracking-[0.32em] uppercase text-cream/70 hover:text-gold transition flex items-center gap-2">
+                <ChevronLeft className="w-3.5 h-3.5" /> {t.nav.fleet}
+              </Link>
+              <div className="inline-flex items-center gap-2.5 self-start px-3.5 py-2 rounded-md border border-gold/50 bg-jet/40 backdrop-blur-sm">
+                <Shield className="w-3.5 h-3.5 text-gold" />
+                <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/90">{cats[v.category] ?? v.category}</span>
+              </div>
+            </div>
+            <div className="lg:col-span-5 flex justify-end">
+              {imgCount > 1 && (
+                <div className="px-4 py-1.5 rounded-md border border-cream/15 bg-jet/40 text-[0.72rem] tracking-[0.2em] text-cream/80">
+                  {imgIndex + 1} / {imgCount}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 
             {/* LEFT — gallery */}
@@ -192,31 +213,13 @@ function VehicleDetailPage() {
                   <ImagePlaceholder className="w-full h-full" />
                 )}
 
-                {/* Top-left back + chip */}
-                <div className="absolute top-5 left-5 z-10 flex flex-col gap-4">
-                  <Link to="/fleet" className="text-xs tracking-[0.32em] uppercase text-cream/80 hover:text-gold transition flex items-center gap-2">
-                    <ChevronLeft className="w-3.5 h-3.5" /> {t.nav.fleet}
-                  </Link>
-                  <div className="inline-flex items-center gap-2.5 self-start px-3.5 py-2 rounded-md border border-gold/50 bg-onyx/55 backdrop-blur-sm">
-                    <Shield className="w-3.5 h-3.5 text-gold" />
-                    <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/90">{cats[v.category] ?? v.category}</span>
-                  </div>
-                </div>
-
-                {/* Counter */}
-                {imgCount > 1 && (
-                  <div className="absolute top-5 right-5 z-10 px-3 py-1.5 rounded-md border border-cream/15 bg-onyx/55 backdrop-blur-sm text-[0.7rem] tracking-[0.2em] text-cream/80">
-                    {imgIndex + 1} / {imgCount}
-                  </div>
-                )}
-
                 {/* Arrows */}
                 {imgCount > 1 && (
                   <>
-                    <button type="button" aria-label="Vorheriges Bild" onClick={() => goImg(imgIndex - 1)} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-cream/20 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
+                    <button type="button" aria-label="Vorheriges Bild" onClick={() => goImg(imgIndex - 1)} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-gold/50 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
                       <ChevronLeft className="w-5 h-5" />
                     </button>
-                    <button type="button" aria-label="Nächstes Bild" onClick={() => goImg(imgIndex + 1)} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-cream/20 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
+                    <button type="button" aria-label="Nächstes Bild" onClick={() => goImg(imgIndex + 1)} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-gold/50 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
                       <ChevronRight className="w-5 h-5" />
                     </button>
                   </>
@@ -240,18 +243,20 @@ function VehicleDetailPage() {
                 )}
               </div>
 
-              {/* Feature pills */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 rounded-2xl border border-border bg-jet/40">
+              {/* Feature pills — icon LEFT, text right */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-5 rounded-2xl border border-border bg-jet/40">
                 {[
                   { icon: ShieldCheck, title: "Vollkasko & Service", sub: "Rundum abgesichert und sorgenfrei." },
                   { icon: CalendarDays, title: "Flexible Mietdauer", sub: "Tageweise mieten – ganz ohne Aufwand." },
                   { icon: MapPin, title: "Lieferung & Abholung", sub: "Wir bringen Ihr Fahrzeug direkt zu Ihnen." },
                   { icon: Headphones, title: "Persönlicher Service", sub: "Concierge & Support jederzeit erreichbar." },
                 ].map(({ icon: Icon, title, sub }) => (
-                  <div key={title} className="flex flex-col gap-2 p-3">
-                    <Icon className="w-5 h-5 text-gold" />
-                    <div className="text-[0.7rem] tracking-[0.22em] uppercase text-cream font-medium">{title}</div>
-                    <div className="text-xs text-cream/55 leading-relaxed font-light">{sub}</div>
+                  <div key={title} className="flex items-start gap-3">
+                    <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <div className="text-[0.68rem] tracking-[0.22em] uppercase text-cream font-medium leading-tight">{title}</div>
+                      <div className="mt-1.5 text-[11px] text-cream/55 leading-relaxed font-light">{sub}</div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -286,7 +291,7 @@ function VehicleDetailPage() {
                 </div>
               </div>
 
-              {/* Specs */}
+              {/* Specs — icon LEFT in rounded box, label/value stacked right */}
               <div>
                 <div className="flex items-center gap-4 mb-4">
                   <span className="eyebrow">{t.vehicle.specifications}</span>
@@ -299,10 +304,14 @@ function VehicleDetailPage() {
                     { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
                     { icon: Palette, label: "Farbe", value: v.color },
                   ].map(({ icon: Icon, label, value }) => (
-                    <div key={label} className="p-4 rounded-xl border border-border bg-jet/40">
-                      <Icon className="w-4 h-4 text-gold mb-3" />
-                      <div className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 mb-1">{label}</div>
-                      <div className="text-sm text-cream font-light">{value || "—"}</div>
+                    <div key={label} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-jet/40">
+                      <div className="w-9 h-9 shrink-0 rounded-md border border-gold/40 flex items-center justify-center">
+                        <Icon className="w-4 h-4 text-gold" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[0.58rem] tracking-[0.24em] uppercase text-cream/45 leading-tight">{label}</div>
+                        <div className="mt-0.5 text-sm text-cream font-light truncate">{value || "—"}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -341,6 +350,7 @@ function VehicleDetailPage() {
           </div>
         </div>
       </section>
+
 
 
       {/* Reservation form */}
