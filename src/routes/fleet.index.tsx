@@ -30,7 +30,9 @@ function FleetPage() {
     [vehicles]
   );
 
-  const filtered = active === "All" ? vehicles : vehicles.filter((v) => v.category === active);
+  const filtered = active === "All" 
+    ? [...vehicles].sort((a, b) => b.pricePerDay - a.pricePerDay) 
+    : vehicles.filter((v) => v.category === active);
 
   return (
     <SiteLayout>
@@ -71,19 +73,7 @@ function FleetPage() {
       </section>
 
       <section className="py-20 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto">
-          {active === "All" && (
-            <div className="mb-16">
-              <div className="flex items-center gap-4 mb-6">
-                <span className="gold-rule" />
-                <span className="eyebrow">Luxus-Kategorie</span>
-              </div>
-              <h2 className="font-display text-5xl md:text-7xl text-cream leading-[1] max-w-2xl">
-                Luxus <span className="italic text-gold/90 font-light">Fahrzeuge</span>
-              </h2>
-            </div>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading && (
               <div className="col-span-full text-center text-cream/50 py-20">{t.common.filter}…</div>
             )}
@@ -145,7 +135,6 @@ function FleetPage() {
               </div>
             </div>
           ))}
-          </div>
         </div>
       </section>
     </SiteLayout>

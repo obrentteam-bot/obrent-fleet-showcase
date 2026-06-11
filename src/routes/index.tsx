@@ -28,7 +28,8 @@ function HomePage() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
   const [paused, setPaused] = useState(false);
-  const loopVehicles = vehicles.length > 0 ? [...vehicles, ...vehicles] : [];
+  const sortedVehicles = [...vehicles].sort((a, b) => b.pricePerDay - a.pricePerDay);
+  const loopVehicles = sortedVehicles.length > 0 ? [...sortedVehicles, ...sortedVehicles] : [];
 
   // Auto-scroll loop (sub-pixel accumulator for smooth motion)
   useEffect(() => {
@@ -207,87 +208,6 @@ function HomePage() {
                 </Link>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* LUXURY GRID — all vehicles */}
-      <section className="py-32 md:py-40 px-6 md:px-12 bg-jet/30">
-        <div className="max-w-[1440px] mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-            <div>
-              <div className="flex items-center gap-4 mb-6">
-                <span className="gold-rule" />
-                <span className="eyebrow">Luxus-Kategorie</span>
-              </div>
-              <h2 className="font-display text-5xl md:text-7xl text-cream leading-[1] max-w-2xl">
-                Luxus <span className="italic text-gold/90 font-light">Fahrzeuge</span>
-              </h2>
-            </div>
-            <Link to="/fleet" className="text-[0.7rem] tracking-[0.3em] uppercase text-gold border-b border-gold/40 pb-1 hover:border-gold transition self-start md:self-auto">
-              {t.common.viewAll}
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {vehicles.map((v) => (
-              <div key={v.id} className="glass-card group flex flex-col">
-                <Link
-                  to="/fleet/$vehicleId"
-                  params={{ vehicleId: v.id }}
-                  className="relative aspect-[4/3] overflow-hidden bg-jet block"
-                >
-                  {v.hasImages ? (
-                    <img
-                      src={v.image}
-                      alt={v.name}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
-                    />
-                  ) : (
-                    <ImagePlaceholder className="absolute inset-0 w-full h-full" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-onyx/70 via-transparent" />
-                  <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
-                </Link>
-                <div className="p-8 flex flex-col flex-1">
-                  <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
-                  <h3 className="font-display text-2xl text-cream mb-3">{v.name}</h3>
-                  <p className="text-sm text-cream/55 font-light italic mb-6 flex-1">{v.tagline}</p>
-                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mb-6">
-                    <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Motor</dt>
-                      <dd className="text-cream/80 font-light mt-0.5">{v.specs.engine}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Leistung</dt>
-                      <dd className="text-cream/80 font-light mt-0.5">{v.specs.power}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Baujahr</dt>
-                      <dd className="text-cream/80 font-light mt-0.5">{v.year}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Farbe</dt>
-                      <dd className="text-cream/80 font-light mt-0.5">{v.color}</dd>
-                    </div>
-                  </dl>
-                  <div className="flex items-end justify-between pt-6 border-t border-border">
-                    <div>
-                      <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
-                      <div className="font-display text-xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">{t.common.perDay}</span></div>
-                    </div>
-                    <Link
-                      to="/fleet/$vehicleId"
-                      params={{ vehicleId: v.id }}
-                      className="text-xs tracking-[0.28em] uppercase text-cream hover:text-gold transition border-b border-cream/40 hover:border-gold pb-1"
-                    >
-                      {t.common.reserve}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
