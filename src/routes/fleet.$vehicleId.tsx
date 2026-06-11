@@ -48,6 +48,31 @@ function NotFound() {
   );
 }
 
+function FeatureList({ features }: { features: string[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const PREVIEW = 3;
+  const showToggle = features.length > PREVIEW;
+  const visible = expanded || !showToggle ? features : features.slice(0, PREVIEW);
+  return (
+    <div className="mt-6">
+      <ul className="space-y-2 text-sm text-cream/70 font-light">
+        {visible.map((feat) => (
+          <li key={feat} className="flex gap-2"><span className="text-gold">·</span>{feat}</li>
+        ))}
+      </ul>
+      {showToggle && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-4 text-xs tracking-[0.28em] uppercase text-gold hover:text-gold/70 transition"
+        >
+          {expanded ? "− Weniger anzeigen" : `+ Mehr anzeigen (${features.length - PREVIEW})`}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function VehicleDetailPage() {
   const { vehicleId } = Route.useParams();
   const { t, lang } = useI18n();
