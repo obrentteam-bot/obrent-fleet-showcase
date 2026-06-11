@@ -309,7 +309,7 @@ function VehicleDetailPage() {
                         <Icon className="w-4 h-4 text-gold shrink-0" />
                         <span className="text-[0.6rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</span>
                       </div>
-                      <div className="mt-1.5 pl-6 text-sm text-cream font-light leading-tight break-words">{value || "—"}</div>
+                      <div className="mt-1.5 pl-6 text-[0.82rem] text-cream font-light leading-tight whitespace-nowrap">{value || "—"}</div>
                     </div>
                   ))}
                 </div>
