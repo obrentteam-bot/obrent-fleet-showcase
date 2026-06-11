@@ -99,6 +99,7 @@ function VehicleDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [imgIndex, setImgIndex] = useState(0);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
