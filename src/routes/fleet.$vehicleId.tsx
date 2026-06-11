@@ -189,11 +189,7 @@ function VehicleDetailPage() {
                   </tbody>
                 </table>
                 {v.features.length > 0 && (
-                  <ul className="mt-6 space-y-2 text-sm text-cream/70 font-light">
-                    {v.features.map((feat) => (
-                      <li key={feat} className="flex gap-2"><span className="text-gold">·</span>{feat}</li>
-                    ))}
-                  </ul>
+                  <FeatureList features={v.features} />
                 )}
               </div>
             </div>
