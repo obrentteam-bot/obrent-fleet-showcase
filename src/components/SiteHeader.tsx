@@ -68,14 +68,14 @@ export function SiteHeader() {
           <Link
             to="/"
             activeOptions={{ exact: true }}
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.home}
           </Link>
           <Link
             to="/fleet"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.fleet}
@@ -89,7 +89,7 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setServicesOpen((s) => !s)}
-              className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+              className={`${navLinkBase} ${navLinkColor}`}
             >
               {t.nav.services}
             </button>
@@ -142,14 +142,14 @@ export function SiteHeader() {
 
           <Link
             to="/about"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.about}
           </Link>
           <Link
             to="/contact"
-            className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/70 hover:text-gold transition-colors duration-300"
+            className={`${navLinkBase} ${navLinkColor}`}
             activeProps={{ className: "text-gold" }}
           >
             {t.nav.contact}
