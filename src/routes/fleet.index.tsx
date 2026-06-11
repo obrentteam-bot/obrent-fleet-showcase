@@ -121,15 +121,17 @@ function FleetPage() {
                       <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].color}</dd>
                     </div>
                   </dl>
-                  <div className="flex items-center gap-6 flex-wrap">
-                    <span className="bg-gold/95 text-onyx px-6 py-3 text-xs tracking-[0.28em] uppercase font-medium">
+                  <div className="flex items-end gap-6 flex-wrap">
+                    <span className="inline-flex items-center gap-3 bg-gold text-onyx px-7 py-4 text-[0.72rem] tracking-[0.28em] uppercase font-medium hover:bg-gold/90 transition rounded-md">
                       {t.common.reserve}
+                      <ArrowRight className="w-4 h-4" />
                     </span>
                     <div>
                       <div className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">{t.common.from}</div>
                       <div className="font-display text-2xl text-gold">{formatPrice(filtered[0].pricePerDay)}<span className="text-xs text-cream/40 ml-1">{t.common.perDay}</span></div>
                     </div>
                   </div>
+
                 </div>
               </div>
             </Link>
