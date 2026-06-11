@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import heroSunset from "@/assets/about-hero-sunset.png.asset.json";
+import heroSunset from "@/assets/about-hero-sunset.png";
 import { Users, Handshake, Mountain, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
@@ -23,7 +23,7 @@ function AboutPage() {
       <section className="relative w-full bg-onyx overflow-hidden">
         <div className="relative w-full">
           <img
-            src={heroSunset.url}
+            src={heroSunset}
             alt="OBRENT Premium Fleet bei Sonnenuntergang"
             className="block w-full h-[60vh] md:h-[80vh] lg:h-[88vh] object-cover"
             fetchPriority="high"

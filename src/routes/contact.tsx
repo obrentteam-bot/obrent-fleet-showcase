@@ -13,7 +13,7 @@ import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
-import heroSunset from "@/assets/about-hero-sunset.png.asset.json";
+import heroSunset from "@/assets/about-hero-sunset.png";
 
 import {
   Select,
@@ -68,7 +68,7 @@ function ContactPage() {
       {/* HERO */}
       <section className="relative w-full overflow-hidden bg-onyx">
         <img
-          src={heroSunset.url}
+          src={heroSunset}
           alt=""
           aria-hidden
           className="absolute inset-0 w-full h-full object-cover opacity-50"
