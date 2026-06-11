@@ -90,11 +90,6 @@ function HomePage() {
           className="absolute inset-0 bg-cover bg-center scale-105"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
-        {/* Ferrari headlight glow overlay */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 hidden md:block">
-          <span className="headlight headlight-left" />
-          <span className="headlight headlight-right" />
-        </div>
         <div className="absolute inset-0 bg-gradient-to-b from-onyx/70 via-onyx/40 to-onyx" />
         <div className="absolute inset-0 bg-onyx/30" />
 
