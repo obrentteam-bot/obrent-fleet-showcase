@@ -183,18 +183,17 @@ function FleetPage() {
                       <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.color}</dd>
                     </div>
                   </dl>
-                  <div className="mt-auto pt-5 border-t border-border space-y-4">
-                    <div className="flex items-end justify-between gap-3">
-                      <div>
-                        <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
-                        <div className="font-display text-2xl text-gold leading-none">{formatPrice(v.pricePerDay)}<span className="text-xs text-cream/40 ml-1 font-sans">{t.common.perDay}</span></div>
-                      </div>
+                  <div className="mt-auto pt-5 border-t border-border flex items-end justify-between gap-4">
+                    <div>
+                      <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
+                      <div className="font-display text-2xl text-gold leading-none">{formatPrice(v.pricePerDay)}<span className="text-xs text-cream/40 ml-1 font-sans">{t.common.perDay}</span></div>
                     </div>
-                    <span className="w-full inline-flex items-center justify-center gap-3 bg-gold text-onyx px-6 py-3.5 text-[0.7rem] tracking-[0.28em] uppercase font-medium group-hover:bg-gold/90 transition rounded-md">
+                    <span className="inline-flex items-center gap-2 border border-gold text-gold px-5 py-2.5 text-[0.65rem] tracking-[0.28em] uppercase font-medium group-hover:bg-gold group-hover:text-onyx transition rounded-full">
                       {t.common.reserve}
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
+
                 </div>
 
               </Link>
