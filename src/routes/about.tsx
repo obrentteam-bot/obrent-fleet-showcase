@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import heroSunset from "@/assets/about-hero-sunset.png";
-import { Users, Handshake, Crown, ArrowRight, Car, ShieldCheck, MapPin, Star } from "lucide-react";
+import { Users, Handshake, Crown, ArrowRight, Car, MapPin, Star } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -79,10 +79,9 @@ function AboutPage() {
               </p>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6 pt-12">
+              <div className="grid grid-cols-3 gap-8 md:gap-6 pt-12">
                 {[
-                  { icon: Car, value: "150+", label: "Fahrzeuge" },
-                  { icon: ShieldCheck, value: "5+", label: "Jahre Erfahrung" },
+                  { icon: Car, value: "7", label: "Fahrzeuge" },
                   { icon: MapPin, value: "1", label: "Standort Ludwigshafen" },
                   { icon: Star, value: "100%", label: "Kundenfokus" },
                 ].map(({ icon: Icon, value, label }) => (
