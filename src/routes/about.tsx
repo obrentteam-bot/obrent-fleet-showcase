@@ -18,38 +18,40 @@ export const Route = createFileRoute("/about")({
 function AboutPage() {
   return (
     <SiteLayout>
-      {/* HERO — split layout */}
-      <section className="relative bg-onyx pt-24 md:pt-28">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center min-h-[80vh] py-12 lg:py-0">
-            {/* Left text */}
-            <div className="lg:col-span-5">
+      {/* HERO — full-bleed cinematic */}
+      <section className="relative bg-onyx overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <img
+            src={heroSunset}
+            alt="OBRENT Premium Fleet bei Sonnenuntergang"
+            className="w-full h-full object-cover object-center"
+            fetchPriority="high"
+            decoding="async"
+          />
+          {/* Left fade — text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-onyx via-onyx/85 via-30% to-transparent" />
+          {/* Bottom fade — into next section */}
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-onyx" />
+          {/* Top subtle darken under nav */}
+          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-onyx/80 to-transparent" />
+        </div>
+
+        <div className="relative max-w-[1400px] mx-auto px-6 md:px-10">
+          <div className="min-h-[88vh] flex items-center py-32 md:py-40">
+            <div className="max-w-xl">
               <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem] mb-8">
                 Über uns
               </p>
-              <h1 className="font-display text-cream text-5xl md:text-6xl lg:text-[5rem] leading-[1.02] tracking-tight">
+              <h1 className="font-display text-cream text-5xl md:text-6xl lg:text-[5rem] leading-[1.02] tracking-tight drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)]">
                 Exzellenz.<br />
                 Leidenschaft.<br />
                 <span className="text-gold italic font-light">Premium Mobility.</span>
               </h1>
               <div className="mt-8 h-px w-20 bg-gold/70" />
-              <p className="mt-8 text-cream/65 text-base md:text-[1.05rem] font-light leading-[1.85] max-w-md">
+              <p className="mt-8 text-cream/80 text-base md:text-[1.05rem] font-light leading-[1.85] max-w-md">
                 OBRENT steht für kompromisslose Qualität, Diskretion und einen Anspruch, der weit über das gewöhnliche Maß einer Autovermietung hinausgeht.
               </p>
-            </div>
-
-            {/* Right image */}
-            <div className="lg:col-span-7">
-              <div className="relative aspect-[16/11] overflow-hidden rounded-sm bg-jet">
-                <img
-                  src={heroSunset}
-                  alt="OBRENT Premium Fleet bei Sonnenuntergang"
-                  className="w-full h-full object-cover"
-                  fetchPriority="high"
-                  decoding="async"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-onyx/40 via-transparent to-transparent" />
-              </div>
             </div>
           </div>
         </div>
