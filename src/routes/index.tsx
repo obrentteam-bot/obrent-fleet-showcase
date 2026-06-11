@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 const heroImage = "/hero-fleet-sunset.png";
 
 export const Route = createFileRoute("/")({
@@ -177,13 +178,17 @@ function HomePage() {
                   className="glass-card group overflow-hidden flex flex-col shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                    <img
-                      src={v.image}
-                      alt={v.name}
-                      draggable={false}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
-                      loading={i < 2 ? "eager" : "lazy"}
-                    />
+                    {v.hasImages ? (
+                      <img
+                        src={v.image}
+                        alt={v.name}
+                        draggable={false}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
+                        loading={i < 2 ? "eager" : "lazy"}
+                      />
+                    ) : (
+                      <ImagePlaceholder className="absolute inset-0 w-full h-full" />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
                     <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
                   </div>

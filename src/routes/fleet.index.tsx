@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 
 export const Route = createFileRoute("/fleet/")({
   head: () => ({
@@ -81,12 +82,16 @@ function FleetPage() {
                 params={{ vehicleId: v.id }}
                 className="relative aspect-[4/3] overflow-hidden bg-jet block"
               >
-                <img
-                  src={v.image}
-                  alt={v.name}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
-                />
+                {v.hasImages ? (
+                  <img
+                    src={v.image}
+                    alt={v.name}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+                  />
+                ) : (
+                  <ImagePlaceholder className="absolute inset-0 w-full h-full" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-onyx/70 via-transparent" />
                 <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
               </Link>
