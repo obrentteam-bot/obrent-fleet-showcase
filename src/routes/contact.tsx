@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Mail, Phone, MapPin, Sparkles, CheckCircle2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
+import heroSunset from "@/assets/about-hero-sunset.png.asset.json";
 
 import {
   Select,
