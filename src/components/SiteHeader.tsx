@@ -171,20 +171,16 @@ export function SiteHeader() {
         <button
           aria-label="Open menu"
           className={`md:hidden ${
-            overDarkHero
+            overDarkHero || scrolled || theme !== "light"
               ? "text-cream"
-              : scrolled
-                ? "text-cream"
-                : theme === "light"
-                  ? "text-onyx"
-                  : "text-cream"
+              : "text-cream"
           }`}
           onClick={() => setOpen((s) => !s)}
         >
           <div className="w-6 flex flex-col gap-1.5">
-            <span className={`h-px transition-transform ${open ? "rotate-45 translate-y-1.5" : ""} ${overDarkHero || scrolled || theme !== 'light' ? "bg-cream" : "bg-onyx"}`} />
-            <span className={`h-px transition-opacity ${open ? "opacity-0" : ""} ${overDarkHero || scrolled || theme !== 'light' ? "bg-cream" : "bg-onyx"}`} />
-            <span className={`h-px transition-transform ${open ? "-rotate-45 -translate-y-1.5" : ""} ${overDarkHero || scrolled || theme !== 'light' ? "bg-cream" : "bg-onyx"}`} />
+            <span className={`h-px transition-transform ${open ? "rotate-45 translate-y-1.5" : ""} ${overDarkHero || scrolled || theme !== "light" ? "bg-cream" : "bg-cream"}`} />
+            <span className={`h-px transition-opacity ${open ? "opacity-0" : ""} ${overDarkHero || scrolled || theme !== "light" ? "bg-cream" : "bg-cream"}`} />
+            <span className={`h-px transition-transform ${open ? "-rotate-45 -translate-y-1.5" : ""} ${overDarkHero || scrolled || theme !== "light" ? "bg-cream" : "bg-cream"}`} />
           </div>
         </button>
       </div>
