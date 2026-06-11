@@ -344,7 +344,7 @@ function VehicleDetailPage() {
 
 
       {/* Reservation form */}
-      <section className="mt-28 py-24 md:py-32 px-6 md:px-12 bg-jet/40 border-y border-border">
+      <section id="reservation" className="mt-12 py-24 md:py-32 px-6 md:px-12 bg-jet/40 border-y border-border scroll-mt-24">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <div className="flex items-center justify-center gap-4 mb-6">
