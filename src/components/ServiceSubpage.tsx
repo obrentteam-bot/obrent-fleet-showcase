@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { supabase } from "@/lib/supabase";
+import { submitBooking } from "@/lib/submitBooking";
 import { ArrowDown } from "lucide-react";
 import {
   Select,
@@ -119,7 +119,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       .filter(Boolean)
       .join("\n");
     const body = `Service: ${props.serviceTitleEn}\n${lines}`;
-    const { error: insErr } = await supabase.from("bookings").insert({
+    const { error: insErr } = await submitBooking({
       vehicle_id: null,
       customer_name:
         values["name"] || values["contact"] || values["company"] || "—",
@@ -131,7 +131,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       status: "pending",
     });
     setSubmitting(false);
-    if (insErr) setError(insErr.message);
+    if (insErr) setError(insErr);
     else setSubmitted(true);
   };
 

@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
-import { supabase } from "@/lib/supabase";
+import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
 
 import {
@@ -113,7 +113,7 @@ function ContactPage() {
                   `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
                   messageText && `Nachricht: ${messageText}`,
                 ].filter(Boolean).join("\n");
-                const { error } = await supabase.from("bookings").insert({
+                const { error } = await submitBooking({
                   vehicle_id: null,
                   customer_name: fullName || name || "—",
                   email,
@@ -124,7 +124,7 @@ function ContactPage() {
                   status: "pending",
                 });
                 setSubmitting(false);
-                if (error) setSubmitError(error.message);
+                if (error) setSubmitError(error);
                 else setSubmitted(true);
               }}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
