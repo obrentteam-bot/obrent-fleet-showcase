@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MaintenancePage } from "@/components/MaintenancePage";
 import { useMaintenance } from "@/lib/useMaintenance";
+import { useAuth } from "@/lib/useAuth";
 
 import appCss from "../styles.css?url";
 
