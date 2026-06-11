@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import heroSunset from "@/assets/about-hero-sunset.png.asset.json";
+import heroSunset from "@/assets/about-hero-sunset.png";
 import { Users, Handshake, Mountain, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
