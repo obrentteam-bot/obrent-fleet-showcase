@@ -20,7 +20,7 @@ export function SiteHeader() {
   // background. Only force light header text in dark mode; in light mode
   // we keep the regular dark text so the navbar stays legible.
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const darkHeroRoutes = ["/", "/about", "/vip-shuttle", "/chauffeur-service", "/business-langzeitmiete"];
+  const darkHeroRoutes = ["/", "/about", "/vip-shuttle", "/chauffeur-service", "/business-langzeitmiete", "/contact"];
   const overDarkHero = !scrolled && darkHeroRoutes.includes(pathname);
 
   const navLinkBase = "text-[0.7rem] tracking-[0.28em] uppercase transition-colors duration-300";
@@ -29,7 +29,7 @@ export function SiteHeader() {
     : scrolled
       ? "text-cream/70 hover:text-gold"
       : theme === "light"
-        ? "text-onyx hover:text-gold"
+        ? "text-cream hover:text-gold"
         : "text-cream/70 hover:text-gold";
 
 
