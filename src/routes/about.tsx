@@ -1,132 +1,85 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useI18n } from "@/lib/i18n";
-import aboutImage from "@/assets/about-mannheim.jpg";
+import { Users, Handshake, Mountain } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "Über uns — OBRENT Ludwigshafen am Rhein" },
-      { name: "description", content: "OBRENT — Luxus-Autovermietung aus Ludwigshafen am Rhein. Hochwertige Fahrzeuge zu fairen Preisen, persönlich übergeben." },
-      { property: "og:title", content: "Über uns — OBRENT Ludwigshafen am Rhein" },
-      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Ludwigshafen am Rhein. Fair, persönlich, schnell verfügbar." },
+      { name: "description", content: "OBRENT — Exzellenz, Leidenschaft, Premium Mobility. Luxus-Autovermietung aus Ludwigshafen am Rhein." },
+      { property: "og:title", content: "Über uns — OBRENT" },
+      { property: "og:description", content: "Exzellenz. Leidenschaft. Premium Mobility." },
     ],
   }),
   component: AboutPage,
 });
 
 function AboutPage() {
-  const { t } = useI18n();
-  const numerals = ["I", "II", "III", "IV"];
+  useI18n();
+
+  const values = [
+    { Icon: Users, label: "MENSCHEN" },
+    { Icon: Handshake, label: "VERTRAUEN" },
+    { Icon: Mountain, label: "LEIDENSCHAFT" },
+  ];
 
   return (
     <SiteLayout>
-      {/* CINEMATIC HERO with full-bleed Wasserturm */}
       <section className="dark relative min-h-[100svh] w-full overflow-hidden bg-onyx text-cream">
         {/* Background image */}
         <img
-          src={aboutImage}
-          alt="Mannheimer Wasserturm zur blauen Stunde"
-          className="absolute inset-0 w-full h-full object-cover scale-105"
+          src="/hero-fleet-sunset.webp"
+          alt="OBRENT Premium Fahrzeugflotte bei Sonnenuntergang"
+          className="absolute inset-0 w-full h-full object-cover"
+          fetchPriority="high"
+          decoding="async"
         />
-        {/* Cinematic overlays */}
+        {/* Dark gradient overlay for legibility on the left */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,transparent_0%,oklch(0.10_0_0/0.55)_50%,oklch(0.08_0_0/0.92)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.08_0_0/0.85)_0%,oklch(0.08_0_0/0.55)_40%,transparent_70%)]"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.08_0_0/0.85)_0%,transparent_25%,transparent_60%,oklch(0.08_0_0/0.95)_100%)]"
-        />
-        {/* Subtle grain / vignette */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,oklch(0_0_0/0.6)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.08_0_0/0.35)_0%,transparent_30%,transparent_70%,oklch(0.08_0_0/0.55)_100%)]"
         />
 
-        {/* Top eyebrow row */}
-        <div className="relative z-10 pt-40 px-6 md:px-12">
-          <div className="max-w-[1440px] mx-auto flex items-center gap-4">
-            <span className="gold-rule" />
-            <span className="eyebrow">{t.about.eyebrowHouse}</span>
-          </div>
-        </div>
-
-        {/* Overlay title */}
-        <div className="relative z-10 px-6 md:px-12 mt-8 md:mt-14">
-          <div className="max-w-[1100px] mx-auto">
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-cream drop-shadow-[0_8px_40px_oklch(0_0_0/0.7)] max-w-[18ch]">
-              {t.about.title}{" "}
-              <span className="italic font-light text-gold">
-                {t.about.titleItalic}.
-              </span>
+        {/* Content */}
+        <div className="relative z-10 min-h-[100svh] flex items-center px-6 md:px-12 lg:px-20 pt-32 pb-16">
+          <div className="max-w-2xl w-full">
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.02] tracking-tight text-cream drop-shadow-[0_8px_40px_oklch(0_0_0/0.7)]">
+              ÜBER UNS
             </h1>
-          </div>
-        </div>
 
-        {/* Vertical side caption */}
-        <div
-          aria-hidden
-          className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-10 flex-col items-center gap-6 text-[10px] tracking-[0.5em] uppercase text-cream/50"
-        >
-          <span>49°29′N</span>
-          <span className="h-24 w-px bg-cream/30" />
-          <span className="[writing-mode:vertical-rl] rotate-180">
-            Ludwigshafen am Rhein · Est MMXXVI
-          </span>
-          <span className="h-24 w-px bg-cream/30" />
-          <span>08°28′E</span>
-        </div>
+            <div className="mt-6 h-px w-24 bg-gold" />
 
-        {/* Bottom: image credit / scroll cue */}
-        <div className="absolute bottom-8 left-0 right-0 z-10 px-6 md:px-12">
-          <div className="max-w-[1440px] mx-auto flex items-end justify-between gap-6">
-            <div />
-
-            <div className="hidden md:flex items-center gap-3 text-[10px] tracking-[0.4em] uppercase text-cream/55">
-              <span>Scroll</span>
-              <span className="h-px w-12 bg-gold/60" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* STORY section */}
-      <section className="relative px-6 md:px-12 py-32">
-        {/* huge faded backdrop numeral */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute top-10 left-0 right-0 text-center font-display text-[20rem] md:text-[32rem] leading-none text-gold/[0.035] select-none"
-        >
-          OB
-        </div>
-
-        <div className="max-w-[1100px] mx-auto relative">
-          <div className="flex items-center gap-3 mb-10">
-            <span className="h-px w-12 bg-gold/70" />
-            <span className="text-[10px] tracking-[0.4em] uppercase text-gold">
-              Unsere Geschichte
-            </span>
-          </div>
-
-          <p className="text-cream font-display text-3xl md:text-5xl leading-tight max-w-4xl">
-            {t.about.intro}{" "}
-            <span className="italic text-gold/90 font-light">
-              {t.about.introItalic}
-            </span>
-          </p>
-
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 text-cream/70 font-light text-lg leading-relaxed">
-            <p>{t.about.p2}</p>
-            <p>{t.about.p3}</p>
-          </div>
-
-          <div className="flex items-center gap-4 pt-20">
-            <span className="h-px flex-1 bg-gradient-to-r from-gold/60 to-transparent" />
-            <p className="text-xs tracking-[0.35em] uppercase text-gold whitespace-nowrap">
-              {t.about.founders}
+            <p className="mt-10 text-cream text-lg md:text-xl tracking-[0.18em] font-light leading-relaxed">
+              EXZELLENZ. LEIDENSCHAFT.
+              <br />
+              PREMIUM MOBILITY.
             </p>
-            <span className="h-px flex-1 bg-gradient-to-l from-gold/60 to-transparent" />
+
+            <p className="mt-10 max-w-md text-cream/80 font-light leading-relaxed text-base">
+              Wir stehen für mehr als nur Vermietung. Wir bieten ein Erlebnis – geprägt von Qualität, Vertrauen und echter Leidenschaft für außergewöhnliche Fahrzeuge.
+            </p>
+
+            {/* Values row */}
+            <div className="mt-16 flex items-start gap-8 sm:gap-12">
+              {values.map(({ Icon, label }, i) => (
+                <div key={label} className="flex items-center gap-8 sm:gap-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <Icon className="h-8 w-8 text-gold" strokeWidth={1.5} aria-hidden />
+                    <span className="text-[10px] sm:text-xs tracking-[0.25em] text-cream/90 font-light">
+                      {label}
+                    </span>
+                  </div>
+                  {i < values.length - 1 && (
+                    <span aria-hidden className="h-10 w-px bg-cream/25 mt-1" />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
