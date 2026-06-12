@@ -63,38 +63,114 @@ export const Route = createFileRoute("/api/public/submit-booking")({
             const d = parsed.data;
             const esc = (s: string) =>
               s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
-            const summaryRows = `
-              <tr><td style="padding:6px 0;color:#666;">Name</td><td style="padding:6px 0;">${esc(d.customer_name)}</td></tr>
-              <tr><td style="padding:6px 0;color:#666;">E-Mail</td><td style="padding:6px 0;">${esc(d.email)}</td></tr>
-              <tr><td style="padding:6px 0;color:#666;">Telefon</td><td style="padding:6px 0;">${esc(d.phone)}</td></tr>
-              <tr><td style="padding:6px 0;color:#666;">Zeitraum</td><td style="padding:6px 0;">${esc(d.start_date)} – ${esc(d.end_date)}</td></tr>
-              ${d.vehicle_id ? `<tr><td style="padding:6px 0;color:#666;">Fahrzeug-ID</td><td style="padding:6px 0;font-family:monospace;font-size:12px;">${esc(d.vehicle_id)}</td></tr>` : ""}
-              ${d.message ? `<tr><td style="padding:6px 0;color:#666;vertical-align:top;">Nachricht</td><td style="padding:6px 0;white-space:pre-wrap;">${esc(d.message)}</td></tr>` : ""}
-            `;
 
-            const customerHtml = `
-              <div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#111;">
-                <h1 style="font-size:22px;font-weight:600;margin:0 0 8px;">Vielen Dank für Ihre Anfrage</h1>
-                <p style="color:#555;line-height:1.6;margin:0 0 24px;">Wir haben Ihre Anfrage erhalten und melden uns innerhalb weniger Stunden persönlich bei Ihnen.</p>
-                <div style="border-top:1px solid #e5e5e5;padding-top:16px;">
-                  <p style="font-weight:600;margin:0 0 8px;">Zusammenfassung</p>
-                  <table style="width:100%;border-collapse:collapse;font-size:14px;">${summaryRows}</table>
-                </div>
-                <p style="color:#888;font-size:12px;line-height:1.6;margin:32px 0 0;border-top:1px solid #e5e5e5;padding-top:16px;">
-                  OBRENT — Luxus Autovermietung<br/>
-                  Kontakt: <a href="mailto:info@obrent.de" style="color:#888;">info@obrent.de</a>
-                </p>
-              </div>
-            `;
+            // Brand palette
+            const GOLD = "#B8975A";
+            const ONYX = "#0A0A0A";
+            const CREAM = "#F5F0E8";
+            const MUTED = "#8A8A8A";
+            const BORDER = "#E8E2D6";
+            const LOGO_URL = "https://obrent-fleet-showcase.lovable.app/obrent-logo.png";
 
-            const adminHtml = `
-              <div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111;">
-                <h2 style="font-size:18px;margin:0 0 12px;">Neue Buchungsanfrage</h2>
-                <table style="width:100%;border-collapse:collapse;font-size:14px;">${summaryRows}</table>
-              </div>
-            `;
+            // Parse the structured "message" body (Service: X\nLabel: value\n...) into rows.
+            // Falls back to a single Nachricht row when no structure is present.
+            const parseMessage = (msg: string | null | undefined) => {
+              if (!msg) return { service: null as string | null, extras: [] as Array<[string, string]>, free: null as string | null };
+              const lines = msg.split("\n").map((l) => l.trim()).filter(Boolean);
+              let service: string | null = null;
+              const extras: Array<[string, string]> = [];
+              const freeLines: string[] = [];
+              for (const line of lines) {
+                const idx = line.indexOf(":");
+                if (idx > 0 && idx < 40) {
+                  const k = line.slice(0, idx).trim();
+                  const v = line.slice(idx + 1).trim();
+                  if (k.toLowerCase() === "service") service = v;
+                  else if (v) extras.push([k, v]);
+                } else {
+                  freeLines.push(line);
+                }
+              }
+              return { service, extras, free: freeLines.join("\n") || null };
+            };
+            const { service, extras, free } = parseMessage(d.message);
 
-            const send = (to: string, subject: string, html: string, replyTo?: string) =>
+            const sameDay = d.start_date === d.end_date;
+            const row = (label: string, value: string, mono = false) => `
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid ${BORDER};color:${MUTED};font-size:12px;letter-spacing:0.08em;text-transform:uppercase;width:38%;vertical-align:top;">${esc(label)}</td>
+                <td style="padding:10px 0;border-bottom:1px solid ${BORDER};color:${ONYX};font-size:15px;${mono ? "font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;" : ""}vertical-align:top;">${value}</td>
+              </tr>`;
+
+            const summaryRows = [
+              row("Name", esc(d.customer_name)),
+              row("E-Mail", `<a href="mailto:${esc(d.email)}" style="color:${ONYX};text-decoration:none;border-bottom:1px solid ${GOLD};">${esc(d.email)}</a>`),
+              row("Telefon", `<a href="tel:${esc(d.phone)}" style="color:${ONYX};text-decoration:none;">${esc(d.phone)}</a>`),
+              service ? row("Service", esc(service)) : "",
+              !sameDay ? row("Zeitraum", `${esc(d.start_date)} &nbsp;&rarr;&nbsp; ${esc(d.end_date)}`) : "",
+              d.vehicle_id ? row("Fahrzeug-ID", esc(d.vehicle_id), true) : "",
+              ...extras.map(([k, v]) => row(k, esc(v))),
+              free ? row("Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(free)}</div>`) : "",
+            ].filter(Boolean).join("");
+
+            // Premium frame shared by both emails.
+            const frame = (opts: { preheader: string; eyebrow: string; headline: string; intro: string; rows: string; closing?: string }) => `
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>OBRENT</title></head>
+<body style="margin:0;padding:0;background:${CREAM};">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${esc(opts.preheader)}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CREAM};padding:32px 16px;font-family:Georgia,'Times New Roman',serif;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border:1px solid ${BORDER};">
+        <tr><td style="background:${ONYX};padding:28px 32px;text-align:center;">
+          <img src="${LOGO_URL}" alt="OBRENT" width="140" style="display:inline-block;height:auto;max-width:140px;"/>
+        </td></tr>
+        <tr><td style="height:3px;background:linear-gradient(90deg,${ONYX} 0%,${GOLD} 50%,${ONYX} 100%);line-height:3px;font-size:0;">&nbsp;</td></tr>
+        <tr><td style="padding:40px 40px 8px 40px;">
+          <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.32em;text-transform:uppercase;margin-bottom:14px;">${esc(opts.eyebrow)}</div>
+          <h1 style="margin:0 0 18px 0;font-size:28px;line-height:1.2;color:${ONYX};font-weight:400;letter-spacing:-0.01em;">${esc(opts.headline)}</h1>
+          <p style="margin:0 0 28px 0;color:#4A4A4A;font-family:Arial,sans-serif;font-size:15px;line-height:1.65;">${esc(opts.intro)}</p>
+        </td></tr>
+        <tr><td style="padding:0 40px 8px 40px;">
+          <div style="border-top:1px solid ${GOLD};width:48px;margin-bottom:18px;"></div>
+          <div style="font-family:Arial,sans-serif;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:${ONYX};margin-bottom:8px;">Ihre Anfrage</div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:Arial,sans-serif;">${opts.rows}</table>
+        </td></tr>
+        ${opts.closing ? `<tr><td style="padding:28px 40px 8px 40px;color:#4A4A4A;font-family:Arial,sans-serif;font-size:14px;line-height:1.7;">${opts.closing}</td></tr>` : ""}
+        <tr><td style="padding:36px 40px 32px 40px;">
+          <div style="border-top:1px solid ${BORDER};padding-top:24px;text-align:center;font-family:Arial,sans-serif;">
+            <div style="color:${ONYX};font-size:13px;letter-spacing:0.24em;text-transform:uppercase;margin-bottom:10px;">OBRENT</div>
+            <div style="color:${MUTED};font-size:12px;line-height:1.7;">
+              Luxus Autovermietung &middot; Chauffeur &middot; VIP Shuttle<br/>
+              <a href="mailto:info@obrent.de" style="color:${GOLD};text-decoration:none;">info@obrent.de</a>
+              &nbsp;&middot;&nbsp;
+              <a href="https://obrent.de" style="color:${GOLD};text-decoration:none;">obrent.de</a>
+            </div>
+          </div>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+
+            const customerHtml = frame({
+              preheader: "Wir haben Ihre Anfrage erhalten und melden uns in Kürze persönlich bei Ihnen.",
+              eyebrow: "Bestätigung",
+              headline: "Vielen Dank für Ihre Anfrage.",
+              intro: `Sehr geehrte/r ${d.customer_name}, wir haben Ihre Anfrage erhalten und melden uns innerhalb weniger Stunden persönlich bei Ihnen. Für Rückfragen antworten Sie einfach auf diese E-Mail.`,
+              rows: summaryRows,
+              closing: `Mit freundlichen Grüßen<br/><strong style="color:${ONYX};">Ihr OBRENT Team</strong>`,
+            });
+
+            const adminHtml = frame({
+              preheader: `Neue Anfrage von ${d.customer_name}`,
+              eyebrow: service ? `Neue Anfrage · ${service}` : "Neue Anfrage",
+              headline: `${d.customer_name}`,
+              intro: `Eine neue Anfrage ist über das Website-Formular eingegangen. Antworten Sie direkt auf diese E-Mail, um dem Kunden zu schreiben.`,
+              rows: summaryRows,
+            });
+
+            const send = (to: string, subject: string, html: string, replyTo: string) =>
               fetch("https://api.resend.com/emails", {
                 method: "POST",
                 headers: {
@@ -106,13 +182,22 @@ export const Route = createFileRoute("/api/public/submit-booking")({
                   to: [to],
                   subject,
                   html,
-                  ...(replyTo ? { reply_to: replyTo } : {}),
+                  reply_to: replyTo,
                 }),
               });
 
+            const custSubject = service
+              ? `Ihre ${service}-Anfrage bei OBRENT — wir melden uns in Kürze`
+              : "Ihre Anfrage bei OBRENT — wir melden uns in Kürze";
+            const adminSubject = service
+              ? `Neue Anfrage · ${service} · ${d.customer_name}`
+              : `Neue Anfrage · ${d.customer_name}`;
+
             const [custRes, adminRes] = await Promise.allSettled([
-              send(d.email, "Ihre Anfrage bei OBRENT — wir melden uns in Kürze", customerHtml),
-              send("info@obrent.de", `Neue Anfrage: ${d.customer_name}`, adminHtml, d.email),
+              // Customer: reply-to OBRENT inbox so replies reach the team.
+              send(d.email, custSubject, customerHtml, "info@obrent.de"),
+              // Admin: reply-to customer so hitting "Reply" writes the customer.
+              send("info@obrent.de", adminSubject, adminHtml, d.email),
             ]);
             for (const r of [custRes, adminRes]) {
               if (r.status === "fulfilled" && !r.value.ok) {
