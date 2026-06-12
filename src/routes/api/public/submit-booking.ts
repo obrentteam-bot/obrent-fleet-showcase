@@ -12,28 +12,38 @@ const Schema = z.object({
   status: z.enum(["pending", "new", "confirmed", "rejected"]).optional(),
 });
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "86400",
+} as const;
+
 export const Route = createFileRoute("/api/public/submit-booking")({
   server: {
     handlers: {
+      OPTIONS: async () => new Response(null, { status: 204, headers: CORS_HEADERS }),
       POST: async ({ request }) => {
+
         let body: unknown;
         try {
           body = await request.json();
         } catch {
-          return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400 });
+          return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
         }
         const parsed = Schema.safeParse(body);
         if (!parsed.success) {
           return new Response(
             JSON.stringify({ error: "Validation failed", issues: parsed.error.issues }),
-            { status: 400, headers: { "Content-Type": "application/json" } },
+            { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } },
           );
         }
         const url = process.env.LEGACY_SUPABASE_URL;
         const key = process.env.LEGACY_SUPABASE_SERVICE_ROLE_KEY;
         if (!url || !key) {
-          return new Response(JSON.stringify({ error: "Server not configured" }), { status: 500 });
+          return new Response(JSON.stringify({ error: "Server not configured" }), { status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
         }
+
         const payload = {
           ...parsed.data,
           status: parsed.data.status ?? "pending",
@@ -52,8 +62,9 @@ export const Route = createFileRoute("/api/public/submit-booking")({
         if (!res.ok) {
           return new Response(
             JSON.stringify({ error: "Insert failed", details: text }),
-            { status: 502, headers: { "Content-Type": "application/json" } },
+            { status: 502, headers: { "Content-Type": "application/json", ...CORS_HEADERS } },
           );
+
         }
         // Insert succeeded — try to send confirmation + admin notification.
         // Email failures must NOT fail the booking; log and continue.
@@ -251,8 +262,9 @@ export const Route = createFileRoute("/api/public/submit-booking")({
 
         return new Response(text, {
           status: 200,
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...CORS_HEADERS },
         });
+
       },
     },
   },
