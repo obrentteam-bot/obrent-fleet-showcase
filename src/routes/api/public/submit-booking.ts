@@ -12,10 +12,19 @@ const Schema = z.object({
   status: z.enum(["pending", "new", "confirmed", "rejected"]).optional(),
 });
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "86400",
+} as const;
+
 export const Route = createFileRoute("/api/public/submit-booking")({
   server: {
     handlers: {
+      OPTIONS: async () => new Response(null, { status: 204, headers: CORS_HEADERS }),
       POST: async ({ request }) => {
+
         let body: unknown;
         try {
           body = await request.json();
