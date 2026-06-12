@@ -62,8 +62,9 @@ export const Route = createFileRoute("/api/public/submit-booking")({
         if (!res.ok) {
           return new Response(
             JSON.stringify({ error: "Insert failed", details: text }),
-            { status: 502, headers: { "Content-Type": "application/json" } },
+            { status: 502, headers: { "Content-Type": "application/json", ...CORS_HEADERS } },
           );
+
         }
         // Insert succeeded — try to send confirmation + admin notification.
         // Email failures must NOT fail the booking; log and continue.
