@@ -6,6 +6,12 @@ import tsConfigPaths from "vite-tsconfig-paths";
 import path from "node:path";
 
 export default defineConfig({
+  ssr: {
+    // h3-v2 is an npm alias (h3@2.x) used by @tanstack/start-server-core.
+    // The deploy worker bundler cannot resolve the alias at runtime, so it
+    // must be inlined into the server bundle.
+    noExternal: ["h3-v2"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
