@@ -29,20 +29,21 @@ export const Route = createFileRoute("/api/public/submit-booking")({
         try {
           body = await request.json();
         } catch {
-          return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400 });
+          return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
         }
         const parsed = Schema.safeParse(body);
         if (!parsed.success) {
           return new Response(
             JSON.stringify({ error: "Validation failed", issues: parsed.error.issues }),
-            { status: 400, headers: { "Content-Type": "application/json" } },
+            { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } },
           );
         }
         const url = process.env.LEGACY_SUPABASE_URL;
         const key = process.env.LEGACY_SUPABASE_SERVICE_ROLE_KEY;
         if (!url || !key) {
-          return new Response(JSON.stringify({ error: "Server not configured" }), { status: 500 });
+          return new Response(JSON.stringify({ error: "Server not configured" }), { status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
         }
+
         const payload = {
           ...parsed.data,
           status: parsed.data.status ?? "pending",
