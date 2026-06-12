@@ -262,8 +262,9 @@ export const Route = createFileRoute("/api/public/submit-booking")({
 
         return new Response(text, {
           status: 200,
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...CORS_HEADERS },
         });
+
       },
     },
   },
