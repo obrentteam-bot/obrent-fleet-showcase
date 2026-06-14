@@ -22,7 +22,6 @@ import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import { VehicleSlideshow } from "@/components/VehicleSlideshow";
-import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
@@ -195,21 +194,22 @@ function VehicleDetailPage() {
             {/* LEFT — gallery */}
             <div className="lg:col-span-7 space-y-5">
               <div className="relative aspect-[16/11] overflow-hidden rounded-2xl bg-jet">
-                {v.images.map((src, i) => (
-                  <img
-                    key={src + i}
-                    src={src}
-                    alt={`${v.name} — ${i + 1}`}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    fetchPriority={i === 0 ? "high" : "low"}
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
-                  />
-                ))}
-                {!v.hasImages && (
-                  <span className="absolute bottom-4 right-4 z-20 bg-[#0A0A0A]/80 backdrop-blur-sm text-[#B8975A] text-[0.65rem] tracking-[0.24em] uppercase px-3.5 py-1.5 rounded">
-                    Bilder folgen in Kürze
-                  </span>
+                {v.hasImages ? (
+                  v.images.map((src, i) => (
+                    <img
+                      key={src + i}
+                      src={src}
+                      alt={`${v.name} — ${i + 1}`}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      fetchPriority={i === 0 ? "high" : "low"}
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
+                    />
+                  ))
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-[#B8975A] text-base tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+                  </div>
                 )}
 
 
