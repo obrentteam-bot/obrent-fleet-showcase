@@ -1,30 +1,21 @@
 import { createClient } from "@supabase/supabase-js";
 
-// Legacy Supabase project (app auth + data).
-// Hardcoded to prevent drift to the unrelated Lovable Cloud project.
-// The anon key is a public/publishable key — safe to ship to the browser.
+// LEGACY Supabase project (app auth + business data: vehicles, bookings, user_roles).
+// Hardcoded — do NOT pull from VITE_SUPABASE_URL env vars, since those point at
+// the separate Lovable Cloud project (app_settings + edge functions).
 const LEGACY_URL = "https://fiikwjyjgtdanoieanuc.supabase.co";
 const LEGACY_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpaWt3anlqZ3RkYW5vaWVhbnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MzA5MzksImV4cCI6MjA5MzQwNjkzOX0.tBGKCTd4E53sPaU4X4iEpXPBukCZ7JHDsvQ_qZrdyGw";
 
-const envUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const envAnon = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-
-// Only honor env values if they actually point at the legacy project.
-const url = envUrl && envUrl.includes("fiikwjyjgtdanoieanuc") ? envUrl : LEGACY_URL;
-const anon = envAnon && envAnon.includes("fiikwjyjgtdanoieanuc") ? envAnon : LEGACY_ANON;
-
 const isBrowser = typeof window !== "undefined";
 
-export const isSupabaseConfigured = Boolean(url && anon);
+export const isSupabaseConfigured = true;
 
-export const supabase = createClient(url, anon, {
+export const supabase = createClient(LEGACY_URL, LEGACY_ANON, {
   auth: {
     persistSession: isBrowser,
     autoRefreshToken: isBrowser,
     detectSessionInUrl: isBrowser,
-    // Unique storageKey prevents the "Multiple GoTrueClient instances detected"
-    // warning when the Lovable Cloud client (separate project) is also loaded.
     storageKey: "obrent-legacy-auth",
   },
 });
