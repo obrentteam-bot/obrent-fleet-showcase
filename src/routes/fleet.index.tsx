@@ -87,15 +87,16 @@ function FleetPage() {
               params={{ vehicleId: filtered[0].id }}
               className="relative block group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
             >
-              <img
-                src={filtered[0].image}
-                alt={filtered[0].name}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
-              />
-              {!filtered[0].hasImages && (
-                <span className="absolute bottom-3 right-3 z-10 bg-[#0A0A0A]/80 backdrop-blur-sm text-[#B8975A] text-[0.6rem] tracking-[0.22em] uppercase px-3 py-1.5 rounded">
-                  Bilder folgen in Kürze
-                </span>
+              {filtered[0].hasImages ? (
+                <img
+                  src={filtered[0].image}
+                  alt={filtered[0].name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-jet">
+                  <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+                </div>
               )}
 
               <div className="absolute inset-0 bg-gradient-to-r from-onyx via-onyx/70 to-transparent" />
