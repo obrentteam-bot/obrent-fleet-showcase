@@ -1,17 +1,47 @@
 // Booking submission — runs entirely client-side, no project-domain server route.
 //
 // Architecture:
-//   Browser → Supabase Data API (insert into `bookings`)   ← Supabase has open CORS
-//   Browser → Supabase Edge Function `send-booking-email`  ← Supabase has open CORS
-//
-// Because both endpoints are on *.supabase.co, the request never touches our
-// own domain — so neither obrent.de nor the Lovable preview can be CORS-blocked.
+//   Browser → Supabase Data API (insert into `bookings`)
+//   Browser → public Edge Function `send-booking-email`
 //
 // The booking insert is the source of truth. Emails are fire-and-forget: a
 // failing email send must never make the form report an error to the user.
 
 import { supabase as legacy } from "@/lib/supabase";
-import { supabase as cloud } from "@/integrations/supabase/client";
+
+const CLOUD_URL =
+  (import.meta.env.VITE_SUPABASE_URL as string | undefined) ||
+  "https://nvrtqhkcxjskhhbonjqy.supabase.co";
+
+const CLOUD_ANON_KEY =
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ||
+  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52cnRxaGtjeGpza2hoYm9uanF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MjcxODgsImV4cCI6MjA5NjQwMzE4OH0.YdVahc8a0I0nw9LziSqehHBa-jDt-6DHzrbMedONKy8";
+
+async function sendBookingEmail(payload: SubmitBookingPayload) {
+  const response = await fetch(`${CLOUD_URL}/functions/v1/send-booking-email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: CLOUD_ANON_KEY,
+      Authorization: `Bearer ${CLOUD_ANON_KEY}`,
+    },
+    body: JSON.stringify({
+      vehicle_id: payload.vehicle_id ?? null,
+      customer_name: payload.customer_name,
+      email: payload.email,
+      phone: payload.phone,
+      start_date: payload.start_date,
+      end_date: payload.end_date,
+      message: payload.message ?? null,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    throw new Error(`HTTP ${response.status}${body ? ` ${body.slice(0, 300)}` : ""}`);
+  }
+}
 
 export type SubmitBookingPayload = {
   vehicle_id?: string | null;
@@ -41,22 +71,11 @@ export async function submitBooking(payload: SubmitBookingPayload): Promise<{ er
     return { error: error.message };
   }
 
-  // 2) Fire-and-forget: ask the Lovable Cloud edge function to send the emails.
+  // 2) Fire-and-forget: ask the public edge function to send the emails.
   //    Any failure here is logged but does not block the user — their booking
   //    is already saved and visible in the admin panel.
   try {
-    const { error: fnErr } = await cloud.functions.invoke("send-booking-email", {
-      body: {
-        vehicle_id: payload.vehicle_id ?? null,
-        customer_name: payload.customer_name,
-        email: payload.email,
-        phone: payload.phone,
-        start_date: payload.start_date,
-        end_date: payload.end_date,
-        message: payload.message ?? null,
-      },
-    });
-    if (fnErr) console.error("[send-booking-email] invoke error", fnErr);
+    await sendBookingEmail(payload);
   } catch (e) {
     console.error("[send-booking-email] threw", e);
   }
