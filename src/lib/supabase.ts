@@ -40,6 +40,15 @@ export type DbVehicle = {
   images: string[] | null;
   available: boolean | null;
   created_at: string | null;
+  price_3h?: number | null;
+  price_6h?: number | null;
+  price_12h?: number | null;
+  price_24h?: number | null;
+  extra_km_price?: number | null;
+  deposit?: number | null;
+  min_age?: number | null;
+  min_license_years?: number | null;
+  free_km?: number | null;
 };
 
 export type DbBooking = {
@@ -71,6 +80,19 @@ export type UiVehicle = {
   specs: {
     engine: string;
     power: string;
+  };
+  pricing: {
+    h3: number | null;
+    h6: number | null;
+    h12: number | null;
+    h24: number | null;
+  };
+  conditions: {
+    freeKm: number | null;
+    extraKmPrice: number | null;
+    deposit: number | null;
+    minAge: number | null;
+    minLicenseYears: number | null;
   };
 };
 
@@ -147,6 +169,19 @@ export function adaptVehicle(v: DbVehicle): UiVehicle {
     specs: {
       engine: v.engine ?? "—",
       power: v.power_ps ? `${v.power_ps} PS` : "—",
+    },
+    pricing: {
+      h3: v.price_3h != null ? Number(v.price_3h) : null,
+      h6: v.price_6h != null ? Number(v.price_6h) : null,
+      h12: v.price_12h != null ? Number(v.price_12h) : null,
+      h24: v.price_24h != null ? Number(v.price_24h) : null,
+    },
+    conditions: {
+      freeKm: v.free_km ?? null,
+      extraKmPrice: v.extra_km_price != null ? Number(v.extra_km_price) : null,
+      deposit: v.deposit != null ? Number(v.deposit) : null,
+      minAge: v.min_age ?? null,
+      minLicenseYears: v.min_license_years ?? null,
     },
   };
 }

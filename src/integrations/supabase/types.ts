@@ -223,13 +223,22 @@ export type Database = {
           category: string
           color: string | null
           created_at: string
+          deposit: number | null
           description: string | null
           engine: string | null
+          extra_km_price: number | null
           features: string[] | null
+          free_km: number | null
           id: string
           images: string[] | null
+          min_age: number | null
+          min_license_years: number | null
           name: string
           power_ps: number | null
+          price_12h: number | null
+          price_24h: number | null
+          price_3h: number | null
+          price_6h: number | null
           price_per_day: number
           sort_order: number | null
           updated_at: string
@@ -240,13 +249,22 @@ export type Database = {
           category: string
           color?: string | null
           created_at?: string
+          deposit?: number | null
           description?: string | null
           engine?: string | null
+          extra_km_price?: number | null
           features?: string[] | null
+          free_km?: number | null
           id?: string
           images?: string[] | null
+          min_age?: number | null
+          min_license_years?: number | null
           name: string
           power_ps?: number | null
+          price_12h?: number | null
+          price_24h?: number | null
+          price_3h?: number | null
+          price_6h?: number | null
           price_per_day?: number
           sort_order?: number | null
           updated_at?: string
@@ -257,13 +275,22 @@ export type Database = {
           category?: string
           color?: string | null
           created_at?: string
+          deposit?: number | null
           description?: string | null
           engine?: string | null
+          extra_km_price?: number | null
           features?: string[] | null
+          free_km?: number | null
           id?: string
           images?: string[] | null
+          min_age?: number | null
+          min_license_years?: number | null
           name?: string
           power_ps?: number | null
+          price_12h?: number | null
+          price_24h?: number | null
+          price_3h?: number | null
+          price_6h?: number | null
           price_per_day?: number
           sort_order?: number | null
           updated_at?: string
