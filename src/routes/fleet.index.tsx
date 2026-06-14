@@ -6,7 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
-import ferrariHero from "@/assets/ferrari-fleet-hero.png.asset.json";
+const ferrariHero = { url: "/ferrari-fleet-hero.png" };
 
 
 export const Route = createFileRoute("/fleet/")({
