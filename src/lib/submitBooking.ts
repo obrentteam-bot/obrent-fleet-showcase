@@ -1,22 +1,17 @@
-// Submit a booking via the server route, which uses the service role to
-// bypass RLS. The direct anon-keyed supabase.from("bookings").insert() is
-// blocked by the project's RLS policy, so all public forms route through here.
+// Booking submission — runs entirely client-side, no project-domain server route.
 //
-// IMPORTANT: The production domain obrent.de is served as a static site
-// (Vercel) and does NOT host the TanStack server routes. The API only lives
-// on the Lovable Worker, so we always POST to the absolute Lovable URL.
-// On the Lovable preview/published origin we use a same-origin relative URL.
+// Architecture:
+//   Browser → Supabase Data API (insert into `bookings`)   ← Supabase has open CORS
+//   Browser → Supabase Edge Function `send-booking-email`  ← Supabase has open CORS
+//
+// Because both endpoints are on *.supabase.co, the request never touches our
+// own domain — so neither obrent.de nor the Lovable preview can be CORS-blocked.
+//
+// The booking insert is the source of truth. Emails are fire-and-forget: a
+// failing email send must never make the form report an error to the user.
 
-const LOVABLE_API_ORIGIN = "https://obrent-fleet-showcase.lovable.app";
-
-function resolveEndpoint(): string {
-  if (typeof window === "undefined") return `${LOVABLE_API_ORIGIN}/api/public/submit-booking`;
-  const host = window.location.hostname;
-  const isLovableHost = host.endsWith(".lovable.app");
-  return isLovableHost
-    ? "/api/public/submit-booking"
-    : `${LOVABLE_API_ORIGIN}/api/public/submit-booking`;
-}
+import { supabase as legacy } from "@/lib/supabase";
+import { supabase as cloud } from "@/integrations/supabase/client";
 
 export type SubmitBookingPayload = {
   vehicle_id?: string | null;
@@ -30,23 +25,41 @@ export type SubmitBookingPayload = {
 };
 
 export async function submitBooking(payload: SubmitBookingPayload): Promise<{ error: string | null }> {
-  try {
-    const res = await fetch(resolveEndpoint(), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      let msg = `HTTP ${res.status}`;
-      try {
-        const data = await res.json();
-        if (data?.error) msg = data.error;
-        if (data?.details) msg = `${msg}: ${data.details}`;
-      } catch { /* ignore */ }
-      return { error: msg };
-    }
-    return { error: null };
-  } catch (e) {
-    return { error: e instanceof Error ? e.message : "Network error" };
+  // 1) Insert directly into the bookings table (legacy project).
+  const insertPayload = {
+    vehicle_id: payload.vehicle_id ?? null,
+    customer_name: payload.customer_name,
+    email: payload.email,
+    phone: payload.phone,
+    start_date: payload.start_date || null,
+    end_date: payload.end_date || null,
+    message: payload.message ?? null,
+    status: payload.status ?? "pending",
+  };
+  const { error } = await legacy.from("bookings").insert(insertPayload);
+  if (error) {
+    return { error: error.message };
   }
+
+  // 2) Fire-and-forget: ask the Lovable Cloud edge function to send the emails.
+  //    Any failure here is logged but does not block the user — their booking
+  //    is already saved and visible in the admin panel.
+  try {
+    const { error: fnErr } = await cloud.functions.invoke("send-booking-email", {
+      body: {
+        vehicle_id: payload.vehicle_id ?? null,
+        customer_name: payload.customer_name,
+        email: payload.email,
+        phone: payload.phone,
+        start_date: payload.start_date,
+        end_date: payload.end_date,
+        message: payload.message ?? null,
+      },
+    });
+    if (fnErr) console.error("[send-booking-email] invoke error", fnErr);
+  } catch (e) {
+    console.error("[send-booking-email] threw", e);
+  }
+
+  return { error: null };
 }
