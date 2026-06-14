@@ -195,11 +195,11 @@ function HomePage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
                     <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
                   </div>
-                  <div className="p-8">
+                  <div className="p-8 flex flex-col flex-1">
                     <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
                     <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
-                    <p className="text-sm text-cream/55 font-light italic mb-6">{v.tagline}</p>
-                    <div className="flex items-end justify-between pt-6 border-t border-border">
+                    <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
+                    <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
                       <div>
                         <div className="font-display text-lg italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                       </div>
