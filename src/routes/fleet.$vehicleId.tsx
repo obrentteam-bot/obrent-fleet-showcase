@@ -162,6 +162,10 @@ function VehicleDetailPage() {
 
   const imgCount = v.images.length;
   const goImg = (i: number) => imgCount > 0 && setImgIndex(((i % imgCount) + imgCount) % imgCount);
+  const heroImage = v.images[imgIndex] ?? v.images[0] ?? "";
+  const heroThumbs = v.images.slice(0, 4);
+  const heroNarrative = v.tagline || `${v.specs.engine} · ${v.specs.power} · ${v.year}`;
+  const heroCategory = cats[v.category] ?? v.category;
 
   return (
     <SiteLayout>
@@ -179,106 +183,164 @@ function VehicleDetailPage() {
             </div>
           </div>
 
-          {/* ===== HERO CARD — cinematic split ===== */}
+          {/* ===== HERO CARD — premium cinematic split ===== */}
           <div
-            className="group relative overflow-hidden grid grid-cols-1 lg:grid-cols-[minmax(0,44%)_minmax(0,56%)] animate-[heroFade_800ms_ease-out_both]"
-            style={{ background: "#0A0A0A", borderRadius: 20, minHeight: 680 }}
+            className="group relative isolate overflow-hidden grid grid-cols-1 xl:grid-cols-[minmax(0,42%)_minmax(0,58%)] animate-[heroFade_800ms_ease-out_both] border"
+            style={{
+              background: "linear-gradient(135deg, #050505 0%, #0A0A0A 40%, #111111 100%)",
+              borderRadius: 20,
+              minHeight: 720,
+              borderColor: "rgba(212,175,55,0.18)",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
+            }}
           >
             <style>{`@keyframes heroFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}`}</style>
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 14% 18%, rgba(212,175,55,0.14), transparent 30%), radial-gradient(circle at 86% 82%, rgba(212,175,55,0.08), transparent 26%)" }} />
 
-            {/* LEFT — info */}
-            <div className="relative z-10 flex flex-col justify-between p-8 md:p-12 lg:p-14" style={{ background: "#050505" }}>
+            <div className="relative z-10 flex flex-col justify-between p-7 md:p-10 xl:p-14">
               <div>
-                <div className="uppercase font-medium" style={{ color: "#D4AF37", fontSize: 13, letterSpacing: "0.25em" }}>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="inline-flex items-center gap-2 rounded-full border px-4 py-2" style={{ borderColor: "rgba(212,175,55,0.24)", background: "rgba(255,255,255,0.02)" }}>
+                    <Shield className="h-3.5 w-3.5" style={{ color: "#D4AF37" }} />
+                    <span className="text-[0.65rem] uppercase" style={{ color: "#E2C980", letterSpacing: "0.32em" }}>
+                      {heroCategory}
+                    </span>
+                  </div>
+                  <div className="inline-flex items-center rounded-full border px-4 py-2 text-[0.65rem] uppercase" style={{ borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.62)", letterSpacing: "0.28em" }}>
+                    {v.year}
+                  </div>
+                </div>
+
+                <div className="mt-10 text-[0.76rem] uppercase font-medium" style={{ color: "#D4AF37", letterSpacing: "0.36em" }}>
                   {v.marque}
                 </div>
-                <h1 className="font-display mt-5 leading-[1.02]" style={{ color: "#FFFFFF", fontSize: "clamp(2.5rem,5vw,3.5rem)" }}>
+                <h1 className="mt-5 font-display leading-[0.95] max-w-[10ch]" style={{ color: "#F8F4EC", fontSize: "clamp(3.2rem,7vw,5.6rem)" }}>
                   {v.name}
                 </h1>
-                {v.tagline && (
-                  <p className="mt-5 italic font-light leading-relaxed max-w-md" style={{ color: "#CFCFCF", fontSize: 16 }}>
-                    {v.tagline}
-                  </p>
-                )}
+                <p className="mt-6 max-w-[34rem] text-base md:text-lg font-light italic leading-relaxed" style={{ color: "rgba(248,244,236,0.74)" }}>
+                  {heroNarrative}
+                </p>
 
-                {/* Spec icon row */}
-                <div className="mt-10 pt-8 border-t" style={{ borderColor: "rgba(207,207,207,0.15)" }}>
-                  <div className="grid grid-cols-4 gap-3">
-                    {[
-                      { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
-                      { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
-                      { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
-                      { icon: Palette, label: t.vehicle.specs.color, value: v.color },
-                    ].map(({ icon: Icon, label, value }) => (
-                      <div key={label} className="flex flex-col gap-2 min-w-0">
-                        <Icon className="w-5 h-5" style={{ color: "#D4AF37" }} />
-                        <div className="uppercase" style={{ color: "#CFCFCF", fontSize: 10, letterSpacing: "0.18em" }}>
-                          {label}
-                        </div>
-                        <div className="font-medium leading-tight break-words" style={{ color: "#FFFFFF", fontSize: 14 }}>
-                          {value || "—"}
-                        </div>
+                <div className="mt-10 grid grid-cols-2 gap-3 md:gap-4">
+                  {[
+                    { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
+                    { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
+                    { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
+                    { icon: Palette, label: t.vehicle.specs.color, value: v.color || "—" },
+                  ].map(({ icon: Icon, label, value }) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl border p-4 md:p-5 min-w-0"
+                      style={{ borderColor: "rgba(255,255,255,0.08)", background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))" }}
+                    >
+                      <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#D4AF37" }} />
+                      <div className="mt-4 text-[0.6rem] uppercase" style={{ color: "rgba(248,244,236,0.46)", letterSpacing: "0.28em" }}>
+                        {label}
                       </div>
-                    ))}
-                  </div>
+                      <div className="mt-2 text-sm md:text-base font-medium leading-snug break-words" style={{ color: "#F8F4EC" }}>
+                        {value}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Price + CTA */}
-              <div className="mt-10 pt-8 border-t flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6" style={{ borderColor: "rgba(207,207,207,0.15)" }}>
-                <div>
-                  {SHOW_PRICES && (
-                    <div className="uppercase mb-1" style={{ color: "#CFCFCF", fontSize: 10, letterSpacing: "0.28em" }}>
+              <div className="mt-10 flex flex-col gap-6 border-t pt-8" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+                <div className="flex flex-wrap items-end justify-between gap-5">
+                  <div>
+                    <div className="text-[0.62rem] uppercase mb-2" style={{ color: "rgba(248,244,236,0.42)", letterSpacing: "0.32em" }}>
                       {t.vehicle.reservationFrom}
                     </div>
-                  )}
-                  <div className="font-display italic leading-tight" style={{ color: "#D4AF37", fontSize: "clamp(1.5rem,2.5vw,1.875rem)" }}>
-                    {t.vehicle.priceOnRequest}
+                    <div className="font-display italic leading-none" style={{ color: "#D4AF37", fontSize: "clamp(2rem,3.6vw,3rem)" }}>
+                      {t.vehicle.priceOnRequest}
+                    </div>
+                  </div>
+
+                  <a
+                    href="#reservation"
+                    className="group/cta inline-flex min-h-[60px] items-center justify-center gap-3 px-7 md:px-9 text-[0.72rem] uppercase font-medium transition-all w-full sm:w-auto"
+                    style={{
+                      background: "linear-gradient(135deg, #D4AF37 0%, #E2C980 100%)",
+                      color: "#090909",
+                      letterSpacing: "0.28em",
+                      borderRadius: 999,
+                      boxShadow: "0 14px 40px rgba(212,175,55,0.22)",
+                    }}
+                  >
+                    {t.vehicle.requestNow}
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
+                  </a>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-light" style={{ color: "rgba(248,244,236,0.62)" }}>
+                  <div className="flex items-center gap-3 rounded-full px-4 py-3" style={{ background: "rgba(255,255,255,0.03)" }}>
+                    <ShieldCheck className="h-4 w-4 shrink-0" style={{ color: "#D4AF37" }} />
+                    <span>{t.vehicle.featurePills[0]?.title}</span>
+                  </div>
+                  <div className="flex items-center gap-3 rounded-full px-4 py-3" style={{ background: "rgba(255,255,255,0.03)" }}>
+                    <Headphones className="h-4 w-4 shrink-0" style={{ color: "#D4AF37" }} />
+                    <span>{t.vehicle.featurePills[3]?.title}</span>
                   </div>
                 </div>
-                <a
-                  href="#reservation"
-                  className="group/cta inline-flex items-center justify-center gap-3 uppercase font-medium whitespace-nowrap transition-all w-full sm:w-auto"
-                  style={{
-                    background: "#D4AF37",
-                    color: "#050505",
-                    letterSpacing: "0.2em",
-                    fontSize: 12,
-                    padding: "16px 32px",
-                    borderRadius: 2,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = "0 0 20px rgba(212,175,55,0.4)";
-                    e.currentTarget.style.filter = "brightness(1.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.filter = "none";
-                  }}
-                >
-                  {t.vehicle.requestNow}
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
-                </a>
               </div>
             </div>
 
-            {/* RIGHT — image */}
-            <div className="relative overflow-hidden min-h-[280px] lg:min-h-full order-first lg:order-last">
-              {v.hasImages ? (
-                <img
-                  src={v.images[0]}
-                  alt={v.name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform ease-out group-hover:scale-[1.02]"
-                  style={{ transitionDuration: "6s" }}
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-jet">
-                  <span className="text-[#B8975A] text-base tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+            <div className="relative order-first xl:order-last min-h-[340px] xl:min-h-full p-3 md:p-4 xl:p-5">
+              <div className="relative h-full overflow-hidden rounded-[18px] border" style={{ borderColor: "rgba(255,255,255,0.08)", background: "#111111" }}>
+                {v.hasImages ? (
+                  <>
+                    <img
+                      src={heroImage}
+                      alt={v.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2200ms] ease-out group-hover:scale-[1.04]"
+                    />
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(5,5,5,0.58) 0%, rgba(5,5,5,0.08) 38%, rgba(5,5,5,0.18) 100%)" }} />
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.4) 100%)" }} />
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-jet">
+                    <span className="text-base uppercase font-light" style={{ color: "#D4AF37", letterSpacing: "0.22em" }}>Bilder folgen in Kürze</span>
+                  </div>
+                )}
+
+                <div className="absolute left-5 right-5 top-5 flex items-start justify-between gap-4">
+                  <div className="rounded-full border px-4 py-2 backdrop-blur-md" style={{ borderColor: "rgba(255,255,255,0.16)", background: "rgba(5,5,5,0.36)" }}>
+                    <span className="text-[0.62rem] uppercase" style={{ color: "#F8F4EC", letterSpacing: "0.28em" }}>
+                      {v.marque} Collection
+                    </span>
+                  </div>
+                  {imgCount > 0 && (
+                    <div className="rounded-full border px-4 py-2 backdrop-blur-md" style={{ borderColor: "rgba(255,255,255,0.16)", background: "rgba(5,5,5,0.36)", color: "#F8F4EC" }}>
+                      <span className="text-[0.62rem] uppercase" style={{ letterSpacing: "0.28em" }}>
+                        {(imgIndex + 1).toString().padStart(2, "0")} / {imgCount.toString().padStart(2, "0")}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
-              {/* Vignette left edge */}
-              <div className="absolute inset-y-0 left-0 w-32 pointer-events-none hidden lg:block" style={{ background: "linear-gradient(to right, #050505, transparent)" }} />
-              <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none lg:hidden" style={{ background: "linear-gradient(to top, #050505, transparent)" }} />
+
+                {imgCount > 1 && (
+                  <div className="absolute bottom-5 left-5 right-5">
+                    <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                      {heroThumbs.map((src, i) => (
+                        <button
+                          key={src + i}
+                          type="button"
+                          onClick={() => goImg(i)}
+                          aria-label={`Bild ${i + 1}`}
+                          className="relative h-20 w-24 md:h-24 md:w-32 shrink-0 overflow-hidden rounded-2xl border transition-all"
+                          style={{
+                            borderColor: i === imgIndex ? "rgba(212,175,55,0.95)" : "rgba(255,255,255,0.12)",
+                            boxShadow: i === imgIndex ? "0 10px 28px rgba(212,175,55,0.22)" : "none",
+                          }}
+                        >
+                          <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                          <div className="absolute inset-0" style={{ background: i === imgIndex ? "linear-gradient(180deg, rgba(212,175,55,0.06), rgba(0,0,0,0.14))" : "linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.34))" }} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -302,7 +364,7 @@ function VehicleDetailPage() {
 
           {/* ===== Gallery slideshow with thumbnails ===== */}
           {v.hasImages && imgCount > 0 && (
-            <div className="mt-10 space-y-4">
+            <div id="gallery" className="mt-10 space-y-4">
               <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-jet">
                 {v.images.map((src, i) => (
                   <img
