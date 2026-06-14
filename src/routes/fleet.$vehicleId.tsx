@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarIcon, ChevronLeft, ChevronRight, Shield, CalendarDays, MapPin, Headphones, Cog, Gauge, Palette, ShieldCheck, ArrowRight, Heart } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { formatPrice } from "@/lib/vehicles";
+import { formatPrice, formatEuro2, SHOW_PRICES } from "@/lib/vehicles";
 import { useVehicle } from "@/lib/useVehicles";
 import { submitBooking } from "@/lib/submitBooking";
 import { useI18n } from "@/lib/i18n";
