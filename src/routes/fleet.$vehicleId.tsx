@@ -247,10 +247,10 @@ function VehicleDetailPage() {
               {/* Feature pills — icon LEFT, text right */}
               <div className="grid grid-cols-2 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
                 {[
-                  { icon: ShieldCheck, title: "Vollkasko & Service", sub: "Rundum abgesichert und sorgenfrei." },
-                  { icon: CalendarDays, title: "Flexible Mietdauer", sub: "Tageweise mieten – ganz ohne Aufwand." },
-                  { icon: MapPin, title: "Lieferung & Abholung", sub: "Wir bringen Ihr Fahrzeug direkt zu Ihnen." },
-                  { icon: Headphones, title: "Persönlicher Service", sub: "Concierge & Support jederzeit erreichbar." },
+                  { icon: ShieldCheck, ...t.vehicle.featurePills[0] },
+                  { icon: CalendarDays, ...t.vehicle.featurePills[1] },
+                  { icon: MapPin, ...t.vehicle.featurePills[2] },
+                  { icon: Headphones, ...t.vehicle.featurePills[3] },
                 ].map(({ icon: Icon, title, sub }) => (
                   <div key={title} className="flex items-start gap-3">
                     <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
