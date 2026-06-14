@@ -11,6 +11,7 @@ export default defineConfig({
       "h3-v2",
       "rou3",
       "srvx",
+      "cookie-es",
       "@tanstack/history",
       "@tanstack/router-core",
       "@tanstack/react-router",
@@ -21,6 +22,8 @@ export default defineConfig({
       "@tanstack/start-server-core",
       "@tanstack/start-plugin-core",
       "seroval",
+      "seroval-plugins",
+      "seroval-plugins/web",
     ],
   },
   resolve: {
@@ -34,6 +37,7 @@ export default defineConfig({
       "h3-v2",
       "rou3",
       "srvx",
+      "cookie-es",
       "@tanstack/history",
       "@tanstack/router-core",
       "@tanstack/react-router",
@@ -44,6 +48,8 @@ export default defineConfig({
       "@tanstack/start-server-core",
       "@tanstack/start-plugin-core",
       "seroval",
+      "seroval-plugins",
+      "seroval-plugins/web",
     ],
     alias: {
       "@": path.resolve(__dirname, "./src"),
