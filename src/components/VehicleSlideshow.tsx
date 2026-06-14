@@ -73,7 +73,7 @@ export function VehicleSlideshow({ images, alt, intervalMs = 3000 }: Props) {
         <>
           <button
             type="button"
-            aria-label="Vorheriges Bild"
+            aria-label="Previous image"
             onClick={() => go(index - 1)}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-onyx/50 hover:bg-onyx/80 backdrop-blur text-cream transition"
           >
