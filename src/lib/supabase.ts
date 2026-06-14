@@ -170,6 +170,19 @@ export function adaptVehicle(v: DbVehicle): UiVehicle {
       engine: v.engine ?? "—",
       power: v.power_ps ? `${v.power_ps} PS` : "—",
     },
+    pricing: {
+      h3: v.price_3h != null ? Number(v.price_3h) : null,
+      h6: v.price_6h != null ? Number(v.price_6h) : null,
+      h12: v.price_12h != null ? Number(v.price_12h) : null,
+      h24: v.price_24h != null ? Number(v.price_24h) : null,
+    },
+    conditions: {
+      freeKm: v.free_km ?? null,
+      extraKmPrice: v.extra_km_price != null ? Number(v.extra_km_price) : null,
+      deposit: v.deposit != null ? Number(v.deposit) : null,
+      minAge: v.min_age ?? null,
+      minLicenseYears: v.min_license_years ?? null,
+    },
   };
 }
 
