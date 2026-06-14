@@ -46,6 +46,14 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [open]);
+
   const openMenu = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setServicesOpen(true);
