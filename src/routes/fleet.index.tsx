@@ -3,7 +3,6 @@ import { useState, useMemo } from "react";
 import { ArrowRight, Cog, Gauge, CalendarDays, Palette } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Link } from "@tanstack/react-router";
-import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
@@ -94,6 +93,62 @@ function FleetPage() {
             const tagline = isFerrari
               ? "Ikonischer V12-Gran-Turismo mit kompromissloser Ferrari-Präsenz."
               : v.tagline ?? "";
+            if (isFerrari) {
+              return (
+                <Link
+                  to="/fleet/$vehicleId"
+                  params={{ vehicleId: v.id }}
+                  className="hidden md:block relative group rounded-[20px] overflow-hidden border border-border mb-8 min-h-[560px]"
+                >
+                  <img
+                    src={heroImg}
+                    alt={v.name}
+                    className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black via-black/78 to-black/12" />
+                  <div className="absolute inset-y-0 left-0 w-[52%] bg-gradient-to-r from-black/92 via-black/72 to-transparent" />
+
+                  <div className="relative z-10 flex min-h-[560px] max-w-[44%] flex-col justify-between p-10 lg:p-12">
+                    <div>
+                      <div className="mb-6 text-[0.7rem] uppercase tracking-[0.32em] text-gold">{v.marque}</div>
+                      <h2 className="font-display text-4xl leading-[0.95] text-cream lg:text-5xl xl:text-6xl">
+                        {v.name}
+                      </h2>
+                      {tagline && (
+                        <p className="mt-5 max-w-md text-base font-light leading-relaxed text-cream/78">{tagline}</p>
+                      )}
+
+                      <dl className="mt-8 grid grid-cols-4 gap-5">
+                        {[
+                          { Icon: Cog, label: "Motor", val: v.specs.engine },
+                          { Icon: Gauge, label: "Leistung", val: v.specs.power },
+                          { Icon: CalendarDays, label: "Baujahr", val: String(v.year) },
+                          { Icon: Palette, label: "Farbe", val: v.color },
+                        ].map(({ Icon, label, val }) => (
+                          <div key={label} className="min-w-0">
+                            <Icon className="mb-2 h-4 w-4 text-cream/70" strokeWidth={1.2} />
+                            <dt className="text-[0.55rem] uppercase tracking-[0.26em] text-cream/42">{label}</dt>
+                            <dd className="mt-1 truncate text-xs font-medium leading-snug text-cream">{val}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+
+                    <div className="mt-10 flex flex-wrap items-end gap-6 border-t border-cream/10 pt-6">
+                      <div>
+                        <div className="mb-1 text-[0.55rem] uppercase tracking-[0.28em] text-cream/45">AB</div>
+                        <div className="font-display text-2xl italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
+                      </div>
+                      <span className="ml-auto inline-flex items-center gap-3 rounded-sm border border-gold/70 bg-gold/10 px-7 py-3.5 text-[0.7rem] font-medium uppercase tracking-[0.32em] text-gold transition hover:bg-gold hover:text-onyx">
+                        Jetzt anfragen
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            }
+
             return (
               <Link
                 to="/fleet/$vehicleId"
