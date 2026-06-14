@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { CalendarIcon, ChevronLeft, ChevronRight, Shield, CalendarDays, MapPin, Headphones, Cog, Gauge, Palette, ShieldCheck, ArrowRight, Heart } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Shield, CalendarDays, MapPin, Headphones, Cog, Gauge, Palette, ShieldCheck, ArrowRight, Share2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice, formatEuro2, SHOW_PRICES } from "@/lib/vehicles";
 import { useVehicle } from "@/lib/useVehicles";
@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
 import { VehicleSlideshow } from "@/components/VehicleSlideshow";
+import { toast } from "sonner";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
