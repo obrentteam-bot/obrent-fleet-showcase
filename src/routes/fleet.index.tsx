@@ -24,6 +24,8 @@ export const Route = createFileRoute("/fleet/")({
 
 function FleetPage() {
   const { t } = useI18n();
+  const { theme } = useTheme();
+  const isLight = theme === "light";
   const { vehicles, loading } = useVehicles();
   const [active, setActive] = useState<string>("All");
   const cats = t.categories as Record<string, string>;
