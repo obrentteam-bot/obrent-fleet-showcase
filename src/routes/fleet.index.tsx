@@ -6,6 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 import ferrariHero from "@/assets/ferrari-hauptcover.png.asset.json";
 
 
