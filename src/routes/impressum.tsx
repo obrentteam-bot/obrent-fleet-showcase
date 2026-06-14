@@ -46,8 +46,8 @@ function ImpressumPage() {
             <div>
               <h2 className="font-display text-2xl text-cream mb-3">Kontakt</h2>
               <p>
-                E-Mail: concierge@obrent.com<br />
-                Telefon: [Telefonnummer einfügen]
+                E-Mail: info@obrent.de<br />
+                Telefon: +49 15569 459633
               </p>
             </div>
 
@@ -56,7 +56,10 @@ function ImpressumPage() {
               <p>
                 Eintragung im Handelsregister<br />
                 Registergericht: Amtsgericht Mannheim<br />
-                Registernummer: HRB [Nummer einfügen]
+                Registernummer: HRB [wird nachgereicht]
+              </p>
+              <p className="mt-2 text-xs text-cream/50">
+                Angaben werden nach Handelsregistereintragung ergänzt.
               </p>
             </div>
 
@@ -64,9 +67,13 @@ function ImpressumPage() {
               <h2 className="font-display text-2xl text-cream mb-3">Umsatzsteuer-ID</h2>
               <p>
                 Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />
-                DE [USt-IdNr. einfügen]
+                USt-IdNr.: [wird nachgereicht]
+              </p>
+              <p className="mt-2 text-xs text-cream/50">
+                Angaben werden nach Handelsregistereintragung ergänzt.
               </p>
             </div>
+
 
             <div>
               <h2 className="font-display text-2xl text-cream mb-3">
