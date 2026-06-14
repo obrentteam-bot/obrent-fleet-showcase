@@ -346,8 +346,8 @@ function VehicleDetailPage() {
               {[
                 { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
                 { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
-                { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
-                { icon: Palette, label: "Farbe", value: v.color },
+                { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
+                { icon: Palette, label: t.vehicle.specs.color, value: v.color },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-start gap-3 p-4 rounded-xl border border-border/70 bg-onyx/30">
                   <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
