@@ -330,7 +330,7 @@ function VehicleDetailPage() {
                   className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-lg border border-cream/15 bg-jet/60 text-cream/80 text-[0.78rem] tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
                 >
                   <Share2 className="w-4 h-4" />
-                  Teilen
+                  {t.vehicle.share}
                 </button>
               </div>
             </div>
