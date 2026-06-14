@@ -372,7 +372,7 @@ function VehicleDetailPage() {
                 )}
               </div>
               {imgCount > 1 && (
-                <div className="flex gap-2.5 overflow-x-auto pb-1">
+              <div className="flex gap-2.5 overflow-x-auto pb-1 justify-center">
                   {v.images.map((src, i) => (
                     <button
                       key={src + i}
