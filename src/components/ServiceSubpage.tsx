@@ -329,8 +329,8 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             width={1920}
             height={1280}
           />
-          <div className="absolute inset-0 bg-background/60" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-onyx/20 to-onyx/80" />
+          <div className="absolute inset-0 bg-black/55" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80" />
         </div>
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center">
           <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
