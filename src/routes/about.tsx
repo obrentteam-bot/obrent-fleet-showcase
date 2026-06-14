@@ -167,44 +167,31 @@ function AboutPage() {
           <div className="absolute inset-0 bg-muted/30" />
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28 overflow-y-auto" data-allow-scroll>
             <div className="text-center mb-10 md:mb-14">
-              <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem]">Was uns antreibt</p>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-5 text-foreground">Unsere Werte</h2>
+              <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem]">{t.about.valuesEyebrow}</p>
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-5 text-foreground">{t.about.valuesTitle}</h2>
               <div className="mx-auto mt-6 h-px w-14 bg-gold" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-7">
-              {[
-                {
-                  icon: Users,
-                  title: "Menschen",
-                  text: "Im Zentrum jeder Begegnung steht der Mensch. Persönlich, aufmerksam, auf Augenhöhe – vom ersten Kontakt bis zur Schlüsselübergabe.",
-                },
-                {
-                  icon: Handshake,
-                  title: "Vertrauen",
-                  text: "Diskretion, Verlässlichkeit und Transparenz bilden das Fundament jeder Zusammenarbeit. Ein Versprechen, das wir täglich neu einlösen.",
-                },
-                {
-                  icon: Crown,
-                  title: "Leidenschaft",
-                  text: "Wir leben für Automobile. Diese Begeisterung spüren Sie in jedem Fahrzeug, jedem Detail und jedem Moment hinter dem Steuer.",
-                },
-              ].map(({ icon: Icon, title, text }, i) => (
-                <div
-                  key={title}
-                  style={{ animationDelay: `${i * 120}ms` }}
-                  className={cn(
-                    "group text-center p-7 md:p-10 rounded-2xl border border-border bg-card/60 hover:border-gold/40 transition-colors",
-                    section === 2 ? "opacity-0 animate-[fade-in_0.6s_ease-out_forwards]" : "opacity-0",
-                  )}
-                >
-                  <div className="mx-auto w-12 h-12 md:w-14 md:h-14 rounded-full border border-gold/40 flex items-center justify-center mb-6 transition-colors group-hover:border-gold group-hover:bg-gold/5">
-                    <Icon className="w-5 h-5 text-gold" strokeWidth={1.5} />
+              {t.about.values.map(({ title, body }, i) => {
+                const Icon = VALUE_ICONS[i];
+                return (
+                  <div
+                    key={title}
+                    style={{ animationDelay: `${i * 120}ms` }}
+                    className={cn(
+                      "group text-center p-7 md:p-10 rounded-2xl border border-border bg-card/60 hover:border-gold/40 transition-colors",
+                      section === 2 ? "opacity-0 animate-[fade-in_0.6s_ease-out_forwards]" : "opacity-0",
+                    )}
+                  >
+                    <div className="mx-auto w-12 h-12 md:w-14 md:h-14 rounded-full border border-gold/40 flex items-center justify-center mb-6 transition-colors group-hover:border-gold group-hover:bg-gold/5">
+                      <Icon className="w-5 h-5 text-gold" strokeWidth={1.5} />
+                    </div>
+                    <h3 className="font-display text-xl md:text-2xl tracking-wide mb-3 text-foreground">{title}</h3>
+                    <p className="text-muted-foreground font-light text-sm md:text-[0.95rem] leading-[1.8]">{body}</p>
                   </div>
-                  <h3 className="font-display text-xl md:text-2xl tracking-wide mb-3 text-foreground">{title}</h3>
-                  <p className="text-muted-foreground font-light text-sm md:text-[0.95rem] leading-[1.8]">{text}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           <NavArrows onPrev={prev} onNext={next} />
