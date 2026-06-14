@@ -339,7 +339,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
           <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-cream leading-[0.95] max-w-4xl">
             {props.hero.headline[lang]}
           </h1>
-          <p className="mt-6 md:mt-8 text-base md:text-lg text-foreground/75 font-light max-w-2xl leading-relaxed">
+          <p className="mt-6 md:mt-8 text-base md:text-lg text-cream/75 font-light max-w-2xl leading-relaxed">
             {props.hero.subline[lang]}
           </p>
           <div className="mt-10">
