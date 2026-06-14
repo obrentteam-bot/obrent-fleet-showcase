@@ -276,9 +276,8 @@ function VehicleDetailPage() {
               <div className="grid grid-cols-1 sm:grid-cols-5 gap-0 rounded-2xl border border-border bg-jet/50 overflow-hidden">
                 <div className="sm:col-span-3 p-6 md:p-7">
                   <div className="text-[0.65rem] tracking-[0.32em] uppercase text-cream/45 mb-3">{t.vehicle.reservationFrom}</div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-display text-5xl md:text-6xl text-gold leading-none">{formatPrice(v.pricePerDay)}</span>
-                    <span className="text-sm text-cream/40">/ {t.common.perDay.replace(/^\/?\s*/, "")}</span>
+                  <div className="font-display text-4xl md:text-5xl italic leading-tight" style={{ color: "#B8975A" }}>
+                    Preis auf Anfrage
                   </div>
                   <p className="mt-4 text-xs text-cream/50 font-light leading-relaxed">{t.vehicle.includes}</p>
                 </div>
