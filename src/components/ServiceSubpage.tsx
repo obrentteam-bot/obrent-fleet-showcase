@@ -180,17 +180,17 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             </h2>
             <span className="h-px w-24 bg-gold/60" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {props.leistungen.cards.map(({ Icon, label }) => (
               <article
                 key={label.en}
-                className="group border border-border/60 bg-card p-8 lg:p-10 transition-all duration-500 hover:border-gold/60 hover:translate-y-[-2px]"
+                className="group border border-border/60 bg-card p-5 sm:p-8 lg:p-10 transition-all duration-500 hover:border-gold/60 hover:translate-y-[-2px]"
               >
                 <Icon
-                  className="w-8 h-8 text-gold mb-8 transition-transform duration-500 group-hover:scale-110"
+                  className="w-7 h-7 sm:w-8 sm:h-8 text-gold mb-5 sm:mb-8 transition-transform duration-500 group-hover:scale-110"
                   strokeWidth={1.25}
                 />
-                <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight">
+                <h3 className="font-display text-base sm:text-xl md:text-2xl text-foreground leading-tight">
                   {label[lang]}
                 </h3>
               </article>
