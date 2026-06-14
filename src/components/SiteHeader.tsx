@@ -46,6 +46,14 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [open]);
+
   const openMenu = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setServicesOpen(true);
@@ -182,31 +190,45 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="md:hidden bg-onyx/95 backdrop-blur-xl border-t border-border">
-          <nav className="flex flex-col px-6 py-8 gap-6">
-            <Link to="/" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+        <div className="md:hidden fixed inset-0 z-50 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="flex items-center justify-between px-6 h-24">
+            <Link to="/" onClick={() => setOpen(false)} aria-label="OBRENT">
+              <img src={logo} alt="OBRENT" className="h-16 w-auto" />
+            </Link>
+            <button
+              aria-label="Close menu"
+              className="text-cream w-12 h-12 flex items-center justify-center -mr-3"
+              onClick={() => setOpen(false)}
+            >
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.4">
+                <path d="M3 3l16 16M19 3L3 19" />
+              </svg>
+            </button>
+          </div>
+          <nav className="flex-1 flex flex-col items-center justify-center gap-8 px-6 overflow-y-auto pb-12">
+            <Link to="/" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
               {t.nav.home}
             </Link>
-            <Link to="/fleet" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+            <Link to="/fleet" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
               {t.nav.fleet}
             </Link>
-            <div>
+            <div className="w-full max-w-xs text-center">
               <button
                 type="button"
                 onClick={() => setMobileServicesOpen((s) => !s)}
-                className="w-full flex items-center justify-between text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold"
+                className="w-full inline-flex items-center justify-center gap-3 text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold"
               >
                 <span>{t.nav.services}</span>
-                <span className={`transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}>▾</span>
+                <span className={`transition-transform text-sm ${mobileServicesOpen ? "rotate-180" : ""}`}>▾</span>
               </button>
               {mobileServicesOpen && (
-                <div className="mt-4 pl-4 border-l border-gold/30 flex flex-col gap-4">
+                <div className="mt-5 flex flex-col gap-4">
                   {services.map((s) => (
                     <Link
                       key={s.path}
                       to={s.path}
                       onClick={() => setOpen(false)}
-                      className="text-xs tracking-[0.28em] uppercase text-cream/70 hover:text-gold"
+                      className="text-sm tracking-[0.28em] uppercase text-cream/65 hover:text-gold"
                     >
                       {s.label}
                     </Link>
@@ -214,14 +236,15 @@ export function SiteHeader() {
                 </div>
               )}
             </div>
-            <Link to="/about" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+            <Link to="/about" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
               {t.nav.about}
             </Link>
-            <Link to="/contact" onClick={() => setOpen(false)} className="text-sm tracking-[0.28em] uppercase text-cream/80 hover:text-gold">
+            <Link to="/contact" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
               {t.nav.contact}
             </Link>
-            <div className="pt-4 border-t border-border flex items-center gap-6">
+            <div className="mt-6 pt-8 border-t border-cream/10 w-full max-w-xs flex items-center justify-center gap-8">
               <LanguageSwitcher />
+              <span className="h-3 w-px bg-cream/20" />
               <ThemeToggle />
             </div>
           </nav>

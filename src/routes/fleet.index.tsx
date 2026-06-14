@@ -54,22 +54,25 @@ function FleetPage() {
 
       {/* Filter */}
       <section className="px-6 md:px-12 sticky top-20 z-30 bg-onyx/85 backdrop-blur-xl border-y border-border">
-        <div className="max-w-[1440px] mx-auto py-5 flex items-center gap-2 md:gap-8 overflow-x-auto">
-          <span className="eyebrow shrink-0 hidden md:inline">{t.common.filter}</span>
-          {(["All", ...dynamicCategories]).map((c) => (
-            <button
-              key={c}
-              onClick={() => setActive(c)}
-              className={`shrink-0 text-[0.7rem] tracking-[0.28em] uppercase px-1 py-2 border-b transition-colors ${
-                active === c
-                  ? "text-gold border-gold"
-                  : "text-cream/55 border-transparent hover:text-cream"
-              }`}
-            >
-              {c === "All" ? t.common.all : (cats[c] ?? c)}
-            </button>
-          ))}
-          <span className="ml-auto eyebrow text-cream/40 hidden md:inline">{filtered.length} {t.common.motorcars}</span>
+        <div className="max-w-[1440px] mx-auto py-5 relative">
+          <div className="flex items-center gap-2 md:gap-8 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x pr-10 md:pr-0">
+            <span className="eyebrow shrink-0 hidden md:inline">{t.common.filter}</span>
+            {(["All", ...dynamicCategories]).map((c) => (
+              <button
+                key={c}
+                onClick={() => setActive(c)}
+                className={`shrink-0 snap-start text-[0.7rem] tracking-[0.28em] uppercase px-1 py-2 border-b transition-colors ${
+                  active === c
+                    ? "text-gold border-gold"
+                    : "text-cream/55 border-transparent hover:text-cream"
+                }`}
+              >
+                {c === "All" ? t.common.all : (cats[c] ?? c)}
+              </button>
+            ))}
+            <span className="ml-auto eyebrow text-cream/40 hidden md:inline">{filtered.length} {t.common.motorcars}</span>
+          </div>
+          <div className="md:hidden pointer-events-none absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-onyx to-transparent" />
         </div>
       </section>
 
@@ -84,7 +87,7 @@ function FleetPage() {
             <Link
               to="/fleet/$vehicleId"
               params={{ vehicleId: filtered[0].id }}
-              className="relative block group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
+              className="hidden md:block relative group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
             >
               {filtered[0].hasImages ? (
                 <img
@@ -140,12 +143,12 @@ function FleetPage() {
 
           {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.slice(1).map((v) => (
+            {filtered.map((v, idx) => (
               <Link
                 key={v.id}
                 to="/fleet/$vehicleId"
                 params={{ vehicleId: v.id }}
-                className="group flex flex-col rounded-xl overflow-hidden bg-jet border border-border hover:border-gold/40 transition-colors"
+                className={`group flex flex-col rounded-xl overflow-hidden bg-jet border border-border hover:border-gold/40 transition-colors ${idx === 0 ? "md:hidden" : ""}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                   {v.hasImages ? (

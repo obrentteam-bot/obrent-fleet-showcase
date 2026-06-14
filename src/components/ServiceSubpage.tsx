@@ -1,8 +1,16 @@
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import { format } from "date-fns";
+import { de, enUS } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { submitBooking } from "@/lib/submitBooking";
 import { ArrowDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { TimeSelect } from "@/components/TimeSelect";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -94,6 +102,8 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
   const [error, setError] = useState<string | null>(null);
 
   const setVal = (k: string, v: string) => setValues((p) => ({ ...p, [k]: v }));
+  const dateLocale = lang === "de" ? de : enUS;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
 
   const scrollToForm = () => {
     const el = document.getElementById("anfrage");
@@ -104,7 +114,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    const today = new Date().toISOString().slice(0, 10);
+    const todayIso = new Date().toISOString().slice(0, 10);
     const lines = props.form.fields
       .map((f) => {
         const v = values[f.key];
@@ -125,8 +135,8 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
         values["name"] || values["contact"] || values["company"] || "—",
       email: values["email"] || "",
       phone: values["phone"] || "",
-      start_date: today,
-      end_date: today,
+      start_date: todayIso,
+      end_date: todayIso,
       message: body,
       status: "pending",
     });
@@ -180,17 +190,17 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             </h2>
             <span className="h-px w-24 bg-gold/60" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {props.leistungen.cards.map(({ Icon, label }) => (
               <article
                 key={label.en}
-                className="group border border-border/60 bg-card p-8 lg:p-10 transition-all duration-500 hover:border-gold/60 hover:translate-y-[-2px]"
+                className="group border border-border/60 bg-card p-5 sm:p-8 lg:p-10 transition-all duration-500 hover:border-gold/60 hover:translate-y-[-2px]"
               >
                 <Icon
-                  className="w-8 h-8 text-gold mb-8 transition-transform duration-500 group-hover:scale-110"
+                  className="w-7 h-7 sm:w-8 sm:h-8 text-gold mb-5 sm:mb-8 transition-transform duration-500 group-hover:scale-110"
                   strokeWidth={1.25}
                 />
-                <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight">
+                <h3 className="font-display text-base sm:text-xl md:text-2xl text-foreground leading-tight">
                   {label[lang]}
                 </h3>
               </article>
@@ -286,6 +296,53 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                         rows={6}
                         value={values[f.key] || ""}
                         onChange={(e) => setVal(f.key, e.target.value)}
+                      />
+                    </div>
+                  );
+                }
+                if (f.type === "date") {
+                  const v = values[f.key];
+                  const dateVal = v ? new Date(v) : undefined;
+                  return (
+                    <div key={f.key} className={span}>
+                      <label className="lux-label">{f.label[lang]}</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal bg-transparent border-cream/20 text-cream hover:bg-cream/5 hover:text-cream",
+                              !dateVal && "text-cream/50"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                            {dateVal ? format(dateVal, "PPP", { locale: dateLocale }) : <span>{lang === "de" ? "Datum wählen" : "Pick a date"}</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={dateVal}
+                            onSelect={(d) => setVal(f.key, d ? format(d, "yyyy-MM-dd") : "")}
+                            disabled={(date) => date < today}
+                            initialFocus
+                            locale={dateLocale}
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  );
+                }
+                if (f.type === "time") {
+                  return (
+                    <div key={f.key} className={span}>
+                      <label className="lux-label">{f.label[lang]}</label>
+                      <TimeSelect
+                        value={values[f.key] || ""}
+                        onChange={(v) => setVal(f.key, v)}
+                        ariaLabel={f.label[lang]}
                       />
                     </div>
                   );

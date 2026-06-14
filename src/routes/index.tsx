@@ -165,8 +165,8 @@ function HomePage() {
               onPointerCancel={onPointerUp}
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
-              className="flex gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-              style={{ touchAction: "pan-y" }}
+              className="flex gap-6 md:gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              style={{ touchAction: "pan-y", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
             >
               {loopVehicles.map((v, i) => (
                 <Link
@@ -175,7 +175,7 @@ function HomePage() {
                   params={{ vehicleId: v.id }}
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
                   draggable={false}
-                  className="glass-card group overflow-hidden flex flex-col shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
+                  className="glass-card group overflow-hidden flex flex-col shrink-0 snap-center w-[85vw] max-w-[320px] sm:w-[60%] sm:max-w-none md:w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                     {v.hasImages ? (
