@@ -350,6 +350,82 @@ function VehicleDetailPage() {
               ))}
             </div>
           </div>
+
+          {/* ===== MIETPREISSTAFFELUNG ===== */}
+          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="eyebrow">Mietpreisstaffelung</span>
+              <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: "3 Stunden", value: v.pricing.h3 },
+                { label: "6 Stunden", value: v.pricing.h6 },
+                { label: "12 Stunden", value: v.pricing.h12 },
+                { label: "24 Stunden", value: v.pricing.h24 },
+              ].map(({ label, value }) => (
+                <div key={label} className="p-5 rounded-xl border border-border/70 bg-onyx/30 text-center">
+                  <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
+                  <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                    {SHOW_PRICES && value != null ? formatPrice(value) : "Preis auf Anfrage"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ===== MIETKONDITIONEN ===== */}
+          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="eyebrow">Mietkonditionen</span>
+              <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Freikilometer</div>
+                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  {v.conditions.freeKm ?? 150} km
+                </div>
+                <div className="mt-1 text-xs text-cream/50 font-light">pro Tag inklusive</div>
+              </div>
+              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Zusatzkilometer</div>
+                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  {v.conditions.extraKmPrice != null ? `${formatEuro2(v.conditions.extraKmPrice)} / km` : "auf Anfrage"}
+                </div>
+                <div className="mt-1 text-xs text-cream/50 font-light">über Freikilometer hinaus</div>
+              </div>
+              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Kaution</div>
+                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  {v.conditions.deposit != null ? formatPrice(v.conditions.deposit) : "auf Anfrage"}
+                </div>
+                <div className="mt-1 text-xs text-cream/50 font-light">vollständig erstattbar</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ===== VORAUSSETZUNGEN ===== */}
+          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="eyebrow">Voraussetzungen</span>
+              <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Mindestalter</div>
+                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  {v.conditions.minAge != null ? `${v.conditions.minAge} Jahre` : "auf Anfrage"}
+                </div>
+              </div>
+              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Führerschein</div>
+                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  {v.conditions.minLicenseYears != null ? `Mindestens ${v.conditions.minLicenseYears} Jahre` : "auf Anfrage"}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
