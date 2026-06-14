@@ -8,6 +8,10 @@ import path from "node:path";
 export default defineConfig({
   ssr: {
     noExternal: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
       "h3-v2",
       "rou3",
       "srvx",
@@ -33,9 +37,15 @@ export default defineConfig({
     // rou3/srvx. On the published worker these must be bundled, otherwise the
     // server chunk tries to import runtime modules like `assets/rou3` and every
     // request fails with HTTP 500 before route handlers (including CORS) run.
+    // React also needs to stay bundled for the worker SSR output; otherwise the
+    // published app can crash with "No such module assets/react" on page load.
     // Keep the same list here as a belt-and-braces hint for the dev/runtime
     // pipeline, but the actual Worker SSR bundling is controlled by ssr.noExternal.
     noExternal: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
       "h3-v2",
       "rou3",
       "srvx",
