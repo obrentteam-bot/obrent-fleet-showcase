@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import { isSupabaseConfigured, supabase } from "./supabase";
+import { supabase } from "@/integrations/supabase/client";
+
+const isSupabaseConfigured = true;
 
 export type AppSettings = {
   id?: string;
