@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import type { LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { de, enUS } from "date-fns/locale";
@@ -94,6 +95,7 @@ const PAGE_LABELS = {
 const TOTAL_SECTIONS = 4;
 
 export function ServiceSubpage(props: ServiceSubpageProps) {
+  const submitBookingFn = useServerFn(submitBooking);
   const { lang } = useI18n();
   const labels = PAGE_LABELS[lang];
 
@@ -196,15 +198,17 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       .filter(Boolean)
       .join("\n");
     const body = `Service: ${props.serviceTitleEn}\n${lines}`;
-    const { error: insErr } = await submitBooking({
-      vehicle_id: null,
-      customer_name: values["name"] || values["contact"] || values["company"] || "—",
-      email: values["email"] || "",
-      phone: values["phone"] || "",
-      start_date: todayIso,
-      end_date: todayIso,
-      message: body,
-      status: "pending",
+    const { error: insErr } = await submitBookingFn({
+      data: {
+        vehicle_id: null,
+        customer_name: values["name"] || values["contact"] || values["company"] || "—",
+        email: values["email"] || "",
+        phone: values["phone"] || "",
+        start_date: todayIso,
+        end_date: todayIso,
+        message: body,
+        status: "pending",
+      },
     });
     setSubmitting(false);
     if (insErr) setError(insErr);
