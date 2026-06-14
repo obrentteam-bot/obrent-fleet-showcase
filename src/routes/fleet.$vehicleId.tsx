@@ -313,7 +313,7 @@ function VehicleDetailPage() {
                   onClick={async () => {
                     const shareData = {
                       title: `${v!.name} — OBRENT Luxus Autovermietung`,
-                      text: "Schau dir dieses Fahrzeug bei OBRENT an — Luxus Autovermietung Mannheim.",
+                      text: "Schau dir dieses Fahrzeug bei OBRENT an — Luxus Autovermietung Ludwigshafen am Rhein.",
                       url: window.location.href,
                     };
                     if (navigator.share) {

@@ -79,7 +79,7 @@ export function MaintenancePage() {
           paddingTop: "3rem",
         }}
       >
-        OBRENT — Luxus Autovermietung · Mannheim
+        OBRENT — Luxus Autovermietung · Ludwigshafen am Rhein
       </footer>
 
       <style>{`
