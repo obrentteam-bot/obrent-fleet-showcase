@@ -21,6 +21,9 @@ export const Route = createFileRoute("/about")({
 const TOTAL_SECTIONS = 4;
 
 function AboutPage() {
+  const { t } = useI18n();
+  const STAT_ICONS = [Car, MapPin, Star];
+  const VALUE_ICONS = [Users, Handshake, Crown];
   const [section, setSection] = useState(0);
   const lastNav = useRef(0);
 
