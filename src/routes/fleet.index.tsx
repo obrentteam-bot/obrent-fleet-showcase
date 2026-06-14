@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Cog, Gauge, CalendarDays, Palette } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Link } from "@tanstack/react-router";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import ferrariHero from "@/assets/ferrari-hauptcover.png.asset.json";
 
 
 export const Route = createFileRoute("/fleet/")({
