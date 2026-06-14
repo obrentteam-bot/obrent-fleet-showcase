@@ -368,15 +368,15 @@ function VehicleDetailPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: "3 Stunden", value: v.pricing.h3 },
-                { label: "6 Stunden", value: v.pricing.h6 },
-                { label: "12 Stunden", value: v.pricing.h12 },
-                { label: "24 Stunden", value: v.pricing.h24 },
+                { label: t.vehicle.pricing.h3, value: v.pricing.h3 },
+                { label: t.vehicle.pricing.h6, value: v.pricing.h6 },
+                { label: t.vehicle.pricing.h12, value: v.pricing.h12 },
+                { label: t.vehicle.pricing.h24, value: v.pricing.h24 },
               ].map(({ label, value }) => (
                 <div key={label} className="p-5 rounded-xl border border-border/70 bg-onyx/30 text-center">
                   <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
                   <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                    {SHOW_PRICES && value != null ? formatPrice(value) : "Preis auf Anfrage"}
+                    {SHOW_PRICES && value != null ? formatPrice(value) : t.vehicle.priceOnRequest}
                   </div>
                 </div>
               ))}
