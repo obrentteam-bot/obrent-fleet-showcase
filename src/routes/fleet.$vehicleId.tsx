@@ -184,7 +184,7 @@ function VehicleDetailPage() {
             style={{
               background: "linear-gradient(135deg, #050505 0%, #0A0A0A 40%, #111111 100%)",
               borderRadius: 20,
-              minHeight: 720,
+              minHeight: 560,
               borderColor: "rgba(212,175,55,0.18)",
               boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
             }}
