@@ -84,63 +84,72 @@ function FleetPage() {
           )}
 
           {/* Featured hero card */}
-          {!loading && filtered[0] && (
-            <Link
-              to="/fleet/$vehicleId"
-              params={{ vehicleId: filtered[0].id }}
-              className="hidden md:block relative group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
-            >
-              {filtered[0].hasImages ? (
-                <img
-                  src={filtered[0].image}
-                  alt={filtered[0].name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-jet">
-                  <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
-                </div>
-              )}
-
-              <div className="absolute inset-0 bg-gradient-to-r from-onyx via-onyx/70 to-transparent" />
-              <div className="absolute inset-0 p-8 md:p-14 flex flex-col justify-between max-w-[60%]">
-                <div>
-                  <div className="eyebrow text-cream/70 mb-4">{filtered[0].marque}</div>
-                  <h2 className="font-display text-4xl md:text-6xl text-cream leading-[0.95]">{filtered[0].name}</h2>
-                </div>
-                <div>
-                  <dl className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+          {!loading && filtered[0] && (() => {
+            const v = filtered[0];
+            const isFerrari = /ferrari/i.test(v.marque) || /ferrari/i.test(v.name);
+            const heroImg = isFerrari ? ferrariHero.url : v.image;
+            const tagline = isFerrari
+              ? "Ikonischer V12-Gran-Turismo mit kompromissloser Ferrari-Präsenz."
+              : v.tagline ?? "";
+            return (
+              <Link
+                to="/fleet/$vehicleId"
+                params={{ vehicleId: v.id }}
+                className="hidden md:grid relative group rounded-2xl overflow-hidden bg-[#0A0A0A] border border-border mb-8 grid-cols-[minmax(0,42%)_minmax(0,58%)] min-h-[460px]"
+              >
+                {/* LEFT — info */}
+                <div className="relative z-10 p-10 lg:p-14 flex flex-col justify-between bg-[#0A0A0A]">
+                  <div>
+                    <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">{v.marque}</div>
+                    <h2 className="font-display text-cream leading-[0.95] text-5xl lg:text-6xl xl:text-7xl">{v.name}</h2>
+                    {tagline && (
+                      <p className="mt-5 text-cream/70 font-light text-base leading-relaxed max-w-md">{tagline}</p>
+                    )}
+                    <dl className="mt-8 grid grid-cols-4 gap-5">
+                      {[
+                        { Icon: Cog, label: "Motor", val: v.specs.engine },
+                        { Icon: Gauge, label: "Leistung", val: v.specs.power },
+                        { Icon: CalendarDays, label: "Baujahr", val: String(v.year) },
+                        { Icon: Palette, label: "Farbe", val: v.color },
+                      ].map(({ Icon, label, val }) => (
+                        <div key={label} className="min-w-0">
+                          <Icon className="w-4 h-4 text-gold mb-2" strokeWidth={1.2} />
+                          <dt className="text-[0.55rem] tracking-[0.26em] uppercase text-cream/45">{label}</dt>
+                          <dd className="text-cream font-medium mt-1 text-xs leading-snug truncate">{val}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                  <div className="mt-10 pt-6 border-t border-cream/10 flex items-end gap-6 flex-wrap">
                     <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Motor</dt>
-                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].specs.engine}</dd>
+                      <div className="text-[0.55rem] tracking-[0.28em] uppercase text-cream/40 mb-1">AB</div>
+                      <div className="font-display text-2xl italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                     </div>
-                    <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Leistung</dt>
-                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].specs.power}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Baujahr</dt>
-                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].year}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[0.6rem] tracking-[0.24em] uppercase text-cream/40">Farbe</dt>
-                      <dd className="text-cream/90 font-light mt-1 text-sm">{filtered[0].color}</dd>
-                    </div>
-                  </dl>
-                  <div className="flex items-end gap-6 flex-wrap">
-                    <span className="inline-flex items-center gap-3 bg-gold text-onyx px-7 py-4 text-[0.72rem] tracking-[0.28em] uppercase font-medium hover:bg-gold/90 transition rounded-md">
-                      {t.common.reserve}
+                    <span className="ml-auto inline-flex items-center gap-3 border border-gold/70 bg-gold/10 text-gold px-7 py-3.5 text-[0.7rem] tracking-[0.32em] uppercase font-medium hover:bg-gold hover:text-onyx transition rounded-sm">
+                      Jetzt anfragen
                       <ArrowRight className="w-4 h-4" />
                     </span>
-                    <div>
-                      <div className="font-display text-xl italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
-                    </div>
                   </div>
-
                 </div>
-              </div>
-            </Link>
-          )}
+
+                {/* RIGHT — image */}
+                <div className="relative overflow-hidden">
+                  {(isFerrari || v.hasImages) ? (
+                    <img
+                      src={heroImg}
+                      alt={v.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-jet">
+                      <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0A0A0A] to-transparent" />
+                </div>
+              </Link>
+            );
+          })()}
 
           {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
