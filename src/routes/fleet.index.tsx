@@ -134,12 +134,12 @@ function FleetPage() {
                       </dl>
                     </div>
 
-                    <div className="mt-10 flex flex-wrap items-end gap-6 border-t border-cream/10 pt-6">
+                    <div className="mt-10 flex flex-col items-start gap-5 border-t border-cream/10 pt-6">
                       <div>
                         <div className="mb-1 text-[0.55rem] uppercase tracking-[0.28em]" style={{ color: "rgba(245,240,232,0.45)" }}>AB</div>
                         <div className="font-display text-2xl italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                       </div>
-                      <span className="ml-auto inline-flex items-center gap-3 rounded-sm border border-gold/70 bg-gold/10 px-7 py-3.5 text-[0.7rem] font-medium uppercase tracking-[0.32em] text-gold transition hover:bg-gold hover:text-onyx">
+                      <span className="inline-flex items-center gap-3 rounded-sm border border-gold/70 bg-gold/10 px-7 py-3.5 text-[0.7rem] font-medium uppercase tracking-[0.32em] text-gold transition hover:bg-gold hover:text-onyx">
                         Jetzt anfragen
                         <ArrowRight className="h-4 w-4" />
                       </span>
