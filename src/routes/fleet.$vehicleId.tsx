@@ -247,10 +247,10 @@ function VehicleDetailPage() {
               {/* Feature pills — icon LEFT, text right */}
               <div className="grid grid-cols-2 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
                 {[
-                  { icon: ShieldCheck, title: "Vollkasko & Service", sub: "Rundum abgesichert und sorgenfrei." },
-                  { icon: CalendarDays, title: "Flexible Mietdauer", sub: "Tageweise mieten – ganz ohne Aufwand." },
-                  { icon: MapPin, title: "Lieferung & Abholung", sub: "Wir bringen Ihr Fahrzeug direkt zu Ihnen." },
-                  { icon: Headphones, title: "Persönlicher Service", sub: "Concierge & Support jederzeit erreichbar." },
+                  { icon: ShieldCheck, ...t.vehicle.featurePills[0] },
+                  { icon: CalendarDays, ...t.vehicle.featurePills[1] },
+                  { icon: MapPin, ...t.vehicle.featurePills[2] },
+                  { icon: Headphones, ...t.vehicle.featurePills[3] },
                 ].map(({ icon: Icon, title, sub }) => (
                   <div key={title} className="flex items-start gap-3">
                     <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
@@ -277,7 +277,7 @@ function VehicleDetailPage() {
               <div className="p-6 md:p-7 rounded-2xl border border-border bg-jet/50">
                 <div className="text-[0.65rem] tracking-[0.32em] uppercase text-cream/45 mb-3">{t.vehicle.reservationFrom}</div>
                 <div className="font-display text-4xl md:text-5xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  Preis auf Anfrage
+                  {t.vehicle.priceOnRequest}
                 </div>
                 <p className="mt-4 text-xs text-cream/50 font-light leading-relaxed">{t.vehicle.includes}</p>
               </div>
@@ -304,7 +304,7 @@ function VehicleDetailPage() {
                   href="#reservation"
                   className="group flex-[1.4] inline-flex items-center justify-center gap-3 px-6 py-4 rounded-lg bg-gradient-to-r from-gold to-gold-soft text-onyx font-medium text-[0.8rem] tracking-[0.2em] uppercase whitespace-nowrap hover:opacity-90 transition"
                 >
-                  <span>Jetzt anfragen</span>
+                  <span>{t.vehicle.requestNow}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
 
@@ -313,7 +313,7 @@ function VehicleDetailPage() {
                   onClick={async () => {
                     const shareData = {
                       title: `${v!.name} — OBRENT Luxus Autovermietung`,
-                      text: "Schau dir dieses Fahrzeug bei OBRENT an — Luxus Autovermietung Ludwigshafen am Rhein.",
+                      text: t.vehicle.shareText,
                       url: window.location.href,
                     };
                     if (navigator.share) {
@@ -321,7 +321,7 @@ function VehicleDetailPage() {
                     } else {
                       try {
                         await navigator.clipboard.writeText(window.location.href);
-                        toast.success("Link kopiert!", {
+                        toast.success(t.vehicle.linkCopied, {
                           style: { background: "#0A0A0A", color: "#B8975A", border: "none" },
                         });
                       } catch {}
@@ -330,7 +330,7 @@ function VehicleDetailPage() {
                   className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-lg border border-cream/15 bg-jet/60 text-cream/80 text-[0.78rem] tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
                 >
                   <Share2 className="w-4 h-4" />
-                  Teilen
+                  {t.vehicle.share}
                 </button>
               </div>
             </div>
@@ -346,8 +346,8 @@ function VehicleDetailPage() {
               {[
                 { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
                 { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
-                { icon: CalendarDays, label: "Baujahr", value: String(v.year) },
-                { icon: Palette, label: "Farbe", value: v.color },
+                { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
+                { icon: Palette, label: t.vehicle.specs.color, value: v.color },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-start gap-3 p-4 rounded-xl border border-border/70 bg-onyx/30">
                   <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
@@ -363,20 +363,20 @@ function VehicleDetailPage() {
           {/* ===== MIETPREISSTAFFELUNG ===== */}
           <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
             <div className="flex items-center gap-4 mb-6">
-              <span className="eyebrow">Mietpreisstaffelung</span>
+              <span className="eyebrow">{t.vehicle.pricingTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: "3 Stunden", value: v.pricing.h3 },
-                { label: "6 Stunden", value: v.pricing.h6 },
-                { label: "12 Stunden", value: v.pricing.h12 },
-                { label: "24 Stunden", value: v.pricing.h24 },
+                { label: t.vehicle.pricing.h3, value: v.pricing.h3 },
+                { label: t.vehicle.pricing.h6, value: v.pricing.h6 },
+                { label: t.vehicle.pricing.h12, value: v.pricing.h12 },
+                { label: t.vehicle.pricing.h24, value: v.pricing.h24 },
               ].map(({ label, value }) => (
                 <div key={label} className="p-5 rounded-xl border border-border/70 bg-onyx/30 text-center">
                   <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
                   <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                    {SHOW_PRICES && value != null ? formatPrice(value) : "Preis auf Anfrage"}
+                    {SHOW_PRICES && value != null ? formatPrice(value) : t.vehicle.priceOnRequest}
                   </div>
                 </div>
               ))}
@@ -386,30 +386,30 @@ function VehicleDetailPage() {
           {/* ===== MIETKONDITIONEN ===== */}
           <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
             <div className="flex items-center gap-4 mb-6">
-              <span className="eyebrow">Mietkonditionen</span>
+              <span className="eyebrow">{t.vehicle.conditionsTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Freikilometer</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.freeKm}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.freeKm ?? 150} km
                 </div>
-                <div className="mt-1 text-xs text-cream/50 font-light">pro Tag inklusive</div>
+                <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.freeKmHint}</div>
               </div>
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Zusatzkilometer</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.extraKm}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {v.conditions.extraKmPrice != null ? `${formatEuro2(v.conditions.extraKmPrice)} / km` : "auf Anfrage"}
+                  {v.conditions.extraKmPrice != null ? `${formatEuro2(v.conditions.extraKmPrice)} / km` : t.vehicle.onRequest}
                 </div>
-                <div className="mt-1 text-xs text-cream/50 font-light">über Freikilometer hinaus</div>
+                <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.extraKmHint}</div>
               </div>
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Kaution</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.deposit}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {v.conditions.deposit != null ? formatPrice(v.conditions.deposit) : "auf Anfrage"}
+                  {v.conditions.deposit != null ? formatPrice(v.conditions.deposit) : t.vehicle.onRequest}
                 </div>
-                <div className="mt-1 text-xs text-cream/50 font-light">vollständig erstattbar</div>
+                <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.depositHint}</div>
               </div>
             </div>
           </div>
@@ -417,20 +417,20 @@ function VehicleDetailPage() {
           {/* ===== VORAUSSETZUNGEN ===== */}
           <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
             <div className="flex items-center gap-4 mb-6">
-              <span className="eyebrow">Voraussetzungen</span>
+              <span className="eyebrow">{t.vehicle.requirementsTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Mindestalter</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.minAge}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {v.conditions.minAge != null ? `${v.conditions.minAge} Jahre` : "auf Anfrage"}
+                  {v.conditions.minAge != null ? `${v.conditions.minAge} ${t.vehicle.ageUnit}` : t.vehicle.onRequest}
                 </div>
               </div>
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Führerschein</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.license}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {v.conditions.minLicenseYears != null ? `Mindestens ${v.conditions.minLicenseYears} Jahre` : "auf Anfrage"}
+                  {v.conditions.minLicenseYears != null ? t.vehicle.licenseMin.replace("{n}", String(v.conditions.minLicenseYears)) : t.vehicle.onRequest}
                 </div>
               </div>
             </div>
@@ -459,8 +459,8 @@ function VehicleDetailPage() {
           {submitted ? (
             <div className="text-center py-16 border border-gold/30 bg-onyx/40">
               <div className="eyebrow text-gold mb-4">✓ {t.admin.status.confirmed}</div>
-              <h3 className="font-display text-3xl text-cream mb-4">Vielen Dank!</h3>
-              <p className="text-cream/60">Ihre Anfrage wurde übermittelt. Wir melden uns in Kürze.</p>
+              <h3 className="font-display text-3xl text-cream mb-4">{t.vehicle.thankYouTitle}</h3>
+              <p className="text-cream/60">{t.vehicle.thankYouLead}</p>
             </div>
           ) : (
           <form
