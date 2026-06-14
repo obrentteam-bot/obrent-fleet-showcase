@@ -259,7 +259,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                 type="button"
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal bg-transparent border-border text-cream hover:bg-foreground/5 hover:text-foreground",
+                  "w-full justify-start text-left font-normal bg-transparent border-border text-foreground hover:bg-foreground/5 hover:text-foreground",
                   !dateVal && "text-muted-foreground",
                 )}
               >
@@ -356,7 +356,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
         <div className="absolute inset-0 bg-background" />
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28">
           <div className="mb-10 md:mb-14">
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-cream leading-tight inline-block">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-foreground leading-tight inline-block">
               {props.leistungen.title[lang]}
               <span className="block h-px w-24 bg-gold/70 mt-4" />
             </h2>
@@ -375,7 +375,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                   className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-gold mb-3 sm:mb-5 md:mb-6 transition-transform duration-500 group-hover:scale-110"
                   strokeWidth={1.25}
                 />
-                <h3 className="font-display text-sm sm:text-lg md:text-xl text-cream leading-tight">
+                <h3 className="font-display text-sm sm:text-lg md:text-xl text-foreground leading-tight">
                   {label[lang]}
                 </h3>
               </article>
@@ -393,7 +393,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold/80 mb-5">
               {lang === "de" ? "Warum OBRENT" : "Why OBRENT"}
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-5xl text-cream leading-tight max-w-3xl mx-auto">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-5xl text-foreground leading-tight max-w-3xl mx-auto">
               {props.why.title[lang]}
             </h2>
           </div>
@@ -408,7 +408,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                 )}
               >
                 <Icon className="w-7 h-7 md:w-8 md:h-8 text-gold mb-5" strokeWidth={1.25} />
-                <h3 className="font-display text-xl md:text-2xl text-cream leading-tight mb-2">
+                <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight mb-2">
                   {title[lang]}
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed font-light">{body[lang]}</p>
@@ -428,7 +428,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
               <span className="h-px w-24 bg-gold/60" />
             </div>
             <div className="text-center mb-10">
-              <h2 className="font-display text-3xl sm:text-4xl md:text-6xl text-cream leading-[0.95]">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-6xl text-foreground leading-[0.95]">
                 {props.form.title[lang]}
               </h2>
             </div>
