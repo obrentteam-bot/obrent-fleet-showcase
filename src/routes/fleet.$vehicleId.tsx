@@ -177,10 +177,6 @@ function VehicleDetailPage() {
             <Link to="/fleet" className="text-[0.7rem] tracking-[0.32em] uppercase text-cream/70 hover:text-gold transition flex items-center gap-2">
               <ChevronLeft className="w-3.5 h-3.5" /> {t.nav.fleet}
             </Link>
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-md border border-gold/50 bg-jet/40 backdrop-blur-sm">
-              <Shield className="w-3.5 h-3.5 text-gold" />
-              <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/90">{cats[v.category] ?? v.category}</span>
-            </div>
           </div>
 
           {/* ===== HERO CARD — premium cinematic split ===== */}
