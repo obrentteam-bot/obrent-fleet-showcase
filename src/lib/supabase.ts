@@ -137,7 +137,23 @@ const MARQUE_PLACEHOLDERS: Record<string, string> = {
   mclaren: mclarenImg,
 };
 
+// Modell-spezifische Platzhalter (Unsplash) — werden bevorzugt vor dem Marken-Fallback geprüft.
+// Sobald echte Bilder in der DB hinterlegt sind, übernehmen diese automatisch.
+const MODEL_PLACEHOLDERS: Array<{ match: RegExp; url: string }> = [
+  {
+    match: /x5\s*m50d/i,
+    url: "https://images.unsplash.com/photo-1635990215241-4d2805d729bb?fm=jpg&q=80&w=2000&auto=format&fit=crop",
+  },
+  {
+    match: /x5\s*m60i/i,
+    url: "https://images.unsplash.com/photo-1768160959181-a8c5fddde33e?fm=jpg&q=80&w=2000&auto=format&fit=crop",
+  },
+];
+
 function placeholderFor(name: string): string {
+  for (const { match, url } of MODEL_PLACEHOLDERS) {
+    if (match.test(name)) return url;
+  }
   const lower = name.toLowerCase();
   // Längste Marken-Keys zuerst prüfen, damit "mercedes-benz" vor "mercedes" matcht
   const keys = Object.keys(MARQUE_PLACEHOLDERS).sort((a, b) => b.length - a.length);
@@ -161,9 +177,10 @@ export function adaptVehicle(v: DbVehicle): UiVehicle {
     year: v.year ?? new Date().getFullYear(),
     color: v.color ?? "—",
     pricePerDay: Number(v.price_per_day),
-    image: hasImages ? rawImages[0] : "",
-    images: hasImages ? rawImages : [],
+    image: hasImages ? rawImages[0] : fallback,
+    images: hasImages ? rawImages : [fallback],
     hasImages,
+
     tagline: v.description ?? "",
     features: v.features ?? [],
     specs: {
