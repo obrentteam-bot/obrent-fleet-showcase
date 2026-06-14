@@ -6,6 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 import ferrariHero from "@/assets/ferrari-hauptcover.png.asset.json";
 
 
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/fleet/")({
 
 function FleetPage() {
   const { t } = useI18n();
+  const { theme } = useTheme();
+  const isLight = theme === "light";
   const { vehicles, loading } = useVehicles();
   const [active, setActive] = useState<string>("All");
   const cats = t.categories as Record<string, string>;
@@ -95,15 +98,27 @@ function FleetPage() {
               <Link
                 to="/fleet/$vehicleId"
                 params={{ vehicleId: v.id }}
-                className="hidden md:grid relative group rounded-2xl overflow-hidden bg-[#0A0A0A] border border-border mb-8 grid-cols-[minmax(0,42%)_minmax(0,58%)] min-h-[460px]"
+                className="hidden md:grid relative group rounded-2xl overflow-hidden border border-border mb-8 grid-cols-[minmax(0,34%)_minmax(0,66%)] min-h-[460px]"
+                style={{ background: isLight ? "#F5F0E8" : "#0A0A0A" }}
               >
                 {/* LEFT — info */}
-                <div className="relative z-10 p-10 lg:p-14 flex flex-col justify-between bg-[#0A0A0A]">
+                <div
+                  className="relative z-10 p-10 lg:p-12 flex flex-col justify-between"
+                  style={{ background: isLight ? "#F5F0E8" : "#0A0A0A" }}
+                >
                   <div>
                     <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">{v.marque}</div>
-                    <h2 className="font-display text-cream leading-[0.95] text-5xl lg:text-6xl xl:text-7xl">{v.name}</h2>
+                    <h2
+                      className="font-display leading-[0.95] text-4xl lg:text-5xl xl:text-6xl"
+                      style={{ color: isLight ? "#0A0A0A" : undefined }}
+                    >
+                      <span className={isLight ? "" : "text-cream"}>{v.name}</span>
+                    </h2>
                     {tagline && (
-                      <p className="mt-5 text-cream/70 font-light text-base leading-relaxed max-w-md">{tagline}</p>
+                      <p
+                        className="mt-5 font-light text-base leading-relaxed max-w-md"
+                        style={{ color: isLight ? "rgba(10,10,10,0.75)" : "rgba(245,240,232,0.7)" }}
+                      >{tagline}</p>
                     )}
                     <dl className="mt-8 grid grid-cols-4 gap-5">
                       {[
@@ -114,15 +129,27 @@ function FleetPage() {
                       ].map(({ Icon, label, val }) => (
                         <div key={label} className="min-w-0">
                           <Icon className="w-4 h-4 text-gold mb-2" strokeWidth={1.2} />
-                          <dt className="text-[0.55rem] tracking-[0.26em] uppercase text-cream/45">{label}</dt>
-                          <dd className="text-cream font-medium mt-1 text-xs leading-snug truncate">{val}</dd>
+                          <dt
+                            className="text-[0.55rem] tracking-[0.26em] uppercase"
+                            style={{ color: isLight ? "rgba(10,10,10,0.55)" : "rgba(245,240,232,0.45)" }}
+                          >{label}</dt>
+                          <dd
+                            className="font-medium mt-1 text-xs leading-snug truncate"
+                            style={{ color: isLight ? "#0A0A0A" : "#F5F0E8" }}
+                          >{val}</dd>
                         </div>
                       ))}
                     </dl>
                   </div>
-                  <div className="mt-10 pt-6 border-t border-cream/10 flex items-end gap-6 flex-wrap">
+                  <div
+                    className="mt-10 pt-6 flex items-end gap-6 flex-wrap"
+                    style={{ borderTop: isLight ? "1px solid rgba(10,10,10,0.12)" : "1px solid rgba(245,240,232,0.1)" }}
+                  >
                     <div>
-                      <div className="text-[0.55rem] tracking-[0.28em] uppercase text-cream/40 mb-1">AB</div>
+                      <div
+                        className="text-[0.55rem] tracking-[0.28em] uppercase mb-1"
+                        style={{ color: isLight ? "rgba(10,10,10,0.55)" : "rgba(245,240,232,0.4)" }}
+                      >AB</div>
                       <div className="font-display text-2xl italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                     </div>
                     <span className="ml-auto inline-flex items-center gap-3 border border-gold/70 bg-gold/10 text-gold px-7 py-3.5 text-[0.7rem] tracking-[0.32em] uppercase font-medium hover:bg-gold hover:text-onyx transition rounded-sm">
@@ -133,19 +160,27 @@ function FleetPage() {
                 </div>
 
                 {/* RIGHT — image */}
-                <div className="relative overflow-hidden">
+                <div
+                  className="relative overflow-hidden"
+                  style={{ background: isLight ? "#F5F0E8" : "#0A0A0A" }}
+                >
                   {(isFerrari || v.hasImages) ? (
                     <img
                       src={heroImg}
                       alt={v.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
+                      className={`absolute inset-0 w-full h-full transition-transform duration-[1400ms] ease-out group-hover:scale-105 ${isFerrari ? "object-contain object-center p-4" : "object-cover"}`}
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-jet">
                       <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
                     </div>
                   )}
-                  <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0A0A0A] to-transparent" />
+                  {!isFerrari && (
+                    <div
+                      className="absolute inset-y-0 left-0 w-32"
+                      style={{ background: `linear-gradient(to right, ${isLight ? "#F5F0E8" : "#0A0A0A"}, transparent)` }}
+                    />
+                  )}
                 </div>
               </Link>
             );
