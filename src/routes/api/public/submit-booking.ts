@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { corsHeaders, preflight } from "@/lib/cors";
 
 const Schema = z.object({
   vehicle_id: z.string().uuid().nullable().optional(),
@@ -12,18 +13,12 @@ const Schema = z.object({
   status: z.enum(["pending", "new", "confirmed", "rejected"]).optional(),
 });
 
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Max-Age": "86400",
-} as const;
-
 export const Route = createFileRoute("/api/public/submit-booking")({
   server: {
     handlers: {
-      OPTIONS: async () => new Response(null, { status: 204, headers: CORS_HEADERS }),
+      OPTIONS: async ({ request }) => preflight(request),
       POST: async ({ request }) => {
+        const CORS_HEADERS = corsHeaders(request);
 
         let body: unknown;
         try {
