@@ -87,15 +87,17 @@ function FleetPage() {
               params={{ vehicleId: filtered[0].id }}
               className="relative block group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
             >
-              {filtered[0].hasImages ? (
-                <img
-                  src={filtered[0].image}
-                  alt={filtered[0].name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
-                />
-              ) : (
-                <ImagePlaceholder className="absolute inset-0 w-full h-full" />
+              <img
+                src={filtered[0].image}
+                alt={filtered[0].name}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
+              />
+              {!filtered[0].hasImages && (
+                <span className="absolute bottom-3 right-3 z-10 bg-[#0A0A0A]/80 backdrop-blur-sm text-[#B8975A] text-[0.6rem] tracking-[0.22em] uppercase px-3 py-1.5 rounded">
+                  Bilder folgen in Kürze
+                </span>
               )}
+
               <div className="absolute inset-0 bg-gradient-to-r from-onyx via-onyx/70 to-transparent" />
               <div className="absolute inset-0 p-8 md:p-14 flex flex-col justify-between max-w-[60%]">
                 <div>
@@ -146,16 +148,18 @@ function FleetPage() {
                 className="group flex flex-col rounded-xl overflow-hidden bg-jet border border-border hover:border-gold/40 transition-colors"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                  {v.hasImages ? (
-                    <img
-                      src={v.image}
-                      alt={v.name}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
-                    />
-                  ) : (
-                    <ImagePlaceholder className="absolute inset-0 w-full h-full" />
+                  <img
+                    src={v.image}
+                    alt={v.name}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+                  />
+                  {!v.hasImages && (
+                    <span className="absolute bottom-3 right-3 z-10 bg-[#0A0A0A]/80 backdrop-blur-sm text-[#B8975A] text-[0.55rem] tracking-[0.22em] uppercase px-2.5 py-1 rounded">
+                      Bilder folgen in Kürze
+                    </span>
                   )}
+
                   <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
                   <div className="absolute top-4 left-4 text-[0.6rem] tracking-[0.28em] uppercase text-cream/85 bg-onyx/60 backdrop-blur-sm px-3 py-1.5 rounded">
                     {cats[v.category] ?? v.category}
