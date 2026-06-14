@@ -102,6 +102,8 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
   const [error, setError] = useState<string | null>(null);
 
   const setVal = (k: string, v: string) => setValues((p) => ({ ...p, [k]: v }));
+  const dateLocale = lang === "de" ? de : enUS;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
 
   const scrollToForm = () => {
     const el = document.getElementById("anfrage");
