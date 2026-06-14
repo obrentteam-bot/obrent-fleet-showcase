@@ -8,6 +8,11 @@ import path from "node:path";
 export default defineConfig({
   ssr: {
     noExternal: [
+      "react",
+      "react-dom",
+      "react-dom/server",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
       "h3-v2",
       "rou3",
       "srvx",
@@ -26,6 +31,7 @@ export default defineConfig({
       "seroval-plugins/web",
     ],
   },
+
   resolve: {
     // TanStack Start's server runtime pulls in h3-v2, which in turn depends on
     // rou3/srvx. On the published worker these must be bundled, otherwise the
