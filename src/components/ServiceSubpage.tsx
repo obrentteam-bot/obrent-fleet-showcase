@@ -333,13 +333,13 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/5 to-white/40 dark:from-transparent dark:via-black/20 dark:to-black/80" />
         </div>
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center">
-          <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6 [text-shadow:0_1px_2px_rgba(0,0,0,0.25)] dark:[text-shadow:none]">
+          <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
             {props.hero.eyebrow[lang]}
           </div>
-          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-onyx dark:text-cream leading-[0.95] max-w-4xl [text-shadow:0_2px_12px_rgba(255,255,255,0.4)] dark:[text-shadow:none]">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
             {props.hero.headline[lang]}
           </h1>
-          <p className="mt-6 md:mt-8 text-base md:text-lg text-onyx/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed [text-shadow:0_1px_6px_rgba(255,255,255,0.5)] dark:[text-shadow:none]">
+          <p className="mt-6 md:mt-8 text-base md:text-lg text-onyx/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed">
             {props.hero.subline[lang]}
           </p>
           <div className="mt-10">
