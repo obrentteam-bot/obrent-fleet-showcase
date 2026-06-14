@@ -143,12 +143,12 @@ function FleetPage() {
 
           {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.slice(1).map((v) => (
+            {filtered.map((v, idx) => (
               <Link
                 key={v.id}
                 to="/fleet/$vehicleId"
                 params={{ vehicleId: v.id }}
-                className="group flex flex-col rounded-xl overflow-hidden bg-jet border border-border hover:border-gold/40 transition-colors"
+                className={`group flex flex-col rounded-xl overflow-hidden bg-jet border border-border hover:border-gold/40 transition-colors ${idx === 0 ? "md:hidden" : ""}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                   {v.hasImages ? (
