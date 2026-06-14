@@ -168,7 +168,7 @@ function FleetPage() {
                     <img
                       src={heroImg}
                       alt={v.name}
-                      className={`absolute inset-0 w-full h-full transition-transform duration-[1400ms] ease-out group-hover:scale-105 ${isFerrari ? "object-contain object-center p-4" : "object-cover"}`}
+                      className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-105"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-jet">
