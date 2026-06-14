@@ -215,13 +215,18 @@ Deno.serve(async (req: Request) => {
 
   const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d);
 
-  const send = (from: string, to: string, subject: string, html: string, replyTo: string) =>
-    fetch("https://api.resend.com/emails", {
+  const send = async (from: string, to: string, subject: string, html: string, replyTo: string) => {
+    const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({ from, to: [to], subject, html, reply_to: replyTo }),
     });
+    const bodyText = await res.text().catch(() => "");
+    console.log(`[resend] from="${from}" to="${to}" status=${res.status} body=${bodyText.slice(0, 600)}`);
+    return { ok: res.ok, status: res.status, body: bodyText };
+  };
 
+  console.log(`[send-booking-email] customer=${d.email} admin=info@obrent.de`);
   const results = await Promise.allSettled([
     send("OBRENT <noreply@obrent.de>", d.email, customerSubject, customerHtml, "info@obrent.de"),
     send("OBRENT <info@obrent.de>", "info@obrent.de", adminSubject, adminHtml, d.email),
@@ -231,7 +236,7 @@ Deno.serve(async (req: Request) => {
   for (const [i, r] of results.entries()) {
     const label = i === 0 ? "customer" : "admin";
     if (r.status === "rejected") failures.push(`${label}: ${String(r.reason)}`);
-    else if (!r.value.ok) failures.push(`${label}: HTTP ${r.value.status} ${await r.value.text().catch(() => "")}`);
+    else if (!r.value.ok) failures.push(`${label}: HTTP ${r.value.status} ${r.value.body.slice(0, 300)}`);
   }
 
   if (failures.length === results.length) {
