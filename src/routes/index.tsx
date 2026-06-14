@@ -175,7 +175,7 @@ function HomePage() {
                   params={{ vehicleId: v.id }}
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
                   draggable={false}
-                  className="glass-card group overflow-hidden flex flex-col shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
+                  className="glass-card group overflow-hidden flex flex-col shrink-0 snap-center w-[85vw] max-w-[320px] sm:w-[60%] sm:max-w-none md:w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                     {v.hasImages ? (
