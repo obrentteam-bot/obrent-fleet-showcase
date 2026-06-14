@@ -179,17 +179,18 @@ function HomePage() {
                   className="glass-card group overflow-hidden flex flex-col shrink-0 w-[85%] sm:w-[60%] md:w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                    <img
-                      src={v.image}
-                      alt={v.name}
-                      draggable={false}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
-                      loading={i < 2 ? "eager" : "lazy"}
-                    />
-                    {!v.hasImages && (
-                      <span className="absolute bottom-3 right-3 z-10 bg-[#0A0A0A]/80 backdrop-blur-sm text-[#B8975A] text-[0.55rem] tracking-[0.22em] uppercase px-2.5 py-1 rounded">
-                        Bilder folgen in Kürze
-                      </span>
+                    {v.hasImages ? (
+                      <img
+                        src={v.image}
+                        alt={v.name}
+                        draggable={false}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
+                        loading={i < 2 ? "eager" : "lazy"}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+                      </div>
                     )}
 
                     <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
