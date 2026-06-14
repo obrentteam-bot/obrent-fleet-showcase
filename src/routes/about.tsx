@@ -112,15 +112,15 @@ function AboutPage() {
           </div>
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center">
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
-              Über uns
+              {t.about.eyebrow}
             </div>
             <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
-              Exzellenz.<br />
-              Leidenschaft.<br />
-              <span className="text-gold italic font-light">Premium Mobility.</span>
+              {t.about.headline1}<br />
+              {t.about.headline2}<br />
+              <span className="text-gold italic font-light">{t.about.headlineItalic}</span>
             </h1>
             <p className="mt-6 md:mt-8 text-base md:text-lg text-onyx/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed">
-              OBRENT steht für kompromisslose Qualität, Diskretion und einen Anspruch, der weit über das gewöhnliche Maß einer Autovermietung hinausgeht.
+              {t.about.intro}
             </p>
           </div>
           <PulseArrow onClick={next} />
