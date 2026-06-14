@@ -299,43 +299,13 @@ function VehicleDetailPage() {
                   </div>
                 )}
 
-                <div className="absolute left-5 right-5 top-5 flex items-start justify-between gap-4">
+                <div className="absolute left-5 top-5">
                   <div className="rounded-full border px-4 py-2 backdrop-blur-md" style={{ borderColor: "rgba(255,255,255,0.16)", background: "rgba(5,5,5,0.36)" }}>
                     <span className="text-[0.62rem] uppercase" style={{ color: "#F8F4EC", letterSpacing: "0.28em" }}>
                       {v.marque} Collection
                     </span>
                   </div>
-                  {imgCount > 0 && (
-                    <div className="rounded-full border px-4 py-2 backdrop-blur-md" style={{ borderColor: "rgba(255,255,255,0.16)", background: "rgba(5,5,5,0.36)", color: "#F8F4EC" }}>
-                      <span className="text-[0.62rem] uppercase" style={{ letterSpacing: "0.28em" }}>
-                        {(imgIndex + 1).toString().padStart(2, "0")} / {imgCount.toString().padStart(2, "0")}
-                      </span>
-                    </div>
-                  )}
                 </div>
-
-                {imgCount > 1 && (
-                  <div className="absolute bottom-5 left-5 right-5">
-                    <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                      {heroThumbs.map((src, i) => (
-                        <button
-                          key={src + i}
-                          type="button"
-                          onClick={() => goImg(i)}
-                          aria-label={`Bild ${i + 1}`}
-                          className="relative h-20 w-24 md:h-24 md:w-32 shrink-0 overflow-hidden rounded-2xl border transition-all"
-                          style={{
-                            borderColor: i === imgIndex ? "rgba(212,175,55,0.95)" : "rgba(255,255,255,0.12)",
-                            boxShadow: i === imgIndex ? "0 10px 28px rgba(212,175,55,0.22)" : "none",
-                          }}
-                        >
-                          <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                          <div className="absolute inset-0" style={{ background: i === imgIndex ? "linear-gradient(180deg, rgba(212,175,55,0.06), rgba(0,0,0,0.14))" : "linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.34))" }} />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
