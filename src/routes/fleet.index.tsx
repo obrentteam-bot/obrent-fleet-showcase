@@ -87,7 +87,7 @@ function FleetPage() {
             <Link
               to="/fleet/$vehicleId"
               params={{ vehicleId: filtered[0].id }}
-              className="relative block group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
+              className="hidden md:block relative group rounded-2xl overflow-hidden bg-jet border border-border mb-8 aspect-[21/10]"
             >
               {filtered[0].hasImages ? (
                 <img
