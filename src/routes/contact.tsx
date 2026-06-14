@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
@@ -38,7 +37,6 @@ export const Route = createFileRoute("/contact")({
 
 
 function ContactPage() {
-  const submitBookingFn = useServerFn(submitBooking);
   const { t, lang } = useI18n();
   const { settings } = useSettings();
   const addressLines = settings.address.split(",").map((s) => s.trim());
@@ -133,17 +131,15 @@ function ContactPage() {
                   `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
                   messageText && `Nachricht: ${messageText}`,
                 ].filter(Boolean).join("\n");
-                const { error } = await submitBookingFn({
-                  data: {
-                    vehicle_id: null,
-                    customer_name: fullName || name || "—",
-                    email,
-                    phone,
-                    start_date: (pickupDate ?? today2).toISOString().slice(0, 10),
-                    end_date: (returnDate ?? pickupDate ?? today2).toISOString().slice(0, 10),
-                    message: extra,
-                    status: "pending",
-                  },
+                const { error } = await submitBooking({
+                  vehicle_id: null,
+                  customer_name: fullName || name || "—",
+                  email,
+                  phone,
+                  start_date: (pickupDate ?? today2).toISOString().slice(0, 10),
+                  end_date: (returnDate ?? pickupDate ?? today2).toISOString().slice(0, 10),
+                  message: extra,
+                  status: "pending",
                 });
                 setSubmitting(false);
                 if (error) setSubmitError(error);
