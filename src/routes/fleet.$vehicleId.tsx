@@ -178,66 +178,91 @@ function VehicleDetailPage() {
             </Link>
           </div>
 
-          {/* ===== HERO CARD — premium cinematic split ===== */}
+          {/* ===== HERO CARD — cinematic 16:9 top, details below ===== */}
           <div
-            className="group relative isolate overflow-hidden grid grid-cols-1 xl:grid-cols-[minmax(0,42%)_minmax(0,58%)] animate-[heroFade_800ms_ease-out_both] border"
+            className="group relative isolate overflow-hidden animate-[heroFade_800ms_ease-out_both] border"
             style={{
               background: "linear-gradient(135deg, #050505 0%, #0A0A0A 40%, #111111 100%)",
               borderRadius: 20,
-              minHeight: 560,
               borderColor: "rgba(212,175,55,0.18)",
               boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
             }}
           >
             <style>{`@keyframes heroFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}`}</style>
-            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 14% 18%, rgba(212,175,55,0.14), transparent 30%), radial-gradient(circle at 86% 82%, rgba(212,175,55,0.08), transparent 26%)" }} />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(212,175,55,0.10), transparent 40%)" }} />
 
-            <div className="relative z-10 flex flex-col justify-between p-7 md:p-10 xl:p-14">
-              <div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="inline-flex items-center gap-2 rounded-full border px-4 py-2" style={{ borderColor: "rgba(212,175,55,0.24)", background: "rgba(255,255,255,0.02)" }}>
-                    <Shield className="h-3.5 w-3.5" style={{ color: "#D4AF37" }} />
-                    <span className="text-[0.65rem] uppercase" style={{ color: "#E2C980", letterSpacing: "0.32em" }}>
-                      {heroCategory}
-                    </span>
-                  </div>
-                  <div className="inline-flex items-center rounded-full border px-4 py-2 text-[0.65rem] uppercase" style={{ borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.62)", letterSpacing: "0.28em" }}>
-                    {v.year}
-                  </div>
+            {/* 16:9 image — shaded, doesn't need to show whole car */}
+            <div className="relative w-full aspect-[16/9] overflow-hidden">
+              {v.hasImages ? (
+                <>
+                  <img
+                    src={heroImage}
+                    alt={v.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2200ms] ease-out group-hover:scale-[1.04]"
+                  />
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(5,5,5,0.50) 0%, rgba(5,5,5,0.10) 45%, rgba(5,5,5,0.70) 100%)" }} />
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(5,5,5,0.55) 0%, transparent 50%, rgba(5,5,5,0.35) 100%)" }} />
+                </>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-jet">
+                  <span className="text-base uppercase font-light" style={{ color: "#D4AF37", letterSpacing: "0.22em" }}>Bilder folgen in Kürze</span>
                 </div>
+              )}
 
-                <div className="mt-10 text-[0.76rem] uppercase font-medium" style={{ color: "#D4AF37", letterSpacing: "0.36em" }}>
-                  {v.marque}
+              <div className="absolute left-5 top-5">
+                <div className="rounded-full border px-4 py-2 backdrop-blur-md" style={{ borderColor: "rgba(255,255,255,0.16)", background: "rgba(5,5,5,0.36)" }}>
+                  <span className="text-[0.62rem] uppercase" style={{ color: "#F8F4EC", letterSpacing: "0.28em" }}>
+                    {v.marque} Collection
+                  </span>
                 </div>
-                <h1 className="mt-5 font-display leading-[0.95] max-w-[10ch]" style={{ color: "#F8F4EC", fontSize: "clamp(3.2rem,7vw,5.6rem)" }}>
-                  {v.name}
-                </h1>
-                <p className="mt-6 max-w-[34rem] text-base md:text-lg font-light italic leading-relaxed" style={{ color: "rgba(248,244,236,0.74)" }}>
-                  {heroNarrative}
-                </p>
+              </div>
+            </div>
 
-                <div className="mt-10 grid grid-cols-2 gap-3 md:gap-4">
-                  {[
-                    { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
-                    { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
-                    { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
-                    { icon: Palette, label: t.vehicle.specs.color, value: v.color || "—" },
-                  ].map(({ icon: Icon, label, value }) => (
-                    <div
-                      key={label}
-                      className="rounded-2xl border p-4 md:p-5 min-w-0"
-                      style={{ borderColor: "rgba(255,255,255,0.08)", background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))" }}
-                    >
-                      <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#D4AF37" }} />
-                      <div className="mt-4 text-[0.6rem] uppercase" style={{ color: "rgba(248,244,236,0.46)", letterSpacing: "0.28em" }}>
-                        {label}
-                      </div>
-                      <div className="mt-2 text-sm md:text-base font-medium leading-snug break-words" style={{ color: "#F8F4EC" }}>
-                        {value}
-                      </div>
+            {/* Details below image */}
+            <div className="relative z-10 p-7 md:p-10 xl:p-14">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center gap-2 rounded-full border px-4 py-2" style={{ borderColor: "rgba(212,175,55,0.24)", background: "rgba(255,255,255,0.02)" }}>
+                  <Shield className="h-3.5 w-3.5" style={{ color: "#D4AF37" }} />
+                  <span className="text-[0.65rem] uppercase" style={{ color: "#E2C980", letterSpacing: "0.32em" }}>
+                    {heroCategory}
+                  </span>
+                </div>
+                <div className="inline-flex items-center rounded-full border px-4 py-2 text-[0.65rem] uppercase" style={{ borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.62)", letterSpacing: "0.28em" }}>
+                  {v.year}
+                </div>
+              </div>
+
+              <div className="mt-8 text-[0.76rem] uppercase font-medium" style={{ color: "#D4AF37", letterSpacing: "0.36em" }}>
+                {v.marque}
+              </div>
+              <h1 className="mt-4 font-display leading-[0.95]" style={{ color: "#F8F4EC", fontSize: "clamp(2.6rem,6vw,4.8rem)" }}>
+                {v.name}
+              </h1>
+              <p className="mt-5 max-w-[44rem] text-base md:text-lg font-light italic leading-relaxed" style={{ color: "rgba(248,244,236,0.74)" }}>
+                {heroNarrative}
+              </p>
+
+              <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                {[
+                  { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
+                  { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
+                  { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
+                  { icon: Palette, label: t.vehicle.specs.color, value: v.color || "—" },
+                ].map(({ icon: Icon, label, value }) => (
+                  <div
+                    key={label}
+                    className="rounded-2xl border p-4 md:p-5 min-w-0"
+                    style={{ borderColor: "rgba(255,255,255,0.08)", background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))" }}
+                  >
+                    <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#D4AF37" }} />
+                    <div className="mt-4 text-[0.6rem] uppercase" style={{ color: "rgba(248,244,236,0.46)", letterSpacing: "0.28em" }}>
+                      {label}
                     </div>
-                  ))}
-                </div>
+                    <div className="mt-2 text-sm md:text-base font-medium leading-snug break-words" style={{ color: "#F8F4EC" }}>
+                      {value}
+                    </div>
+                  </div>
+                ))}
               </div>
 
               <div className="mt-10 flex flex-col gap-6 border-t pt-8" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
@@ -293,35 +318,6 @@ function VehicleDetailPage() {
                       {t.vehicle.requestNow}
                       <ArrowRight className="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
                     </a>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <div className="relative order-first xl:order-last min-h-[340px] xl:min-h-full p-3 md:p-4 xl:p-5">
-              <div className="relative h-full overflow-hidden rounded-[18px] border" style={{ borderColor: "rgba(255,255,255,0.08)", background: "#111111" }}>
-                {v.hasImages ? (
-                  <>
-                    <img
-                      src={heroImage}
-                      alt={v.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2200ms] ease-out group-hover:scale-[1.04]"
-                    />
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(5,5,5,0.58) 0%, rgba(5,5,5,0.08) 38%, rgba(5,5,5,0.18) 100%)" }} />
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.4) 100%)" }} />
-                  </>
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-jet">
-                    <span className="text-base uppercase font-light" style={{ color: "#D4AF37", letterSpacing: "0.22em" }}>Bilder folgen in Kürze</span>
-                  </div>
-                )}
-
-                <div className="absolute left-5 top-5">
-                  <div className="rounded-full border px-4 py-2 backdrop-blur-md" style={{ borderColor: "rgba(255,255,255,0.16)", background: "rgba(5,5,5,0.36)" }}>
-                    <span className="text-[0.62rem] uppercase" style={{ color: "#F8F4EC", letterSpacing: "0.28em" }}>
-                      {v.marque} Collection
-                    </span>
                   </div>
                 </div>
               </div>
