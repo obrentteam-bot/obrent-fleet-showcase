@@ -363,7 +363,7 @@ function VehicleDetailPage() {
           {/* ===== MIETPREISSTAFFELUNG ===== */}
           <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
             <div className="flex items-center gap-4 mb-6">
-              <span className="eyebrow">Mietpreisstaffelung</span>
+              <span className="eyebrow">{t.vehicle.pricingTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
