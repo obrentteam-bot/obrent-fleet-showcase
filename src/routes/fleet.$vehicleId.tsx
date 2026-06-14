@@ -267,16 +267,6 @@ function VehicleDetailPage() {
                   </a>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-light" style={{ color: "rgba(248,244,236,0.62)" }}>
-                  <div className="flex items-center gap-3 rounded-full px-4 py-3" style={{ background: "rgba(255,255,255,0.03)" }}>
-                    <ShieldCheck className="h-4 w-4 shrink-0" style={{ color: "#D4AF37" }} />
-                    <span>{t.vehicle.featurePills[0]?.title}</span>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-full px-4 py-3" style={{ background: "rgba(255,255,255,0.03)" }}>
-                    <Headphones className="h-4 w-4 shrink-0" style={{ color: "#D4AF37" }} />
-                    <span>{t.vehicle.featurePills[3]?.title}</span>
-                  </div>
-                </div>
               </div>
             </div>
 
