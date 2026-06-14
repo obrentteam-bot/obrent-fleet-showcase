@@ -212,28 +212,28 @@ function AboutPage() {
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center">
             <div className="max-w-2xl">
               <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem] mb-6">
-                Bereit für Ihr nächstes Erlebnis?
+                {t.about.ctaEyebrow}
               </p>
               <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-onyx dark:text-cream">
-                Bereit für ein unvergessliches<br />
-                <span className="text-gold italic font-light">Erlebnis?</span>
+                {t.about.ctaTitle}<br />
+                <span className="text-gold italic font-light">{t.about.ctaTitleItalic}</span>
               </h2>
               <p className="mt-6 text-onyx/75 dark:text-cream/70 text-base md:text-lg font-light">
-                Entdecken Sie unsere Flotte oder sprechen Sie persönlich mit uns.
+                {t.about.ctaLead}
               </p>
               <div className="mt-8 md:mt-10 flex flex-wrap items-center gap-4">
                 <Link
                   to="/fleet"
                   className="group inline-flex items-center gap-3 bg-gold text-onyx px-7 py-4 text-xs tracking-[0.28em] uppercase font-medium hover:bg-gold/90 transition-colors"
                 >
-                  Zur Flotte
+                  {t.about.ctaFleet}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
                   to="/contact"
                   className="group inline-flex items-center gap-3 border border-onyx/30 dark:border-cream/25 text-onyx dark:text-cream px-7 py-4 text-xs tracking-[0.28em] uppercase font-medium hover:border-gold hover:text-gold transition-colors"
                 >
-                  Kontakt aufnehmen
+                  {t.about.ctaContact}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
