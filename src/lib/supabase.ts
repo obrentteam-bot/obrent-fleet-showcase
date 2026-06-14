@@ -40,6 +40,15 @@ export type DbVehicle = {
   images: string[] | null;
   available: boolean | null;
   created_at: string | null;
+  price_3h?: number | null;
+  price_6h?: number | null;
+  price_12h?: number | null;
+  price_24h?: number | null;
+  extra_km_price?: number | null;
+  deposit?: number | null;
+  min_age?: number | null;
+  min_license_years?: number | null;
+  free_km?: number | null;
 };
 
 export type DbBooking = {
