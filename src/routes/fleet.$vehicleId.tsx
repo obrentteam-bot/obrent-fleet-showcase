@@ -310,10 +310,27 @@ function VehicleDetailPage() {
 
                 <button
                   type="button"
+                  onClick={async () => {
+                    const shareData = {
+                      title: `${v!.name} — OBRENT Luxus Autovermietung`,
+                      text: "Schau dir dieses Fahrzeug bei OBRENT an — Luxus Autovermietung Mannheim.",
+                      url: window.location.href,
+                    };
+                    if (navigator.share) {
+                      try { await navigator.share(shareData); } catch {}
+                    } else {
+                      try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        toast.success("Link kopiert!", {
+                          style: { background: "#0A0A0A", color: "#B8975A", border: "none" },
+                        });
+                      } catch {}
+                    }
+                  }}
                   className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-lg border border-cream/15 bg-jet/60 text-cream/80 text-[0.78rem] tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
                 >
-                  <Heart className="w-4 h-4" />
-                  Merken
+                  <Share2 className="w-4 h-4" />
+                  Teilen
                 </button>
               </div>
             </div>
