@@ -170,51 +170,152 @@ function VehicleDetailPage() {
       <section className="pt-32 px-4 md:px-8 lg:px-12 pb-16">
         <div className="max-w-[1500px] mx-auto">
 
-          {/* Top bar: back link (left) + counter (right) — outside image */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 mb-6">
-            <div className="lg:col-span-7 flex flex-col gap-4">
-              <Link to="/fleet" className="text-[0.7rem] tracking-[0.32em] uppercase text-cream/70 hover:text-gold transition flex items-center gap-2">
-                <ChevronLeft className="w-3.5 h-3.5" /> {t.nav.fleet}
-              </Link>
-              <div className="inline-flex items-center gap-2.5 self-start px-3.5 py-2 rounded-md border border-gold/50 bg-jet/40 backdrop-blur-sm">
-                <Shield className="w-3.5 h-3.5 text-gold" />
-                <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/90">{cats[v.category] ?? v.category}</span>
-              </div>
-            </div>
-            <div className="lg:col-span-5 flex justify-end">
-              {imgCount > 1 && (
-                <div className="px-4 py-1.5 rounded-md border border-cream/15 bg-jet/40 text-[0.72rem] tracking-[0.2em] text-cream/80">
-                  {imgIndex + 1} / {imgCount}
-                </div>
-              )}
+          {/* Top bar */}
+          <div className="mb-6 flex items-center justify-between">
+            <Link to="/fleet" className="text-[0.7rem] tracking-[0.32em] uppercase text-cream/70 hover:text-gold transition flex items-center gap-2">
+              <ChevronLeft className="w-3.5 h-3.5" /> {t.nav.fleet}
+            </Link>
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-md border border-gold/50 bg-jet/40 backdrop-blur-sm">
+              <Shield className="w-3.5 h-3.5 text-gold" />
+              <span className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/90">{cats[v.category] ?? v.category}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          {/* ===== HERO CARD — cinematic split ===== */}
+          <div
+            className="group relative overflow-hidden grid grid-cols-1 lg:grid-cols-[minmax(0,44%)_minmax(0,56%)] animate-[heroFade_800ms_ease-out_both]"
+            style={{ background: "#0A0A0A", borderRadius: 20, minHeight: 680 }}
+          >
+            <style>{`@keyframes heroFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}`}</style>
 
-            {/* LEFT — gallery */}
-            <div className="lg:col-span-7 space-y-5">
-              <div className="relative aspect-[16/11] overflow-hidden rounded-2xl bg-jet">
-                {v.hasImages ? (
-                  v.images.map((src, i) => (
-                    <img
-                      key={src + i}
-                      src={src}
-                      alt={`${v.name} — ${i + 1}`}
-                      loading={i === 0 ? "eager" : "lazy"}
-                      decoding="async"
-                      fetchPriority={i === 0 ? "high" : "low"}
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
-                    />
-                  ))
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-[#B8975A] text-base tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
-                  </div>
+            {/* LEFT — info */}
+            <div className="relative z-10 flex flex-col justify-between p-8 md:p-12 lg:p-14" style={{ background: "#050505" }}>
+              <div>
+                <div className="uppercase font-medium" style={{ color: "#D4AF37", fontSize: 13, letterSpacing: "0.25em" }}>
+                  {v.marque}
+                </div>
+                <h1 className="font-display mt-5 leading-[1.02]" style={{ color: "#FFFFFF", fontSize: "clamp(2.5rem,5vw,3.5rem)" }}>
+                  {v.name}
+                </h1>
+                {v.tagline && (
+                  <p className="mt-5 italic font-light leading-relaxed max-w-md" style={{ color: "#CFCFCF", fontSize: 16 }}>
+                    {v.tagline}
+                  </p>
                 )}
 
+                {/* Spec icon row */}
+                <div className="mt-10 pt-8 border-t" style={{ borderColor: "rgba(207,207,207,0.15)" }}>
+                  <div className="grid grid-cols-4 gap-3">
+                    {[
+                      { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
+                      { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
+                      { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
+                      { icon: Palette, label: t.vehicle.specs.color, value: v.color },
+                    ].map(({ icon: Icon, label, value }) => (
+                      <div key={label} className="flex flex-col gap-2 min-w-0">
+                        <Icon className="w-5 h-5" style={{ color: "#D4AF37" }} />
+                        <div className="uppercase" style={{ color: "#CFCFCF", fontSize: 10, letterSpacing: "0.18em" }}>
+                          {label}
+                        </div>
+                        <div className="font-medium leading-tight break-words" style={{ color: "#FFFFFF", fontSize: 14 }}>
+                          {value || "—"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
 
-                {/* Arrows */}
+              {/* Price + CTA */}
+              <div className="mt-10 pt-8 border-t flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6" style={{ borderColor: "rgba(207,207,207,0.15)" }}>
+                <div>
+                  {SHOW_PRICES && (
+                    <div className="uppercase mb-1" style={{ color: "#CFCFCF", fontSize: 10, letterSpacing: "0.28em" }}>
+                      {t.vehicle.reservationFrom}
+                    </div>
+                  )}
+                  <div className="font-display italic leading-tight" style={{ color: "#D4AF37", fontSize: "clamp(1.5rem,2.5vw,1.875rem)" }}>
+                    {t.vehicle.priceOnRequest}
+                  </div>
+                </div>
+                <a
+                  href="#reservation"
+                  className="group/cta inline-flex items-center justify-center gap-3 uppercase font-medium whitespace-nowrap transition-all w-full sm:w-auto"
+                  style={{
+                    background: "#D4AF37",
+                    color: "#050505",
+                    letterSpacing: "0.2em",
+                    fontSize: 12,
+                    padding: "16px 32px",
+                    borderRadius: 2,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "0 0 20px rgba(212,175,55,0.4)";
+                    e.currentTarget.style.filter = "brightness(1.1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.filter = "none";
+                  }}
+                >
+                  {t.vehicle.requestNow}
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
+                </a>
+              </div>
+            </div>
+
+            {/* RIGHT — image */}
+            <div className="relative overflow-hidden min-h-[280px] lg:min-h-full order-first lg:order-last">
+              {v.hasImages ? (
+                <img
+                  src={v.images[0]}
+                  alt={v.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform ease-out group-hover:scale-[1.02]"
+                  style={{ transitionDuration: "6s" }}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-jet">
+                  <span className="text-[#B8975A] text-base tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+                </div>
+              )}
+              {/* Vignette left edge */}
+              <div className="absolute inset-y-0 left-0 w-32 pointer-events-none hidden lg:block" style={{ background: "linear-gradient(to right, #050505, transparent)" }} />
+              <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none lg:hidden" style={{ background: "linear-gradient(to top, #050505, transparent)" }} />
+            </div>
+          </div>
+
+          {/* ===== Feature pills ===== */}
+          <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
+            {[
+              { icon: ShieldCheck, ...t.vehicle.featurePills[0] },
+              { icon: CalendarDays, ...t.vehicle.featurePills[1] },
+              { icon: MapPin, ...t.vehicle.featurePills[2] },
+              { icon: Headphones, ...t.vehicle.featurePills[3] },
+            ].map(({ icon: Icon, title, sub }) => (
+              <div key={title} className="flex items-start gap-3">
+                <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+                <div className="min-w-0">
+                  <div className="text-xs tracking-[0.2em] uppercase text-cream font-medium leading-tight">{title}</div>
+                  <div className="mt-1.5 text-xs text-cream/55 leading-relaxed font-light">{sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ===== Gallery slideshow with thumbnails ===== */}
+          {v.hasImages && imgCount > 0 && (
+            <div className="mt-10 space-y-4">
+              <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-jet">
+                {v.images.map((src, i) => (
+                  <img
+                    key={src + i}
+                    src={src}
+                    alt={`${v.name} — ${i + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
+                  />
+                ))}
                 {imgCount > 1 && (
                   <>
                     <button type="button" aria-label="Vorheriges Bild" onClick={() => goImg(imgIndex - 1)} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-gold/50 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
@@ -223,142 +324,48 @@ function VehicleDetailPage() {
                     <button type="button" aria-label="Nächstes Bild" onClick={() => goImg(imgIndex + 1)} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-gold/50 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
                       <ChevronRight className="w-5 h-5" />
                     </button>
+                    <div className="absolute top-5 right-5 px-3 py-1.5 rounded-md border border-cream/15 bg-jet/60 text-[0.7rem] tracking-[0.22em] text-cream/85">
+                      {imgIndex + 1} / {imgCount}
+                    </div>
                   </>
                 )}
-
-                {/* Thumbnails */}
-                {imgCount > 1 && (
-                  <div className="absolute bottom-5 left-5 z-10 flex gap-2.5">
-                    {v.images.slice(0, 5).map((src, i) => (
-                      <button
-                        key={src + i}
-                        type="button"
-                        onClick={() => goImg(i)}
-                        aria-label={`Bild ${i + 1}`}
-                        className={`relative w-16 h-12 md:w-20 md:h-14 overflow-hidden rounded-md border-2 transition ${i === imgIndex ? "border-gold" : "border-cream/20 hover:border-cream/50"}`}
-                      >
-                        <img src={src} alt="" className="w-full h-full object-cover" />
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
+              {imgCount > 1 && (
+                <div className="flex gap-2.5 overflow-x-auto pb-1">
+                  {v.images.map((src, i) => (
+                    <button
+                      key={src + i}
+                      type="button"
+                      onClick={() => goImg(i)}
+                      aria-label={`Bild ${i + 1}`}
+                      className={`relative w-20 h-14 md:w-24 md:h-16 shrink-0 overflow-hidden rounded-md border-2 transition ${i === imgIndex ? "border-gold" : "border-cream/20 hover:border-cream/50"}`}
+                    >
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
-              {/* Feature pills — icon LEFT, text right */}
-              <div className="grid grid-cols-2 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
-                {[
-                  { icon: ShieldCheck, ...t.vehicle.featurePills[0] },
-                  { icon: CalendarDays, ...t.vehicle.featurePills[1] },
-                  { icon: MapPin, ...t.vehicle.featurePills[2] },
-                  { icon: Headphones, ...t.vehicle.featurePills[3] },
-                ].map(({ icon: Icon, title, sub }) => (
-                  <div key={title} className="flex items-start gap-3">
-                    <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <div className="text-xs tracking-[0.2em] uppercase text-cream font-medium leading-tight">{title}</div>
-                      <div className="mt-1.5 text-xs text-cream/55 leading-relaxed font-light">{sub}</div>
-                    </div>
+          {/* Vehicle features list */}
+          {v.features.length > 0 && (
+            <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
+              <div className="flex items-center gap-4 mb-6">
+                <span className="eyebrow">{t.vehicle.specifications}</span>
+                <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-cream/70 font-light">
+                {v.features.map((feat) => (
+                  <div key={feat} className="flex gap-2.5 leading-relaxed">
+                    <span className="text-gold mt-1">·</span>
+                    <span>{feat}</span>
                   </div>
                 ))}
               </div>
             </div>
+          )}
 
-            {/* RIGHT — details */}
-            <div className="lg:col-span-5 space-y-7">
-              <div>
-                <div className="text-xs tracking-[0.32em] uppercase text-gold mb-3">{v.marque}</div>
-                <h1 className="font-display text-5xl md:text-6xl text-cream leading-[1.02]">{v.name}</h1>
-                {v.tagline && (
-                  <p className="mt-5 text-base md:text-lg text-cream/55 font-light italic leading-relaxed">{v.tagline}</p>
-                )}
-              </div>
-
-              {/* Price card */}
-              <div className="p-6 md:p-7 rounded-2xl border border-border bg-jet/50">
-                <div className="text-[0.65rem] tracking-[0.32em] uppercase text-cream/45 mb-3">{t.vehicle.reservationFrom}</div>
-                <div className="font-display text-4xl md:text-5xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {t.vehicle.priceOnRequest}
-                </div>
-                <p className="mt-4 text-xs text-cream/50 font-light leading-relaxed">{t.vehicle.includes}</p>
-              </div>
-
-              {/* Specs moved below — see full-width section */}
-
-
-              {/* Features bullets — show only top 4 like reference */}
-              {v.features.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-cream/70 font-light">
-                  {v.features.slice(0, 4).map((feat) => (
-                    <div key={feat} className="flex gap-2.5 leading-relaxed">
-                      <span className="text-gold mt-1">·</span>
-                      <span>{feat}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-
-
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <a
-                  href="#reservation"
-                  className="group flex-[1.4] inline-flex items-center justify-center gap-3 px-6 py-4 rounded-lg bg-gradient-to-r from-gold to-gold-soft text-onyx font-medium text-[0.8rem] tracking-[0.2em] uppercase whitespace-nowrap hover:opacity-90 transition"
-                >
-                  <span>{t.vehicle.requestNow}</span>
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </a>
-
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const shareData = {
-                      title: `${v!.name} — OBRENT Luxus Autovermietung`,
-                      text: t.vehicle.shareText,
-                      url: window.location.href,
-                    };
-                    if (navigator.share) {
-                      try { await navigator.share(shareData); } catch {}
-                    } else {
-                      try {
-                        await navigator.clipboard.writeText(window.location.href);
-                        toast.success(t.vehicle.linkCopied, {
-                          style: { background: "#0A0A0A", color: "#B8975A", border: "none" },
-                        });
-                      } catch {}
-                    }
-                  }}
-                  className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-lg border border-cream/15 bg-jet/60 text-cream/80 text-[0.78rem] tracking-[0.22em] uppercase hover:border-gold hover:text-gold transition"
-                >
-                  <Share2 className="w-4 h-4" />
-                  {t.vehicle.share}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Specs — separate full-width box with breathing room */}
-          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-            <div className="flex items-center gap-4 mb-6">
-              <span className="eyebrow">{t.vehicle.specifications}</span>
-              <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-              {[
-                { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
-                { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
-                { icon: CalendarDays, label: t.vehicle.specs.year, value: String(v.year) },
-                { icon: Palette, label: t.vehicle.specs.color, value: v.color },
-              ].map(({ icon: Icon, label, value }) => (
-                <div key={label} className="flex items-start gap-3 p-4 rounded-xl border border-border/70 bg-onyx/30">
-                  <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
-                  <div className="min-w-0">
-                    <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
-                    <div className="mt-1.5 text-base text-cream font-light leading-snug break-words">{value || "—"}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* ===== MIETPREISSTAFFELUNG ===== */}
           <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
