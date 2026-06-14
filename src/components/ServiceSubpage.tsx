@@ -135,8 +135,8 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
         values["name"] || values["contact"] || values["company"] || "—",
       email: values["email"] || "",
       phone: values["phone"] || "",
-      start_date: today,
-      end_date: today,
+      start_date: todayIso,
+      end_date: todayIso,
       message: body,
       status: "pending",
     });
