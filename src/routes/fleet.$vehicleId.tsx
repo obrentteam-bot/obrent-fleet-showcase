@@ -386,30 +386,30 @@ function VehicleDetailPage() {
           {/* ===== MIETKONDITIONEN ===== */}
           <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
             <div className="flex items-center gap-4 mb-6">
-              <span className="eyebrow">Mietkonditionen</span>
+              <span className="eyebrow">{t.vehicle.conditionsTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Freikilometer</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.freeKm}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.freeKm ?? 150} km
                 </div>
-                <div className="mt-1 text-xs text-cream/50 font-light">pro Tag inklusive</div>
+                <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.freeKmHint}</div>
               </div>
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Zusatzkilometer</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.extraKm}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {v.conditions.extraKmPrice != null ? `${formatEuro2(v.conditions.extraKmPrice)} / km` : "auf Anfrage"}
+                  {v.conditions.extraKmPrice != null ? `${formatEuro2(v.conditions.extraKmPrice)} / km` : t.vehicle.onRequest}
                 </div>
-                <div className="mt-1 text-xs text-cream/50 font-light">über Freikilometer hinaus</div>
+                <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.extraKmHint}</div>
               </div>
               <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
-                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">Kaution</div>
+                <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.deposit}</div>
                 <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {v.conditions.deposit != null ? formatPrice(v.conditions.deposit) : "auf Anfrage"}
+                  {v.conditions.deposit != null ? formatPrice(v.conditions.deposit) : t.vehicle.onRequest}
                 </div>
-                <div className="mt-1 text-xs text-cream/50 font-light">vollständig erstattbar</div>
+                <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.depositHint}</div>
               </div>
             </div>
           </div>
