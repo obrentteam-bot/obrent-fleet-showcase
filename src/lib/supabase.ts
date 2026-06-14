@@ -81,6 +81,19 @@ export type UiVehicle = {
     engine: string;
     power: string;
   };
+  pricing: {
+    h3: number | null;
+    h6: number | null;
+    h12: number | null;
+    h24: number | null;
+  };
+  conditions: {
+    freeKm: number | null;
+    extraKmPrice: number | null;
+    deposit: number | null;
+    minAge: number | null;
+    minLicenseYears: number | null;
+  };
 };
 
 import porscheImg from "@/assets/marques/porsche.jpg";
