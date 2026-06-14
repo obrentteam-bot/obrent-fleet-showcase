@@ -321,7 +321,7 @@ function VehicleDetailPage() {
                     } else {
                       try {
                         await navigator.clipboard.writeText(window.location.href);
-                        toast.success("Link kopiert!", {
+                        toast.success(t.vehicle.linkCopied, {
                           style: { background: "#0A0A0A", color: "#B8975A", border: "none" },
                         });
                       } catch {}
