@@ -224,7 +224,7 @@ function AboutPage() {
               <div className="mt-8 md:mt-10 flex flex-wrap items-center gap-4">
                 <Link
                   to="/fleet"
-                  className="group inline-flex items-center gap-3 bg-gold text-onyx px-7 py-4 text-xs tracking-[0.28em] uppercase font-medium hover:bg-gold/90 transition-colors"
+                  className="group inline-flex items-center gap-3 bg-gold text-cream px-7 py-4 text-xs tracking-[0.28em] uppercase font-medium hover:bg-gold/90 transition-colors"
                 >
                   {t.about.ctaFleet}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
