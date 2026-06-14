@@ -300,6 +300,53 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                     </div>
                   );
                 }
+                if (f.type === "date") {
+                  const v = values[f.key];
+                  const dateVal = v ? new Date(v) : undefined;
+                  return (
+                    <div key={f.key} className={span}>
+                      <label className="lux-label">{f.label[lang]}</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal bg-transparent border-cream/20 text-cream hover:bg-cream/5 hover:text-cream",
+                              !dateVal && "text-cream/50"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                            {dateVal ? format(dateVal, "PPP", { locale: dateLocale }) : <span>{lang === "de" ? "Datum wählen" : "Pick a date"}</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={dateVal}
+                            onSelect={(d) => setVal(f.key, d ? format(d, "yyyy-MM-dd") : "")}
+                            disabled={(date) => date < today}
+                            initialFocus
+                            locale={dateLocale}
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  );
+                }
+                if (f.type === "time") {
+                  return (
+                    <div key={f.key} className={span}>
+                      <label className="lux-label">{f.label[lang]}</label>
+                      <TimeSelect
+                        value={values[f.key] || ""}
+                        onChange={(v) => setVal(f.key, v)}
+                        ariaLabel={f.label[lang]}
+                      />
+                    </div>
+                  );
+                }
                 return (
                   <div key={f.key} className={span}>
                     <label className="lux-label">{f.label[lang]}</label>
