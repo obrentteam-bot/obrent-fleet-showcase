@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
@@ -73,7 +72,6 @@ function FeatureList({ features }: { features: string[] }) {
 }
 
 function VehicleDetailPage() {
-  const submitBookingFn = useServerFn(submitBooking);
   const { vehicleId } = Route.useParams();
   const { t, lang } = useI18n();
   const { vehicle: v, loading, notFound } = useVehicle(vehicleId);
@@ -146,17 +144,15 @@ function VehicleDetailPage() {
       .filter(Boolean)
       .join("\n");
 
-    const { error } = await submitBookingFn({
-      data: {
-        vehicle_id: v!.id,
-        customer_name: fullName || name,
-        email,
-        phone,
-        start_date: pickupDate.toISOString().slice(0, 10),
-        end_date: returnDate.toISOString().slice(0, 10),
-        message: extra,
-        status: "pending",
-      },
+    const { error } = await submitBooking({
+      vehicle_id: v!.id,
+      customer_name: fullName || name,
+      email,
+      phone,
+      start_date: pickupDate.toISOString().slice(0, 10),
+      end_date: returnDate.toISOString().slice(0, 10),
+      message: extra,
+      status: "pending",
     });
 
     setSubmitting(false);
