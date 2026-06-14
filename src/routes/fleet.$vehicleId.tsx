@@ -21,8 +21,6 @@ import {
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails } from "@/components/ChauffeurDetails";
-import { VehicleSlideshow } from "@/components/VehicleSlideshow";
-import { toast } from "sonner";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
