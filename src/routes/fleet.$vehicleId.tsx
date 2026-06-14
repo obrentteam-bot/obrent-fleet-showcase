@@ -277,7 +277,7 @@ function VehicleDetailPage() {
               <div className="p-6 md:p-7 rounded-2xl border border-border bg-jet/50">
                 <div className="text-[0.65rem] tracking-[0.32em] uppercase text-cream/45 mb-3">{t.vehicle.reservationFrom}</div>
                 <div className="font-display text-4xl md:text-5xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  Preis auf Anfrage
+                  {t.vehicle.priceOnRequest}
                 </div>
                 <p className="mt-4 text-xs text-cream/50 font-light leading-relaxed">{t.vehicle.includes}</p>
               </div>
