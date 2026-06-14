@@ -1,9 +1,6 @@
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-
-const CLOUD_URL_FALLBACK = "https://nvrtqhkcxjskhhbonjqy.supabase.co";
-const CLOUD_PUBLISHABLE_KEY_FALLBACK =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52cnRxaGtjeGpza2hoYm9uanF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MjcxODgsImV4cCI6MjA5NjQwMzE4OH0.YdVahc8a0I0nw9LziSqehHBa-jDt-6DHzrbMedONKy8";
+import { supabase as legacy } from "./supabase";
+import { supabase as cloud } from "@/integrations/supabase/client";
 
 export type SubmitBookingPayload = {
   vehicle_id?: string | null;
@@ -27,63 +24,60 @@ const submitBookingSchema = z.object({
   status: z.enum(["pending", "new", "confirmed", "rejected"]).optional(),
 });
 
-export const submitBooking = createServerFn({ method: "POST" })
-  .inputValidator((input: SubmitBookingPayload) => submitBookingSchema.parse(input))
-  .handler(async ({ data }) => {
-    const { getLegacySupabaseAdmin } = await import("@/integrations/legacy-supabase/client.server");
-    const legacyAdmin = getLegacySupabaseAdmin();
+/**
+ * Pure client-side booking submission.
+ * 1) Inserts the booking into the LEGACY Supabase `bookings` table via anon key + RLS.
+ * 2) Invokes the Lovable Cloud edge function `send-booking-email` for the notification mail.
+ *
+ * No server function — works on a static SPA host (Vercel) without an SSR runtime.
+ */
+export async function submitBooking(
+  payload: SubmitBookingPayload,
+): Promise<{ error: string | null }> {
+  let data: SubmitBookingPayload;
+  try {
+    data = submitBookingSchema.parse(payload);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Invalid input";
+    return { error: msg };
+  }
 
-    const insertPayload = {
-      vehicle_id: data.vehicle_id ?? null,
-      customer_name: data.customer_name,
-      email: data.email,
-      phone: data.phone,
-      start_date: data.start_date,
-      end_date: data.end_date,
-      message: data.message ?? null,
-      status: data.status ?? "pending",
-    };
+  const insertPayload = {
+    vehicle_id: data.vehicle_id ?? null,
+    customer_name: data.customer_name,
+    email: data.email,
+    phone: data.phone,
+    start_date: data.start_date,
+    end_date: data.end_date,
+    message: data.message ?? null,
+    status: data.status ?? "pending",
+  };
 
-    const { error } = await legacyAdmin.from("bookings").insert(insertPayload);
-    if (error) {
-      console.error("[submitBooking] insert failed", error);
-      return { error: error.message };
+  const { error: insertError } = await legacy.from("bookings").insert(insertPayload);
+  if (insertError) {
+    console.error("[submitBooking] insert failed", insertError);
+    return { error: insertError.message };
+  }
+
+  // Fire-and-forget email — never block the user on mail delivery.
+  try {
+    const { error: fnError } = await cloud.functions.invoke("send-booking-email", {
+      body: {
+        vehicle_id: data.vehicle_id ?? null,
+        customer_name: data.customer_name,
+        email: data.email,
+        phone: data.phone,
+        start_date: data.start_date,
+        end_date: data.end_date,
+        message: data.message ?? null,
+      },
+    });
+    if (fnError) {
+      console.error("[submitBooking] email send failed", fnError);
     }
+  } catch (e) {
+    console.error("[submitBooking] email request threw", e);
+  }
 
-    const cloudUrl = process.env.SUPABASE_URL || CLOUD_URL_FALLBACK;
-    const cloudPublishableKey =
-      process.env.SUPABASE_PUBLISHABLE_KEY ||
-      process.env.SUPABASE_ANON_KEY ||
-      CLOUD_PUBLISHABLE_KEY_FALLBACK;
-
-    try {
-      const response = await fetch(`${cloudUrl}/functions/v1/send-booking-email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: cloudPublishableKey,
-          Authorization: `Bearer ${cloudPublishableKey}`,
-        },
-        body: JSON.stringify({
-          vehicle_id: data.vehicle_id ?? null,
-          customer_name: data.customer_name,
-          email: data.email,
-          phone: data.phone,
-          start_date: data.start_date,
-          end_date: data.end_date,
-          message: data.message ?? null,
-        }),
-      });
-
-      if (!response.ok) {
-        const body = await response.text().catch(() => "");
-        console.error(
-          `[submitBooking] email send failed status=${response.status} body=${body.slice(0, 300)}`,
-        );
-      }
-    } catch (e) {
-      console.error("[submitBooking] email request threw", e);
-    }
-
-    return { error: null };
-  });
+  return { error: null };
+}
