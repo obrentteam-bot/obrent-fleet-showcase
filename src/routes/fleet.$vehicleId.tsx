@@ -309,23 +309,6 @@ function VehicleDetailPage() {
             </div>
           </div>
 
-          {/* ===== Feature pills ===== */}
-          <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
-            {[
-              { icon: ShieldCheck, ...t.vehicle.featurePills[0] },
-              { icon: CalendarDays, ...t.vehicle.featurePills[1] },
-              { icon: MapPin, ...t.vehicle.featurePills[2] },
-              { icon: Headphones, ...t.vehicle.featurePills[3] },
-            ].map(({ icon: Icon, title, sub }) => (
-              <div key={title} className="flex items-start gap-3">
-                <Icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
-                <div className="min-w-0">
-                  <div className="text-xs tracking-[0.2em] uppercase text-cream font-medium leading-tight">{title}</div>
-                  <div className="mt-1.5 text-xs text-cream/55 leading-relaxed font-light">{sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
 
           {/* ===== Gallery slideshow with thumbnails ===== */}
           {v.hasImages && imgCount > 0 && (
