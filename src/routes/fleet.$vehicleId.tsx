@@ -191,14 +191,14 @@ function VehicleDetailPage() {
             <style>{`@keyframes heroFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}`}</style>
             <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(212,175,55,0.10), transparent 40%)" }} />
 
-            {/* 16:9 image — shaded, doesn't need to show whole car */}
-            <div className="relative w-full aspect-[16/9] overflow-hidden">
+            {/* Banner image — tight crop on the centre (logo area), much smaller */}
+            <div className="relative w-full h-[220px] md:h-[300px] overflow-hidden">
               {v.hasImages ? (
                 <>
                   <img
                     src={heroImage}
                     alt={v.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2200ms] ease-out group-hover:scale-[1.04]"
+                    className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-[2200ms] ease-out group-hover:scale-[1.04]"
                   />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(5,5,5,0.50) 0%, rgba(5,5,5,0.10) 45%, rgba(5,5,5,0.70) 100%)" }} />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(5,5,5,0.55) 0%, transparent 50%, rgba(5,5,5,0.35) 100%)" }} />
