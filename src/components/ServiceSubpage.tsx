@@ -114,7 +114,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    const today = new Date().toISOString().slice(0, 10);
+    const todayIso = new Date().toISOString().slice(0, 10);
     const lines = props.form.fields
       .map((f) => {
         const v = values[f.key];
