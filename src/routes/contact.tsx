@@ -77,23 +77,23 @@ function ContactPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-onyx/70 via-onyx/80 to-onyx" />
         <div className="absolute inset-0 bg-gradient-to-r from-onyx/80 via-transparent to-onyx/40" />
-        <div className="relative pt-40 pb-24 px-6 md:px-12">
+        <div className="relative pt-32 pb-12 px-6 md:px-12">
           <div className="max-w-[1100px] mx-auto">
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center gap-4 mb-6">
               <span className="gold-rule" />
               <span className="eyebrow">{t.contact.eyebrow}</span>
             </div>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-cream leading-[0.95] tracking-tight">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-cream leading-[0.95] tracking-tight">
               {t.contact.title} <span className="italic text-gold/90 font-light">{t.contact.titleItalic}</span>.
             </h1>
-            <p className="mt-8 text-lg md:text-xl text-cream/70 font-light max-w-2xl leading-relaxed">
+            <p className="mt-4 text-lg md:text-xl text-cream/70 font-light max-w-2xl leading-relaxed">
               {t.contact.lead}
             </p>
           </div>
         </div>
       </section>
 
-      <section className="relative py-20 md:py-28 px-6 md:px-12 bg-onyx">
+      <section className="relative py-10 md:py-14 px-6 md:px-12 bg-onyx">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
           <div className="lg:col-span-7">
             <div className="relative rounded-2xl border border-cream/10 bg-gradient-to-br from-cream/[0.04] via-cream/[0.02] to-transparent backdrop-blur-sm p-6 sm:p-10 md:p-12 shadow-2xl shadow-black/40">
