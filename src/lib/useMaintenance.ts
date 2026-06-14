@@ -57,26 +57,8 @@ export function useMaintenance() {
     if (cache === null) refresh();
     else setLoading(false);
 
-    // Realtime: instant updates for all visitors, no reload.
-    const channel = cloud
-      .channel(`app-settings-${Math.random().toString(36).slice(2)}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "app_settings" },
-        (payload) => {
-          const row = payload.new as { maintenance_mode?: boolean } | null;
-          if (row && typeof row.maintenance_mode === "boolean") {
-            broadcast(row.maintenance_mode);
-          } else {
-            refresh();
-          }
-        },
-      )
-      .subscribe();
-
     return () => {
       listeners.delete(l);
-      cloud.removeChannel(channel);
     };
   }, [refresh]);
 

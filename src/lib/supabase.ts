@@ -23,6 +23,9 @@ export const supabase = createClient(url, anon, {
     persistSession: isBrowser,
     autoRefreshToken: isBrowser,
     detectSessionInUrl: isBrowser,
+    // Unique storageKey prevents the "Multiple GoTrueClient instances detected"
+    // warning when the Lovable Cloud client (separate project) is also loaded.
+    storageKey: "obrent-legacy-auth",
   },
 });
 
