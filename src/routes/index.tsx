@@ -165,8 +165,8 @@ function HomePage() {
               onPointerCancel={onPointerUp}
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
-              className="flex gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-              style={{ touchAction: "pan-y" }}
+              className="flex gap-6 md:gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              style={{ touchAction: "pan-y", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
             >
               {loopVehicles.map((v, i) => (
                 <Link
