@@ -272,22 +272,13 @@ function VehicleDetailPage() {
                 )}
               </div>
 
-              {/* Price + concierge card */}
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-0 rounded-2xl border border-border bg-jet/50 overflow-hidden">
-                <div className="sm:col-span-3 p-6 md:p-7">
-                  <div className="text-[0.65rem] tracking-[0.32em] uppercase text-cream/45 mb-3">{t.vehicle.reservationFrom}</div>
-                  <div className="font-display text-4xl md:text-5xl italic leading-tight" style={{ color: "#B8975A" }}>
-                    Preis auf Anfrage
-                  </div>
-                  <p className="mt-4 text-xs text-cream/50 font-light leading-relaxed">{t.vehicle.includes}</p>
+              {/* Price card */}
+              <div className="p-6 md:p-7 rounded-2xl border border-border bg-jet/50">
+                <div className="text-[0.65rem] tracking-[0.32em] uppercase text-cream/45 mb-3">{t.vehicle.reservationFrom}</div>
+                <div className="font-display text-4xl md:text-5xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  Preis auf Anfrage
                 </div>
-                <div className="sm:col-span-2 p-6 md:p-7 border-t sm:border-t-0 sm:border-l border-border bg-onyx/40">
-                  <div className="w-10 h-10 rounded-full border border-gold/50 flex items-center justify-center mb-3">
-                    <ShieldCheck className="w-4 h-4 text-gold" />
-                  </div>
-                  <div className="text-sm text-cream font-medium">Concierge Service</div>
-                  <div className="mt-1 text-xs text-cream/50 font-light leading-relaxed">Persönliche Betreuung rund um die Uhr.</div>
-                </div>
+                <p className="mt-4 text-xs text-cream/50 font-light leading-relaxed">{t.vehicle.includes}</p>
               </div>
 
               {/* Specs moved below — see full-width section */}
