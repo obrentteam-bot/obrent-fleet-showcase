@@ -259,8 +259,8 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                 type="button"
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal bg-transparent border-cream/20 text-cream hover:bg-cream/5 hover:text-cream",
-                  !dateVal && "text-cream/50",
+                  "w-full justify-start text-left font-normal bg-transparent border-border text-cream hover:bg-foreground/5 hover:text-foreground",
+                  !dateVal && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
@@ -315,7 +315,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
 
   return (
     <div
-      className="fixed inset-0 top-24 md:top-32 z-30 overflow-hidden bg-[#0A0A0A]"
+      className="fixed inset-0 top-24 md:top-32 z-30 overflow-hidden bg-background"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -329,7 +329,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             width={1920}
             height={1280}
           />
-          <div className="absolute inset-0 bg-onyx/50" />
+          <div className="absolute inset-0 bg-background/60" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-onyx/20 to-onyx/80" />
         </div>
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center">
@@ -339,7 +339,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
           <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-cream leading-[0.95] max-w-4xl">
             {props.hero.headline[lang]}
           </h1>
-          <p className="mt-6 md:mt-8 text-base md:text-lg text-cream/75 font-light max-w-2xl leading-relaxed">
+          <p className="mt-6 md:mt-8 text-base md:text-lg text-foreground/75 font-light max-w-2xl leading-relaxed">
             {props.hero.subline[lang]}
           </p>
           <div className="mt-10">
@@ -353,7 +353,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
 
       {/* SECTION 2 — LEISTUNGEN */}
       <SectionWrap active={section === 1}>
-        <div className="absolute inset-0 bg-[#0A0A0A]" />
+        <div className="absolute inset-0 bg-background" />
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28">
           <div className="mb-10 md:mb-14">
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-cream leading-tight inline-block">
@@ -367,7 +367,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                 key={label.en}
                 style={{ animationDelay: `${i * 100}ms` }}
                 className={cn(
-                  "group border border-cream/10 bg-jet/40 p-4 sm:p-7 md:p-8 transition-all duration-500 hover:border-gold/60 hover:-translate-y-0.5 rounded-lg",
+                  "group border border-border bg-card/60 p-4 sm:p-7 md:p-8 transition-all duration-500 hover:border-gold/60 hover:-translate-y-0.5 rounded-lg",
                   section === 1 ? "opacity-0 animate-[fade-in_0.6s_ease-out_forwards]" : "opacity-0",
                 )}
               >
@@ -387,7 +387,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
 
       {/* SECTION 3 — WHY OBRENT */}
       <SectionWrap active={section === 2}>
-        <div className="absolute inset-0 bg-[#111111]" />
+        <div className="absolute inset-0 bg-muted/30" />
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28">
           <div className="text-center mb-10 md:mb-14">
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold/80 mb-5">
@@ -403,7 +403,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                 key={title.en}
                 style={{ animationDelay: `${i * 120}ms` }}
                 className={cn(
-                  "border border-cream/10 bg-jet/40 p-6 sm:p-8 md:p-9 transition-all duration-500 hover:border-gold/60 rounded-lg",
+                  "border border-border bg-card/60 p-6 sm:p-8 md:p-9 transition-all duration-500 hover:border-gold/60 rounded-lg",
                   section === 2 ? "opacity-0 animate-[fade-in_0.6s_ease-out_forwards]" : "opacity-0",
                 )}
               >
@@ -411,7 +411,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                 <h3 className="font-display text-xl md:text-2xl text-cream leading-tight mb-2">
                   {title[lang]}
                 </h3>
-                <p className="text-cream/60 text-sm leading-relaxed font-light">{body[lang]}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light">{body[lang]}</p>
               </article>
             ))}
           </div>
@@ -421,7 +421,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
 
       {/* SECTION 4 — FORM */}
       <SectionWrap active={section === 3}>
-        <div className="absolute inset-0 bg-[#0A0A0A]" />
+        <div className="absolute inset-0 bg-background" />
         <div className="relative h-full w-full overflow-y-auto" data-allow-scroll>
           <div className="max-w-[820px] mx-auto px-6 md:px-12 py-20 md:py-24">
             <div className="flex justify-center mb-8">
@@ -434,9 +434,9 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             </div>
 
             {submitted ? (
-              <div className="py-14 border border-gold/30 bg-jet/40 text-center rounded-lg">
+              <div className="py-14 border border-gold/30 bg-card/60 text-center rounded-lg">
                 <div className="text-[0.7rem] tracking-[0.28em] uppercase text-gold mb-4">✓</div>
-                <p className="text-cream/80">{labels.success}</p>
+                <p className="text-foreground/80">{labels.success}</p>
               </div>
             ) : (
               <form
@@ -465,7 +465,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             type="button"
             onClick={prev}
             aria-label="Previous section"
-            className="w-11 h-11 rounded-full border border-gold/40 text-gold/80 hover:text-gold hover:border-gold flex items-center justify-center transition bg-onyx/50 backdrop-blur"
+            className="w-11 h-11 rounded-full border border-gold/40 text-gold/80 hover:text-gold hover:border-gold flex items-center justify-center transition bg-background/60 backdrop-blur"
           >
             <ChevronUp className="w-5 h-5" />
           </button>
@@ -484,7 +484,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
               "transition-all duration-500 rounded-full",
               section === i
                 ? "w-3 h-3 bg-gold shadow-[0_0_12px_rgba(184,151,90,0.6)]"
-                : "w-2 h-2 bg-transparent border border-cream/40 hover:border-gold",
+                : "w-2 h-2 bg-transparent border border-foreground/40 hover:border-gold",
             )}
           />
         ))}
@@ -516,7 +516,7 @@ function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void 
         type="button"
         onClick={onPrev}
         aria-label="Previous section"
-        className="w-11 h-11 rounded-full border border-gold/40 text-gold/80 hover:text-gold hover:border-gold flex items-center justify-center transition bg-onyx/50 backdrop-blur"
+        className="w-11 h-11 rounded-full border border-gold/40 text-gold/80 hover:text-gold hover:border-gold flex items-center justify-center transition bg-background/60 backdrop-blur"
       >
         <ChevronUp className="w-5 h-5" />
       </button>
@@ -524,7 +524,7 @@ function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void 
         type="button"
         onClick={onNext}
         aria-label="Next section"
-        className="w-11 h-11 rounded-full border border-gold/40 text-gold/80 hover:text-gold hover:border-gold flex items-center justify-center transition bg-onyx/50 backdrop-blur"
+        className="w-11 h-11 rounded-full border border-gold/40 text-gold/80 hover:text-gold hover:border-gold flex items-center justify-center transition bg-background/60 backdrop-blur"
       >
         <ChevronDown className="w-5 h-5" />
       </button>
@@ -538,7 +538,7 @@ function PulseArrow({ onClick }: { onClick: () => void }) {
       type="button"
       onClick={onClick}
       aria-label="Next section"
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-12 h-12 rounded-full border border-gold/50 text-gold flex items-center justify-center bg-onyx/40 backdrop-blur animate-bounce hover:border-gold hover:bg-onyx/60 transition"
+      className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-12 h-12 rounded-full border border-gold/50 text-gold flex items-center justify-center bg-background/50 backdrop-blur animate-bounce hover:border-gold hover:bg-background/80 transition"
     >
       <ChevronDown className="w-6 h-6" />
     </button>
