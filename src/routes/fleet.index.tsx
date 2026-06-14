@@ -6,7 +6,6 @@ import { Link } from "@tanstack/react-router";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
-import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 
 
 export const Route = createFileRoute("/fleet/")({
