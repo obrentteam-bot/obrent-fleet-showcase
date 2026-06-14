@@ -171,8 +171,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden md:flex items-center gap-6">
-          <LanguageSwitcher />
-          <span className="h-3 w-px bg-cream/20" />
+          <LanguageSwitcher variant="header" />
+          <span className="h-3 w-px bg-foreground/20" />
           <ThemeToggle />
         </div>
 
