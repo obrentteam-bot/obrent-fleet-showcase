@@ -199,8 +199,7 @@ function HomePage() {
                     <p className="text-sm text-cream/55 font-light italic mb-6">{v.tagline}</p>
                     <div className="flex items-end justify-between pt-6 border-t border-border">
                       <div>
-                        <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/40 mb-1">{t.common.from}</div>
-                        <div className="font-display text-2xl text-gold">{formatPrice(v.pricePerDay)}<span className="text-sm text-cream/40 ml-1">{t.common.perDay}</span></div>
+                        <div className="font-display text-lg italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                       </div>
                       <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{t.common.reserve} →</span>
                     </div>
