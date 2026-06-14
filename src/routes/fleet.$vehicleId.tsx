@@ -459,8 +459,8 @@ function VehicleDetailPage() {
           {submitted ? (
             <div className="text-center py-16 border border-gold/30 bg-onyx/40">
               <div className="eyebrow text-gold mb-4">✓ {t.admin.status.confirmed}</div>
-              <h3 className="font-display text-3xl text-cream mb-4">Vielen Dank!</h3>
-              <p className="text-cream/60">Ihre Anfrage wurde übermittelt. Wir melden uns in Kürze.</p>
+              <h3 className="font-display text-3xl text-cream mb-4">{t.vehicle.thankYouTitle}</h3>
+              <p className="text-cream/60">{t.vehicle.thankYouLead}</p>
             </div>
           ) : (
           <form
