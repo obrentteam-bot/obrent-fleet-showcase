@@ -132,34 +132,29 @@ function AboutPage() {
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28 overflow-y-auto" data-allow-scroll>
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
               <div className="lg:col-span-5">
-                <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem]">Unsere Geschichte</p>
+                <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem]">{t.about.historyEyebrow}</p>
                 <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-5 leading-[1.05] text-foreground">
-                  Mehr als nur<br />
-                  <span className="text-gold italic font-light">Fahrzeuge.</span>
+                  {t.about.historyTitle}<br />
+                  <span className="text-gold italic font-light">{t.about.historyTitleItalic}</span>
                 </h2>
                 <div className="mt-8 hidden lg:block h-32 w-px bg-gradient-to-b from-gold/60 to-transparent" />
               </div>
 
               <div className="lg:col-span-7 space-y-5 text-foreground/75 text-base md:text-lg leading-[1.85] font-light">
-                <p>
-                  Aus Ludwigshafen am Rhein heraus kuratieren wir eine handverlesene Flotte exklusiver Fahrzeuge — von sportlichen Ikonen bis hin zu repräsentativen Limousinen.
-                </p>
-                <p>
-                  Jedes Detail, jede Übergabe und jeder Service entsteht mit der Leidenschaft von Menschen, die selbst Enthusiasten sind.
-                </p>
+                <p>{t.about.historyP1}</p>
+                <p>{t.about.historyP2}</p>
 
                 <div className="grid grid-cols-3 gap-6 md:gap-6 pt-8">
-                  {[
-                    { icon: Car, value: "7", label: "Fahrzeuge" },
-                    { icon: MapPin, value: "1", label: "Standort Ludwigshafen" },
-                    { icon: Star, value: "100%", label: "Kundenfokus" },
-                  ].map(({ icon: Icon, value, label }) => (
-                    <div key={label} className="flex flex-col items-center text-center">
-                      <Icon className="w-6 h-6 md:w-7 md:h-7 text-gold mb-4" strokeWidth={1.5} />
-                      <div className="font-display text-2xl md:text-4xl text-foreground mb-2">{value}</div>
-                      <div className="text-[0.6rem] md:text-[0.65rem] tracking-[0.28em] uppercase text-muted-foreground leading-relaxed">{label}</div>
-                    </div>
-                  ))}
+                  {t.about.stats.map(({ value, label }, i) => {
+                    const Icon = STAT_ICONS[i];
+                    return (
+                      <div key={label} className="flex flex-col items-center text-center">
+                        <Icon className="w-6 h-6 md:w-7 md:h-7 text-gold mb-4" strokeWidth={1.5} />
+                        <div className="font-display text-2xl md:text-4xl text-foreground mb-2">{value}</div>
+                        <div className="text-[0.6rem] md:text-[0.65rem] tracking-[0.28em] uppercase text-muted-foreground leading-relaxed">{label}</div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
