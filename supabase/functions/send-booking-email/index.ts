@@ -229,7 +229,7 @@ Deno.serve(async (req: Request) => {
   console.log(`[send-booking-email] customer=${d.email} admin=info@obrent.de`);
   const results = await Promise.allSettled([
     send("OBRENT <noreply@obrent.de>", d.email, customerSubject, customerHtml, "info@obrent.de"),
-    send("OBRENT <info@obrent.de>", "info@obrent.de", adminSubject, adminHtml, d.email),
+    send("OBRENT Anfragen <noreply@obrent.de>", "info@obrent.de", adminSubject, adminHtml, d.email),
   ]);
 
   const failures: string[] = [];
