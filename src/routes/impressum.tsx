@@ -55,7 +55,7 @@ function ImpressumPage() {
               <h2 className="font-display text-2xl text-cream mb-3">Registereintrag</h2>
               <p>
                 Eintragung im Handelsregister<br />
-                Registergericht: Amtsgericht Mannheim<br />
+                Registergericht: Amtsgericht Ludwigshafen<br />
                 Registernummer: HRB [wird nachgereicht]
               </p>
               <p className="mt-2 text-xs text-cream/50">

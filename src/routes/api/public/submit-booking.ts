@@ -169,7 +169,7 @@ export const Route = createFileRoute("/api/public/submit-booking")({
         </td></tr>
         <tr><td style="background:${FOOTER_BG};padding:36px 48px;text-align:center;">
           <img src="${LOGO_URL}" alt="OBRENT" width="96" style="display:inline-block;height:auto;max-width:96px;filter:brightness(0) invert(1);margin-bottom:18px;"/>
-          <div style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:13px;line-height:1.8;letter-spacing:0.04em;">Luxus Autovermietung &middot; Mannheim</div>
+          <div style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:13px;line-height:1.8;letter-spacing:0.04em;">Luxus Autovermietung &middot; Ludwigshafen am Rhein</div>
           <div style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:13px;line-height:1.8;">
             <a href="https://obrent.de" style="color:${GOLD};text-decoration:none;">obrent.de</a>
             &nbsp;&middot;&nbsp;
