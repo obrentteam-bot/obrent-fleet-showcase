@@ -77,7 +77,12 @@ function AboutPage() {
     let cooldown = 0;
     const onWheel = (e: WheelEvent) => {
       const target = e.target as HTMLElement | null;
-      if (target && target.closest("[data-allow-scroll]")) return;
+      const scrollable = target?.closest("[data-allow-scroll]") as HTMLElement | null;
+      if (scrollable) {
+        const canScrollDown = scrollable.scrollTop + scrollable.clientHeight < scrollable.scrollHeight - 1;
+        const canScrollUp = scrollable.scrollTop > 0;
+        if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) return;
+      }
       e.preventDefault();
       const now = Date.now();
       if (now - cooldown < 700) return;
