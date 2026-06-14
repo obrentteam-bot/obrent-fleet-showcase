@@ -251,20 +251,49 @@ function VehicleDetailPage() {
                     </div>
                   </div>
 
-                  <a
-                    href="#reservation"
-                    className="group/cta inline-flex min-h-[60px] items-center justify-center gap-3 px-7 md:px-9 text-[0.72rem] uppercase font-medium transition-all w-full sm:w-auto"
-                    style={{
-                      background: "linear-gradient(135deg, #D4AF37 0%, #E2C980 100%)",
-                      color: "#090909",
-                      letterSpacing: "0.28em",
-                      borderRadius: 999,
-                      boxShadow: "0 14px 40px rgba(212,175,55,0.22)",
-                    }}
-                  >
-                    {t.vehicle.requestNow}
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
-                  </a>
+                  <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const url = window.location.href;
+                        if (navigator.share) {
+                          try {
+                            await navigator.share({ title: document.title, url });
+                          } catch { /* ignore */ }
+                        } else {
+                          try {
+                            await navigator.clipboard.writeText(url);
+                          } catch { /* ignore */ }
+                        }
+                      }}
+                      className="inline-flex min-h-[60px] items-center justify-center gap-2 px-5 md:px-6 text-[0.72rem] uppercase font-medium transition-all border hover:border-gold/70 hover:text-gold"
+                      style={{
+                        color: "#F8F4EC",
+                        letterSpacing: "0.28em",
+                        borderRadius: 999,
+                        borderColor: "rgba(255,255,255,0.18)",
+                        background: "rgba(255,255,255,0.03)",
+                      }}
+                    >
+                      <Share2 className="w-4 h-4" />
+                      Teilen
+                    </button>
+
+                    <a
+                      href="#reservation"
+                      className="group/cta inline-flex min-h-[60px] items-center justify-center gap-3 px-7 md:px-9 text-[0.72rem] uppercase font-medium transition-all flex-1 sm:flex-none"
+                      style={{
+                        background: "linear-gradient(135deg, #D4AF37 0%, #E2C980 100%)",
+                        color: "#090909",
+                        letterSpacing: "0.28em",
+                        borderRadius: 999,
+                        boxShadow: "0 14px 40px rgba(212,175,55,0.22)",
+                      }}
+                    >
+                      {t.vehicle.requestNow}
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
+                    </a>
+                  </div>
                 </div>
 
               </div>
