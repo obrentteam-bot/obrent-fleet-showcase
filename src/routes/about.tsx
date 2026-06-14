@@ -214,11 +214,11 @@ function AboutPage() {
               <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem] mb-6">
                 {t.about.ctaEyebrow}
               </p>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-onyx dark:text-cream">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-foreground">
                 {t.about.ctaTitle}<br />
                 <span className="text-gold italic font-light">{t.about.ctaTitleItalic}</span>
               </h2>
-              <p className="mt-6 text-onyx/75 dark:text-cream/70 text-base md:text-lg font-light">
+              <p className="mt-6 text-foreground/75 text-base md:text-lg font-light">
                 {t.about.ctaLead}
               </p>
               <div className="mt-8 md:mt-10 flex flex-wrap items-center gap-4">
@@ -231,7 +231,7 @@ function AboutPage() {
                 </Link>
                 <Link
                   to="/contact"
-                  className="group inline-flex items-center gap-3 border border-onyx/30 dark:border-cream/25 text-onyx dark:text-cream px-7 py-4 text-xs tracking-[0.28em] uppercase font-medium hover:border-gold hover:text-gold transition-colors"
+                  className="group inline-flex items-center gap-3 border border-foreground/30 text-foreground px-7 py-4 text-xs tracking-[0.28em] uppercase font-medium hover:border-gold hover:text-gold transition-colors"
                 >
                   {t.about.ctaContact}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
