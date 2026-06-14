@@ -304,7 +304,7 @@ function VehicleDetailPage() {
                   href="#reservation"
                   className="group flex-[1.4] inline-flex items-center justify-center gap-3 px-6 py-4 rounded-lg bg-gradient-to-r from-gold to-gold-soft text-onyx font-medium text-[0.8rem] tracking-[0.2em] uppercase whitespace-nowrap hover:opacity-90 transition"
                 >
-                  <span>Jetzt anfragen</span>
+                  <span>{t.vehicle.requestNow}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
 
