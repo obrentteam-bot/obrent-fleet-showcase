@@ -162,8 +162,7 @@ function VehicleDetailPage() {
 
   const imgCount = v.images.length;
   const goImg = (i: number) => imgCount > 0 && setImgIndex(((i % imgCount) + imgCount) % imgCount);
-  const heroImage = v.images[imgIndex] ?? v.images[0] ?? "";
-  const heroThumbs = v.images.slice(0, 4);
+  const heroImage = v.images[0] ?? "";
   const heroNarrative = v.tagline || `${v.specs.engine} · ${v.specs.power} · ${v.year}`;
   const heroCategory = cats[v.category] ?? v.category;
 
