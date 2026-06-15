@@ -603,7 +603,7 @@ function AdminDashboard() {
                         </tr>
                         {isOpen && (
                           <tr className="bg-onyx/40 border-b border-border">
-                            <td colSpan={9} className="px-0 py-0">
+                            <td colSpan={10} className="px-0 py-0">
                               <BookingDetails
                                 booking={b}
                                 note={note}
