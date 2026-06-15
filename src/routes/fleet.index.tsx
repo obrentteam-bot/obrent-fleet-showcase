@@ -40,18 +40,12 @@ function FleetPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-40 pb-16 px-6 md:px-12">
+      <section className="pt-32 pb-16 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex items-center gap-4 mb-6">
             <span className="gold-rule" />
             <span className="eyebrow">{t.fleet.eyebrow}</span>
           </div>
-          <h1 className="font-display text-5xl md:text-8xl text-cream leading-[0.95] max-w-4xl">
-            {t.fleet.title} <span className="italic text-gold/90 font-light">{t.fleet.titleItalic}</span>
-          </h1>
-          <p className="mt-8 text-lg text-cream/60 font-light max-w-2xl leading-relaxed">
-            {t.fleet.lead}
-          </p>
         </div>
       </section>
 

@@ -391,7 +391,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
           <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
             {props.hero.eyebrow[lang]}
           </div>
-          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
             {props.hero.headline[lang]}
           </h1>
           <p className="mt-6 md:mt-8 text-base md:text-lg text-onyx/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed">
@@ -411,7 +411,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
         <div className="absolute inset-0 bg-background" />
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28">
           <div className="mb-10 md:mb-14">
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-foreground leading-tight inline-block">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground leading-tight inline-block">
               {props.leistungen.title[lang]}
               <span className="block h-px w-24 bg-gold/70 mt-4" />
             </h2>
@@ -448,7 +448,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold/80 mb-5">
               {lang === "de" ? "Warum OBRENT" : "Why OBRENT"}
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-5xl text-foreground leading-tight max-w-3xl mx-auto">
+            <h2 className="font-display text-xl sm:text-2xl md:text-3xl text-foreground leading-tight max-w-3xl mx-auto">
               {props.why.title[lang]}
             </h2>
           </div>
@@ -483,7 +483,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
               <span className="h-px w-24 bg-gold/60" />
             </div>
             <div className="text-center mb-10">
-              <h2 className="font-display text-3xl sm:text-4xl md:text-6xl text-foreground leading-[0.95]">
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground leading-[0.95]">
                 {props.form.title[lang]}
               </h2>
             </div>
