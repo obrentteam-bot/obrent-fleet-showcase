@@ -138,8 +138,8 @@ function buildEmails(d: Payload, vehicleName: string | null) {
       : baseRows;
 
   const customerIntro = isFahrzeug && vehicleName
-    ? `Vielen Dank für Ihre Anfrage für den <strong>${esc(vehicleName)}</strong>. Wir melden uns in Kürze bei Ihnen.`
-    : `Ihre Anfrage wurde erfolgreich übermittelt. Unser Team wird sich zeitnah mit Ihnen in Verbindung setzen.`;
+    ? `Ihre Anfrage für den <strong>${esc(vehicleName)}</strong> ist bei uns eingegangen. Wir melden uns in Kürze persönlich bei Ihnen.`
+    : `Ihre Anfrage ist bei uns eingegangen. Unser Team meldet sich zeitnah persönlich bei Ihnen.`;
 
 
 
@@ -156,8 +156,8 @@ function buildEmails(d: Payload, vehicleName: string | null) {
         <tr><td style="padding:40px 40px 8px 40px;">
           <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:14px;">Anfrage erhalten</div>
           <h1 style="margin:0 0 14px 0;color:${ONYX};font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.2;font-weight:400;">Vielen Dank, ${esc(customerDisplayName)}.</h1>
-          <p style="margin:0 0 8px 0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Vielen Dank für Ihr Interesse an OBRENT.</p>
           <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">${customerIntro}</p>
+
 
         </td></tr>
         <tr><td style="padding:24px 40px 8px 40px;">
