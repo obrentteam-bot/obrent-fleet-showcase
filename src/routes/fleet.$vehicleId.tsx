@@ -489,21 +489,21 @@ function VehicleDetailPage() {
           </div>
 
           {/* ===== VORAUSSETZUNGEN ===== */}
-          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-            <div className="flex items-center gap-4 mb-6">
+          <div className="mt-6 p-5 md:p-6 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-5">
               <span className="eyebrow">{t.vehicle.requirementsTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.minAge}</div>
-                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.minAge != null ? `${v.conditions.minAge} ${t.vehicle.ageUnit}` : t.vehicle.onRequest}
                 </div>
               </div>
-              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+              <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.license}</div>
-                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.minLicenseYears != null ? t.vehicle.licenseMin.replace("{n}", String(v.conditions.minLicenseYears)) : t.vehicle.onRequest}
                 </div>
               </div>
