@@ -417,8 +417,8 @@ function VehicleDetailPage() {
 
           {/* Vehicle features list */}
           {v.features.length > 0 && (
-            <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-              <div className="flex items-center gap-4 mb-6">
+            <div className="mt-6 p-5 md:p-6 rounded-2xl border border-border bg-jet/40">
+              <div className="flex items-center gap-4 mb-5">
                 <span className="eyebrow">{t.vehicle.specifications}</span>
                 <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
               </div>
