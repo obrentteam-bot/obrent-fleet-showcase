@@ -371,7 +371,7 @@ function VehicleDetailPage() {
 
           {/* ===== Gallery slideshow with thumbnails ===== */}
           {v.hasImages && imgCount > 0 && (
-            <div id="gallery" className="mt-10 space-y-4">
+            <div id="gallery" className="mt-6 space-y-4">
               <div className="relative mx-auto w-full max-w-4xl aspect-[16/9] overflow-hidden rounded-2xl bg-jet">
                 {v.images.map((src, i) => (
                   <img
