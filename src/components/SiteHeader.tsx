@@ -63,6 +63,14 @@ export function SiteHeader() {
     closeTimer.current = setTimeout(() => setServicesOpen(false), 120);
   };
 
+  const toggleMobileMenu = () => {
+    setOpen((s) => {
+      const next = !s;
+      if (next) window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      return next;
+    });
+  };
+
   return (
     <header
       data-site-header
