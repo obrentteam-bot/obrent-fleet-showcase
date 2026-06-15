@@ -150,7 +150,8 @@ function buildEmails(d: Payload, vehicleName: string | null) {
           <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:14px;">Anfrage erhalten</div>
           <h1 style="margin:0 0 14px 0;color:${ONYX};font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.2;font-weight:400;">Vielen Dank, ${esc(customerDisplayName)}.</h1>
           <p style="margin:0 0 8px 0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Vielen Dank für Ihr Interesse an OBRENT.</p>
-          <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Ihre Anfrage wurde erfolgreich übermittelt. Unser Team wird sich zeitnah mit Ihnen in Verbindung setzen.</p>
+          <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">${customerIntro}</p>
+
         </td></tr>
         <tr><td style="padding:24px 40px 8px 40px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PANEL_BG};border:1px solid ${BORDER};">
