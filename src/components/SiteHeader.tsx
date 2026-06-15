@@ -198,7 +198,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="md:hidden fixed inset-0 z-50 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-4 duration-300 dark">
+        <div className="md:hidden fixed top-0 left-0 w-full h-[100dvh] z-50 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-4 duration-300 dark">
           <div className="flex items-center justify-between px-6 h-24">
             <Link to="/" onClick={() => setOpen(false)} aria-label="OBRENT">
               <img src={logo} alt="OBRENT" className="h-16 w-auto" />
