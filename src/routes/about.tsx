@@ -119,7 +119,7 @@ function AboutPage() {
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
               {t.about.eyebrow}
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
               {t.about.headline1}<br />
               {t.about.headline2}<br />
               <span className="text-gold italic font-light">{t.about.headlineItalic}</span>
@@ -138,7 +138,7 @@ function AboutPage() {
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
               <div className="lg:col-span-5">
                 <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem]">{t.about.historyEyebrow}</p>
-                <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-5 leading-[1.05] text-foreground">
+                <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-5 leading-[1.05] text-foreground">
                   {t.about.historyTitle}<br />
                   <span className="text-gold italic font-light">{t.about.historyTitleItalic}</span>
                 </h2>
@@ -173,7 +173,7 @@ function AboutPage() {
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28 overflow-y-auto" data-allow-scroll>
             <div className="text-center mb-10 md:mb-14">
               <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem]">{t.about.valuesEyebrow}</p>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-5 text-foreground">{t.about.valuesTitle}</h2>
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-5 text-foreground">{t.about.valuesTitle}</h2>
               <div className="mx-auto mt-6 h-px w-14 bg-gold" />
             </div>
 
@@ -219,7 +219,7 @@ function AboutPage() {
               <p className="text-gold tracking-[0.32em] uppercase text-[0.7rem] mb-6">
                 {t.about.ctaEyebrow}
               </p>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-foreground">
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-[1.05] text-foreground">
                 {t.about.ctaTitle}<br />
                 <span className="text-gold italic font-light">{t.about.ctaTitleItalic}</span>
               </h2>
