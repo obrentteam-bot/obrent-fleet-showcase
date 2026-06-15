@@ -190,14 +190,14 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="md:hidden fixed inset-0 z-50 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="md:hidden fixed inset-0 z-50 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-4 duration-300 dark">
           <div className="flex items-center justify-between px-6 h-24">
             <Link to="/" onClick={() => setOpen(false)} aria-label="OBRENT">
               <img src={logo} alt="OBRENT" className="h-16 w-auto" />
             </Link>
             <button
               aria-label="Close menu"
-              className="text-cream w-12 h-12 flex items-center justify-center -mr-3"
+              className="text-[#F5F0E8] w-12 h-12 flex items-center justify-center -mr-3"
               onClick={() => setOpen(false)}
             >
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.4">
@@ -206,17 +206,17 @@ export function SiteHeader() {
             </button>
           </div>
           <nav className="flex-1 flex flex-col items-center justify-center gap-8 px-6 overflow-y-auto pb-12">
-            <Link to="/" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
+            <Link to="/" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-[#F5F0E8]/85 hover:text-gold">
               {t.nav.home}
             </Link>
-            <Link to="/fleet" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
+            <Link to="/fleet" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-[#F5F0E8]/85 hover:text-gold">
               {t.nav.fleet}
             </Link>
             <div className="w-full max-w-xs text-center">
               <button
                 type="button"
                 onClick={() => setMobileServicesOpen((s) => !s)}
-                className="w-full inline-flex items-center justify-center gap-3 text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold"
+                className="w-full inline-flex items-center justify-center gap-3 text-base tracking-[0.32em] uppercase text-[#F5F0E8]/85 hover:text-gold"
               >
                 <span>{t.nav.services}</span>
                 <span className={`transition-transform text-sm ${mobileServicesOpen ? "rotate-180" : ""}`}>▾</span>
@@ -228,7 +228,7 @@ export function SiteHeader() {
                       key={s.path}
                       to={s.path}
                       onClick={() => setOpen(false)}
-                      className="text-sm tracking-[0.28em] uppercase text-cream/65 hover:text-gold"
+                      className="text-sm tracking-[0.28em] uppercase text-[#F5F0E8]/65 hover:text-gold"
                     >
                       {s.label}
                     </Link>
@@ -236,15 +236,15 @@ export function SiteHeader() {
                 </div>
               )}
             </div>
-            <Link to="/about" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
+            <Link to="/about" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-[#F5F0E8]/85 hover:text-gold">
               {t.nav.about}
             </Link>
-            <Link to="/contact" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-cream/85 hover:text-gold">
+            <Link to="/contact" onClick={() => setOpen(false)} className="text-base tracking-[0.32em] uppercase text-[#F5F0E8]/85 hover:text-gold">
               {t.nav.contact}
             </Link>
-            <div className="mt-6 pt-8 border-t border-cream/10 w-full max-w-xs flex items-center justify-center gap-8">
+            <div className="mt-6 pt-8 border-t border-[#F5F0E8]/10 w-full max-w-xs flex items-center justify-center gap-8">
               <LanguageSwitcher />
-              <span className="h-3 w-px bg-cream/20" />
+              <span className="h-3 w-px bg-[#F5F0E8]/20" />
               <ThemeToggle />
             </div>
           </nav>
