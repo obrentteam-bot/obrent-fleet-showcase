@@ -524,7 +524,7 @@ function VehicleDetailPage() {
               <span className="eyebrow">{t.vehicle.enquiryEyebrow}</span>
               <span className="gold-rule" />
             </div>
-            <h2 className="font-display text-4xl md:text-5xl text-cream">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-cream">
               {t.vehicle.reserveTitle} <span className="italic text-gold/90 font-light">{v.name}</span>
             </h2>
             <p className="mt-4 text-cream/55 font-light">{t.vehicle.reserveLead}</p>
