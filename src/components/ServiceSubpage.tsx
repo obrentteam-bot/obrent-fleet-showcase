@@ -8,7 +8,16 @@ import { submitBooking } from "@/lib/submitBooking";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TimeSelect } from "@/components/TimeSelect";
+// TimeSelect replaced by inline Select for consistent layout across service forms.
+const TIME_OPTIONS: string[] = (() => {
+  const out: string[] = [];
+  for (let h = 6; h <= 23; h++) {
+    const hh = String(h).padStart(2, "0");
+    out.push(`${hh}:00`);
+    if (h < 23) out.push(`${hh}:30`);
+  }
+  return out;
+})();
 import { cn } from "@/lib/utils";
 import {
   Select,
