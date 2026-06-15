@@ -92,7 +92,8 @@ function buildEmails(d: Payload) {
         <tr><td style="padding:40px 40px 8px 40px;">
           <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:14px;">Anfrage erhalten</div>
           <h1 style="margin:0 0 14px 0;color:${ONYX};font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.2;font-weight:400;">Vielen Dank, ${esc(customerDisplayName)}.</h1>
-          <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Wir haben Ihre Anfrage erhalten und melden uns in Kürze persönlich bei Ihnen — typischerweise innerhalb weniger Stunden während unserer Geschäftszeiten.</p>
+          <p style="margin:0 0 8px 0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Vielen Dank für Ihr Interesse an OBRENT.</p>
+          <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Ihre Anfrage wurde erfolgreich übermittelt. Unser Team wird sich zeitnah mit Ihnen in Verbindung setzen.</p>
         </td></tr>
         <tr><td style="padding:24px 40px 8px 40px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PANEL_BG};border:1px solid ${BORDER};">
@@ -122,8 +123,8 @@ function buildEmails(d: Payload) {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF;">
     <tr><td align="center">
       <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;background:#FFFFFF;">
-        <tr><td style="background:${ONYX};padding:24px 32px;">
-          <img src="${LOGO_URL}" alt="OBRENT" width="120" style="display:inline-block;height:auto;max-width:120px;filter:brightness(0) invert(1);"/>
+        <tr><td style="background:${ONYX};padding:24px 32px;text-align:center;">
+          <img src="${LOGO_URL}" alt="OBRENT" width="120" style="display:block;margin:0 auto;height:auto;max-width:120px;filter:brightness(0) invert(1);"/>
         </td></tr>
         <tr><td style="padding:32px 40px 8px 40px;">
           <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Neue Anfrage</div>
