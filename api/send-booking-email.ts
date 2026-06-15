@@ -196,9 +196,16 @@ function buildEmails(d: Payload) {
 </body></html>`;
 
   const customerSubject = "Ihre Anfrage bei OBRENT — Wir melden uns in Kürze";
-  const adminSubject = service
-    ? `Neue Anfrage · ${service} · ${d.customer_name}`
-    : `Neue Anfrage · ${d.customer_name}`;
+  // Per-service admin subject. For Langzeitmiete prefer the company name.
+  let adminSubjectName = d.customer_name;
+  if (serviceType === "langzeitmiete" && d.details && typeof d.details === "object") {
+    const firma = (d.details as Record<string, unknown>)["firmenname"];
+    if (typeof firma === "string" && firma.trim()) adminSubjectName = firma.trim();
+  }
+  const adminSubject = serviceLabel
+    ? `Neue ${serviceLabel} Anfrage – ${adminSubjectName}`
+    : `Neue Anfrage · ${adminSubjectName}`;
+
 
   return { customerHtml, adminHtml, customerSubject, adminSubject };
 }
