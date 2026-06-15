@@ -32,11 +32,11 @@ const fields: FieldDef[] = [
   { type: "text", key: "name", label: { de: "Name", en: "Name" }, required: true },
   { type: "tel", key: "phone", label: { de: "Telefon", en: "Phone" }, required: true },
   { type: "email", key: "email", label: { de: "E-Mail", en: "Email" }, required: true, colSpan: 2 },
-  { type: "date", key: "pickupDate", label: { de: "Abholdatum", en: "Pick-up date" } },
-  { type: "time", key: "pickupTime", label: { de: "Abholzeit", en: "Pick-up time" } },
-  { type: "text", key: "pickup", label: { de: "Abholort", en: "Pick-up location" } },
-  { type: "text", key: "destination", label: { de: "Zielort", en: "Destination" } },
-  { type: "number", key: "passengers", label: { de: "Anzahl Personen", en: "Number of passengers" }, colSpan: 2 },
+  { type: "date", key: "abholdatum", label: { de: "Abholdatum", en: "Pick-up date" } },
+  { type: "time", key: "abholzeit", label: { de: "Abholzeit", en: "Pick-up time" } },
+  { type: "text", key: "abholort", label: { de: "Abholort", en: "Pick-up location" } },
+  { type: "text", key: "zielort", label: { de: "Zielort", en: "Destination" } },
+  { type: "number", key: "anzahl_personen", label: { de: "Anzahl Personen", en: "Number of passengers" }, colSpan: 2 },
   { type: "textarea", key: "message", label: { de: "Nachricht", en: "Message" }, colSpan: 2 },
 ];
 
@@ -45,6 +45,7 @@ function VipShuttlePage() {
     <SiteLayout>
       <ServiceSubpage
         serviceTitleEn="VIP Shuttle"
+        serviceType="shuttle"
         bgImage={bg}
         hero={{
           eyebrow: { de: "VIP Shuttle", en: "VIP Shuttle" },
