@@ -115,6 +115,13 @@ function buildEmails(d: Payload, vehicleName: string | null) {
   if (serviceLabel) baseRows.push(["Service", esc(serviceLabel)]);
   if (vehicleName) baseRows.push(["Fahrzeug", esc(vehicleName)]);
 
+  // Für Shuttle & Chauffeur erscheint der Name bereits in der Grußzeile,
+  // daher wird die Name-Zeile in der Kunden-Email ausgeblendet.
+  const customerRows =
+    serviceType === "shuttle" || serviceType === "chauffeur"
+      ? baseRows.filter(([label]) => label !== "Name")
+      : baseRows;
+
   // Prefer structured details over legacy message parsing.
   if (d.details && typeof d.details === "object") {
     for (const [k, v] of Object.entries(d.details)) {
