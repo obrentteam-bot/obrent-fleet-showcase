@@ -265,7 +265,32 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d);
+  // Resolve vehicle name from the LEGACY Supabase project (fiikwjyjgtdanoieanuc).
+  // Anon key is safe to embed: vehicles table is publicly readable.
+  const LEGACY_URL = "https://fiikwjyjgtdanoieanuc.supabase.co";
+  const LEGACY_ANON =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpaWt3anlqZ3RkYW5vaWVhbnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MzA5MzksImV4cCI6MjA5MzQwNjkzOX0.tBGKCTd4E53sPaU4X4iEpXPBukCZ7JHDsvQ_qZrdyGw";
+  let vehicleName: string | null = null;
+  if (d.vehicle_id) {
+    try {
+      const vr = await fetch(
+        `${LEGACY_URL}/rest/v1/vehicles?id=eq.${encodeURIComponent(d.vehicle_id)}&select=name&limit=1`,
+        { headers: { apikey: LEGACY_ANON, Authorization: `Bearer ${LEGACY_ANON}` } },
+      );
+      if (vr.ok) {
+        const rows = (await vr.json()) as Array<{ name?: string }>;
+        const n = rows?.[0]?.name?.trim();
+        if (n) vehicleName = n;
+      } else {
+        console.warn(`[send-booking-email] vehicle lookup HTTP ${vr.status}`);
+      }
+    } catch (e) {
+      console.warn("[send-booking-email] vehicle lookup failed", e);
+    }
+  }
+
+  const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d, vehicleName);
+
 
   const send = async (from: string, to: string, subject: string, html: string, replyTo: string, headers?: Record<string, string>) => {
     const r = await fetch("https://api.resend.com/emails", {
