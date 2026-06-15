@@ -135,15 +135,40 @@ function VehicleDetailPage() {
       .filter(Boolean)
       .join(" ");
 
+    const ccf = cf.chauffeurFields;
+    const tripTypeLabels: Record<string, string> = {
+      oneway: ccf.tripOneway, roundtrip: ccf.tripRound, hourly: ccf.tripHourly, fullday: ccf.tripFullday,
+    };
+    const occasionLabels: Record<string, string> = {
+      business: ccf.occBusiness, airport: ccf.occAirport, wedding: ccf.occWedding, event: ccf.occEvent, other: ccf.occOther,
+    };
+    const langLabels: Record<string, string> = {
+      any: ccf.langAny, de: ccf.langDe, en: ccf.langEn, tr: ccf.langTr,
+    };
+    const cd = chauffeurFields;
+    const chauffeurLines = chauffeur === "yes" ? [
+      cd.pickupAddress && `Abholadresse: ${cd.pickupAddress}`,
+      cd.destination && `Zielort: ${cd.destination}`,
+      cd.tripType && `Fahrttyp: ${tripTypeLabels[cd.tripType] ?? cd.tripType}`,
+      cd.occasion && `Anlass: ${occasionLabels[cd.occasion] ?? cd.occasion}`,
+      cd.passengers && `Passagiere: ${cd.passengers}`,
+      cd.luggage && `Gepäck: ${cd.luggage}`,
+      cd.language && `Sprache: ${langLabels[cd.language] ?? cd.language}`,
+      cd.flight && `Flugnummer: ${cd.flight}`,
+      cd.notes && `Hinweise Chauffeur: ${cd.notes.replace(/\n/g, " ")}`,
+    ] : [];
+
     const extra = [
       `Abholzeit: ${pickupTime}`,
       `Rückgabezeit: ${returnTime}`,
       `Übergabe: ${delivery === "pickup" ? "Abholung Standort" : `Lieferung — ${deliveryAddress}`}`,
       `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
-      message && `Nachricht: ${message}`,
+      ...chauffeurLines,
+      message && `Nachricht: ${message.replace(/\n/g, " ")}`,
     ]
       .filter(Boolean)
       .join("\n");
+
 
     const { error } = await submitBooking({
       vehicle_id: v!.id,
