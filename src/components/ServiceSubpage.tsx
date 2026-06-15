@@ -5,10 +5,19 @@ import { de, enUS } from "date-fns/locale";
 import { CalendarIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { submitBooking } from "@/lib/submitBooking";
-import { Button } from "@/components/ui/button";
+
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TimeSelect } from "@/components/TimeSelect";
+// TimeSelect replaced by inline Select for consistent layout across service forms.
+const TIME_OPTIONS: string[] = (() => {
+  const out: string[] = [];
+  for (let h = 6; h <= 23; h++) {
+    const hh = String(h).padStart(2, "0");
+    out.push(`${hh}:00`);
+    if (h < 23) out.push(`${hh}:30`);
+  }
+  return out;
+})();
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -296,21 +305,20 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
           <label className="lux-label">{f.label[lang]}</label>
           <Popover>
             <PopoverTrigger asChild>
-              <Button
+              <button
                 type="button"
-                variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal bg-transparent border-border text-foreground hover:bg-foreground/5 hover:text-foreground",
+                  "lux-input flex items-center justify-between text-left",
                   !dateVal && "text-muted-foreground",
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
-                {dateVal ? (
-                  format(dateVal, "PPP", { locale: dateLocale })
-                ) : (
-                  <span>{lang === "de" ? "Datum wählen" : "Pick a date"}</span>
-                )}
-              </Button>
+                <span className="flex items-center">
+                  <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                  {dateVal
+                    ? format(dateVal, "PPP", { locale: dateLocale })
+                    : lang === "de" ? "Datum wählen" : "Pick a date"}
+                </span>
+              </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
@@ -331,14 +339,20 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       return (
         <div key={f.key} className={span}>
           <label className="lux-label">{f.label[lang]}</label>
-          <TimeSelect
-            value={values[f.key] || ""}
-            onChange={(v) => setVal(f.key, v)}
-            ariaLabel={f.label[lang]}
-          />
+          <Select value={values[f.key] || ""} onValueChange={(v) => setVal(f.key, v)}>
+            <SelectTrigger className="lux-input h-auto" aria-label={f.label[lang]}>
+              <SelectValue placeholder="--:--" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {TIME_OPTIONS.map((t) => (
+                <SelectItem key={t} value={t}>{t}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       );
     }
+
     return (
       <div key={f.key} className={span}>
         <label className="lux-label">{f.label[lang]}</label>
