@@ -92,6 +92,7 @@ function VehicleDetailPage() {
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
+  const [chauffeurFields, setChauffeurFields] = useState<ChauffeurFieldsValue>(emptyChauffeurFields);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
