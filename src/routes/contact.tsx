@@ -85,7 +85,7 @@ function ContactPage() {
               <span className="gold-rule" />
               <span className="eyebrow">{t.contact.eyebrow}</span>
             </div>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-cream leading-[0.95] tracking-tight">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-cream leading-[0.95] tracking-tight">
               {t.contact.title} <span className="italic text-gold/90 font-light">{t.contact.titleItalic}</span>.
             </h1>
             <p className="mt-4 text-lg md:text-xl text-cream/70 font-light max-w-2xl leading-relaxed">
