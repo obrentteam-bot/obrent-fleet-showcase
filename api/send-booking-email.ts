@@ -138,10 +138,7 @@ function buildEmails(d: Payload) {
           </table>
         </td></tr>
         <tr><td style="padding:24px 40px 40px 40px;text-align:center;">
-          <a href="https://obrent.de/admin" style="display:inline-block;background:${ONYX};color:#FFFFFF;font-family:Arial,sans-serif;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:14px 28px;border:1px solid ${GOLD};">
-            Im Admin-Panel einsehen
-          </a>
-          <div style="margin-top:12px;color:${MUTED};font-family:Arial,sans-serif;font-size:12px;">obrent.de/admin</div>
+          <div style="color:${MUTED};font-family:Arial,sans-serif;font-size:13px;line-height:1.6;">Diese Anfrage wurde automatisch über das Kontaktformular auf obrent.de erstellt.</div>
         </td></tr>
       </table>
     </td></tr>
