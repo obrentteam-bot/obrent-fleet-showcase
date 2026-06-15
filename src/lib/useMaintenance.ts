@@ -1,11 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase as cloud } from "@/integrations/supabase/client";
-import { supabase as legacy } from "./supabase";
-import { setMaintenanceMode } from "./maintenance.functions";
 
-// Maintenance flag lives in the Lovable Cloud `app_settings` table
-// (column `maintenance_mode`, publicly readable). Updates arrive
-// instantly via a realtime subscription — no reload needed.
+// Maintenance flag lives in the Lovable Cloud `app_settings` table.
+// Read: direct Supabase client (publicly readable).
+// Write: direct Supabase RPC `set_maintenance_mode(boolean)` (SECURITY DEFINER).
+// No server function involved — works on Vercel without a server runtime.
 
 let cache: boolean | null = null;
 const listeners = new Set<(v: boolean) => void>();
@@ -26,16 +25,12 @@ async function fetchMaintenance(): Promise<boolean> {
 }
 
 export async function setMaintenance(enabled: boolean): Promise<Error | null> {
-  try {
-    const { data } = await legacy.auth.getSession();
-    const token = data.session?.access_token;
-    if (!token) return new Error("Nicht eingeloggt.");
-    await setMaintenanceMode({ data: { enabled, token } });
-    broadcast(enabled);
-    return null;
-  } catch (e) {
-    return e instanceof Error ? e : new Error("Speichern fehlgeschlagen.");
-  }
+  const { data, error } = await cloud.rpc("set_maintenance_mode", {
+    _enabled: enabled,
+  });
+  if (error) return new Error(error.message);
+  broadcast(typeof data === "boolean" ? data : enabled);
+  return null;
 }
 
 export function useMaintenance() {
