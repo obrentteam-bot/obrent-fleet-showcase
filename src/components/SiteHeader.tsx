@@ -187,7 +187,7 @@ export function SiteHeader() {
         <button
           aria-label="Open menu"
           className={`md:hidden ${overDarkHero && theme === "dark" ? "text-cream" : "text-foreground"}`}
-          onClick={() => setOpen((s) => !s)}
+          onClick={toggleMobileMenu}
         >
           <div className="w-6 flex flex-col gap-1.5">
             <span className={`h-px bg-current transition-transform ${open ? "rotate-45 translate-y-1.5" : ""}`} />
