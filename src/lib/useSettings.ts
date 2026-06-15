@@ -16,7 +16,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   company_name: "OBRENT",
   address: "Industriestraße 60, 67063 Ludwigshafen am Rhein",
   phone: "+49 15569 459633",
-  email: "concierge@obrent.com",
+  email: "info@obrent.de",
   hours: "Mo–So: 24/7 Concierge",
 };
 
@@ -29,7 +29,7 @@ async function fetchSettings(): Promise<AppSettings> {
   if (data) {
     // Always enforce the current company address from defaults so it stays in sync
     // across the site even if an older value is cached in the database.
-    return { ...(data as AppSettings), address: DEFAULT_SETTINGS.address };
+    return { ...(data as AppSettings), address: DEFAULT_SETTINGS.address, email: DEFAULT_SETTINGS.email };
   }
   return DEFAULT_SETTINGS;
 }
