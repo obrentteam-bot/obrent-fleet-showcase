@@ -164,7 +164,7 @@ function buildEmails(d: Payload, vehicleName: string | null) {
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PANEL_BG};border:1px solid ${BORDER};">
             <tr><td style="padding:24px 28px;">
               <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Ihre Angaben</div>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${renderRows(baseRows)}</table>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${renderRows(customerRows)}</table>
             </td></tr>
           </table>
         </td></tr>
