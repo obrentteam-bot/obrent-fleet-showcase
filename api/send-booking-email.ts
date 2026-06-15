@@ -130,6 +130,13 @@ function buildEmails(d: Payload, vehicleName: string | null) {
   if (d.vehicle_id && !vehicleName) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
   if (parsed.free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(parsed.free)}</div>`]);
 
+  // Für Shuttle & Chauffeur erscheint der Name bereits in der Grußzeile,
+  // daher wird die Name-Zeile in der Kunden-Email ausgeblendet.
+  const customerRows =
+    serviceType === "shuttle" || serviceType === "chauffeur"
+      ? baseRows.filter(([label]) => label !== "Name")
+      : baseRows;
+
   const customerIntro = isFahrzeug && vehicleName
     ? `Vielen Dank für Ihre Anfrage für den <strong>${esc(vehicleName)}</strong>. Wir melden uns in Kürze bei Ihnen.`
     : `Ihre Anfrage wurde erfolgreich übermittelt. Unser Team wird sich zeitnah mit Ihnen in Verbindung setzen.`;
@@ -157,7 +164,7 @@ function buildEmails(d: Payload, vehicleName: string | null) {
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PANEL_BG};border:1px solid ${BORDER};">
             <tr><td style="padding:24px 28px;">
               <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Ihre Angaben</div>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${renderRows(baseRows)}</table>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${renderRows(customerRows)}</table>
             </td></tr>
           </table>
         </td></tr>
