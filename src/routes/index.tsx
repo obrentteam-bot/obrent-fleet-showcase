@@ -129,7 +129,7 @@ function HomePage() {
                 <span className="gold-rule" />
                 <span className="eyebrow">{t.home.collectionEyebrow}</span>
               </div>
-              <h2 className="font-display text-3xl md:text-5xl text-cream leading-[1] max-w-2xl">
+              <h2 className="font-display text-2xl md:text-4xl text-cream leading-[1] max-w-2xl">
                 {t.home.featuredTitle} <span className="italic text-gold/90 font-light">{t.home.featuredItalic}</span>
               </h2>
             </div>
