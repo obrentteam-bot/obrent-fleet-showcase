@@ -40,9 +40,9 @@ function FleetPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-32 pb-16 px-6 md:px-12">
+      <section className="pt-28 pb-10 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-5">
             <span className="gold-rule" />
             <span className="eyebrow">{t.fleet.eyebrow}</span>
           </div>
