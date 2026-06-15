@@ -280,13 +280,21 @@ function BookingDetails({
             <span className="w-8 h-8 rounded-full bg-gold/15 text-gold text-xs flex items-center justify-center font-medium">02</span>
             <h3 className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">Buchung</h3>
           </div>
+          <DetailRow label="Service" value={<ServiceBadge s={booking.service_type ?? null} />} />
           <DetailRow label="Fahrzeug" value={booking.vehicles?.name ?? "—"} />
           <DetailRow label="Abholung" value={fmtDate(booking.start_date)} />
           <DetailRow label="Rückgabe" value={fmtDate(booking.end_date)} />
           <DetailRow label="Dauer" value={days ? `${days} Tag${days === 1 ? "" : "e"}` : "—"} />
           <DetailRow label="Status" value={<StatusBadge s={status} />} />
-          {fields.map((f) => <DetailRow key={f.label} label={f.label} value={f.value} />)}
+          {booking.details && typeof booking.details === "object"
+            ? Object.entries(booking.details).map(([k, v]) =>
+                v == null || v === "" ? null : (
+                  <DetailRow key={k} label={DETAIL_LABEL[k] ?? k} value={String(v)} />
+                ),
+              )
+            : fields.map((f) => <DetailRow key={f.label} label={f.label} value={f.value} />)}
         </div>
+
 
         {/* Notiz + Aktionen */}
         <div className="space-y-5">
