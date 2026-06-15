@@ -263,10 +263,10 @@ function FleetPage() {
                     {cats[v.category] ?? v.category}
                   </div>
                 </div>
-                <div className="p-6 flex flex-col flex-1">
+                <div className="p-5 flex flex-col flex-1">
                   <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/45 mb-1">{v.marque}</div>
-                  <h3 className="font-display text-xl text-cream mb-5">{v.name}</h3>
-                  <dl className="grid grid-cols-2 gap-x-4 gap-y-4 mb-6">
+                  <h3 className="font-display text-lg text-cream mb-4">{v.name}</h3>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-3 mb-5">
                     <div className="min-w-0">
                       <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Motor</dt>
                       <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.specs.engine}</dd>
@@ -284,11 +284,11 @@ function FleetPage() {
                       <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.color}</dd>
                     </div>
                   </dl>
-                  <div className="mt-auto pt-5 border-t border-border flex items-end justify-between gap-4">
+                  <div className="mt-auto pt-4 border-t border-border flex items-end justify-between gap-4">
                     <div>
                       <div className="font-display text-base italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                     </div>
-                    <span className="inline-flex items-center gap-2 border border-gold text-gold px-5 py-2.5 text-[0.65rem] tracking-[0.28em] uppercase font-medium group-hover:bg-gold group-hover:text-onyx transition rounded-full">
+                    <span className="inline-flex items-center gap-2 border border-gold text-gold px-4 py-2 text-[0.65rem] tracking-[0.28em] uppercase font-medium group-hover:bg-gold group-hover:text-onyx transition rounded-full">
                       {t.common.reserve}
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
