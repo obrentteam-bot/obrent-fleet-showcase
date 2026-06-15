@@ -188,29 +188,60 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
     setSubmitting(true);
     setError(null);
     const todayIso = new Date().toISOString().slice(0, 10);
+
+    // Resolve a human-readable label for each value (especially select options).
+    const resolveLabel = (f: FieldDef, v: string): string => {
+      if (f.type === "select") {
+        const merged = [...(props.dynamicOptions?.[f.key] ?? []), ...f.options];
+        const opt = merged.find((o) => o.value === v);
+        return opt ? opt.label[lang] : v;
+      }
+      return v;
+    };
+
+    const contactKeys = new Set(
+      props.contactFieldKeys ?? ["name", "ansprechpartner", "contact", "email", "phone"],
+    );
+
+    // Build structured details (excluding contact fields).
+    const details: Record<string, string> = {};
+    for (const f of props.form.fields) {
+      const v = values[f.key];
+      if (!v) continue;
+      if (contactKeys.has(f.key)) continue;
+      details[f.key] = resolveLabel(f, v);
+    }
+
+    // Legacy plain-text message body (kept for back-compat with old admin parser).
     const lines = props.form.fields
       .map((f) => {
         const v = values[f.key];
         if (!v) return null;
-        const lbl = f.label[lang];
-        if (f.type === "select") {
-          const opt = f.options.find((o) => o.value === v);
-          return `${lbl}: ${opt ? opt.label[lang] : v}`;
-        }
-        return `${lbl}: ${v}`;
+        return `${f.label[lang]}: ${resolveLabel(f, v)}`;
       })
       .filter(Boolean)
       .join("\n");
     const body = `Service: ${props.serviceTitleEn}\n${lines}`;
+
+    const customerName =
+      values["name"] ||
+      values["ansprechpartner"] ||
+      values["contact"] ||
+      values["firmenname"] ||
+      values["company"] ||
+      "—";
+
     const { error: insErr } = await submitBooking({
       vehicle_id: null,
-      customer_name: values["name"] || values["contact"] || values["company"] || "—",
+      customer_name: customerName,
       email: values["email"] || "",
       phone: values["phone"] || "",
       start_date: todayIso,
       end_date: todayIso,
       message: body,
       status: "pending",
+      service_type: props.serviceType ?? null,
+      details: Object.keys(details).length ? details : null,
     });
     setSubmitting(false);
     if (insErr) setError(insErr);
@@ -218,6 +249,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       setSubmitted(true);
     }
   };
+
 
   const renderField = (f: FieldDef) => {
     const span = f.colSpan === 2 ? "md:col-span-2" : "";
