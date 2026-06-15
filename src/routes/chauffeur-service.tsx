@@ -30,6 +30,15 @@ export const Route = createFileRoute("/chauffeur-service")({
   component: ChauffeurServicePage,
 });
 
+const passengerOptions = [1, 2, 3, 4, 5, 6, 7].map((n) => ({
+  value: String(n),
+  label: { de: String(n), en: String(n) },
+}));
+const luggageOptions = [0, 1, 2, 3, 4, 5, 6].map((n) => ({
+  value: String(n),
+  label: { de: String(n), en: String(n) },
+}));
+
 const fields: FieldDef[] = [
   { type: "text", key: "name", label: { de: "Name", en: "Name" }, required: true },
   { type: "tel", key: "phone", label: { de: "Telefon", en: "Phone" }, required: true },
@@ -38,9 +47,74 @@ const fields: FieldDef[] = [
   { type: "time", key: "uhrzeit", label: { de: "Uhrzeit", en: "Time" } },
   {
     type: "text",
-    key: "einsatzort",
-    label: { de: "Einsatzort / Route", en: "Location / Route" },
+    key: "abholadresse",
+    label: { de: "Abholadresse", en: "Pickup address" },
+    placeholder: { de: "Straße, Hausnr., Ort", en: "Street, number, city" },
     colSpan: 2,
+  },
+  {
+    type: "text",
+    key: "zielort",
+    label: { de: "Zielort", en: "Destination" },
+    placeholder: { de: "Adresse oder Ort", en: "Address or city" },
+    colSpan: 2,
+  },
+  {
+    type: "select",
+    key: "fahrttyp",
+    label: { de: "Fahrttyp", en: "Trip type" },
+    placeholder: { de: "Bitte wählen", en: "Please select" },
+    options: [
+      { value: "oneway", label: { de: "Einfache Fahrt", en: "One way" } },
+      { value: "roundtrip", label: { de: "Hin- und Rückfahrt", en: "Round trip" } },
+      { value: "hourly", label: { de: "Stundenweise", en: "Hourly" } },
+      { value: "fullday", label: { de: "Ganztägig", en: "Full day" } },
+    ],
+  },
+  {
+    type: "select",
+    key: "anlass",
+    label: { de: "Anlass", en: "Occasion" },
+    placeholder: { de: "Bitte wählen", en: "Please select" },
+    options: [
+      { value: "business", label: { de: "Business", en: "Business" } },
+      { value: "airport", label: { de: "Flughafen", en: "Airport" } },
+      { value: "wedding", label: { de: "Hochzeit", en: "Wedding" } },
+      { value: "event", label: { de: "Event", en: "Event" } },
+      { value: "other", label: { de: "Sonstiges", en: "Other" } },
+    ],
+  },
+  {
+    type: "select",
+    key: "passagiere",
+    label: { de: "Passagiere", en: "Passengers" },
+    placeholder: { de: "Anzahl", en: "Count" },
+    options: passengerOptions,
+  },
+  {
+    type: "select",
+    key: "gepaeck",
+    label: { de: "Gepäck", en: "Luggage" },
+    placeholder: { de: "Anzahl", en: "Count" },
+    options: luggageOptions,
+  },
+  {
+    type: "select",
+    key: "sprache",
+    label: { de: "Sprache des Chauffeurs", en: "Chauffeur language" },
+    placeholder: { de: "Bitte wählen", en: "Please select" },
+    options: [
+      { value: "any", label: { de: "Egal", en: "Any" } },
+      { value: "de", label: { de: "Deutsch", en: "German" } },
+      { value: "en", label: { de: "Englisch", en: "English" } },
+      { value: "tr", label: { de: "Türkisch", en: "Turkish" } },
+    ],
+  },
+  {
+    type: "text",
+    key: "flugnummer",
+    label: { de: "Flugnummer (optional)", en: "Flight number (optional)" },
+    placeholder: { de: "z.B. LH 123", en: "e.g. LH 123" },
   },
   {
     type: "select",
