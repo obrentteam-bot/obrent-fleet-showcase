@@ -106,7 +106,8 @@ function buildEmails(d: Payload) {
           <p style="margin:0;color:${MUTED};font-family:Arial,sans-serif;font-size:13px;line-height:1.7;">Bei Rückfragen erreichen Sie uns unter <a href="mailto:info@obrent.de" style="color:${TEXT};text-decoration:none;border-bottom:1px solid ${GOLD};">info@obrent.de</a>.</p>
         </td></tr>
         <tr><td style="background:#111111;padding:24px 40px;text-align:center;">
-          <div style="color:#888;font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;">OBRENT · Luxury Fleet</div>
+          <div style="color:#888;font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:6px;">OBRENT · Luxury Fleet</div>
+          <div style="color:#666;font-family:Arial,sans-serif;font-size:11px;line-height:1.6;">OBRENT Luxus Autovermietung<br/>Industriestraße 60<br/>67063 Ludwigshafen am Rhein</div>
         </td></tr>
       </table>
     </td></tr>
@@ -192,11 +193,11 @@ export default async function handler(req: any, res: any) {
 
   const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d);
 
-  const send = async (from: string, to: string, subject: string, html: string, replyTo: string) => {
+  const send = async (from: string, to: string, subject: string, html: string, replyTo: string, headers?: Record<string, string>) => {
     const r = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to: [to], subject, html, reply_to: replyTo }),
+      body: JSON.stringify({ from, to: [to], subject, html, reply_to: replyTo, headers }),
     });
     const bodyText = await r.text().catch(() => "");
     console.log(`[resend] from="${from}" to="${to}" status=${r.status} body=${bodyText.slice(0, 600)}`);
@@ -205,7 +206,7 @@ export default async function handler(req: any, res: any) {
 
   console.log(`[send-booking-email] customer=${d.email} admin=info@obrent.de`);
   const results = await Promise.allSettled([
-    send("OBRENT <noreply@obrent.de>", d.email, customerSubject, customerHtml, "info@obrent.de"),
+    send("OBRENT <noreply@obrent.de>", d.email, customerSubject, customerHtml, "info@obrent.de", { "X-Entity-Ref-ID": d.email }),
     send("OBRENT Anfragen <noreply@obrent.de>", "info@obrent.de", adminSubject, adminHtml, d.email),
   ]);
 

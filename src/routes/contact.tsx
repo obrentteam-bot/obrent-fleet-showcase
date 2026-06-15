@@ -59,6 +59,7 @@ function ContactPage() {
   const [messageText, setMessageText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedName, setSubmittedName] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -103,7 +104,7 @@ function ContactPage() {
                 <div className="mx-auto w-16 h-16 rounded-full border border-gold/40 bg-gold/10 flex items-center justify-center mb-6">
                   <CheckCircle2 className="w-8 h-8 text-gold" />
                 </div>
-                <h3 className="font-display text-3xl text-cream mb-3">Vielen Dank!</h3>
+                <h3 className="font-display text-3xl text-cream mb-3">Vielen Dank, {submittedName || ""}!</h3>
                 <p className="text-cream/60">Ihre Nachricht wurde übermittelt. Wir melden uns in Kürze.</p>
               </div>
             ) : (
@@ -122,6 +123,7 @@ function ContactPage() {
                   titleVal !== "none" && f.titleOptions[titleVal as keyof typeof f.titleOptions],
                   name,
                 ].filter(Boolean).join(" ");
+                setSubmittedName(fullName || name || "");
                 const today2 = new Date();
                 const extra = [
                   subject && `Betreff: ${subject}`,
