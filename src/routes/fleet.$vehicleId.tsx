@@ -435,21 +435,21 @@ function VehicleDetailPage() {
 
 
           {/* ===== MIETPREISSTAFFELUNG ===== */}
-          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-            <div className="flex items-center gap-4 mb-6">
+          <div className="mt-6 p-5 md:p-6 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-5">
               <span className="eyebrow">{t.vehicle.pricingTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: t.vehicle.pricing.h3, value: v.pricing.h3 },
                 { label: t.vehicle.pricing.h6, value: v.pricing.h6 },
                 { label: t.vehicle.pricing.h12, value: v.pricing.h12 },
                 { label: t.vehicle.pricing.h24, value: v.pricing.h24 },
               ].map(({ label, value }) => (
-                <div key={label} className="p-5 rounded-xl border border-border/70 bg-onyx/30 text-center">
+                <div key={label} className="p-4 rounded-xl border border-border/70 bg-onyx/30 text-center">
                   <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
-                  <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                     {SHOW_PRICES && value != null ? formatPrice(value) : t.vehicle.priceOnRequest}
                   </div>
                 </div>
