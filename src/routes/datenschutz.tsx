@@ -23,7 +23,7 @@ function DatenschutzPage() {
             <span className="gold-rule" />
             <span className="eyebrow">Rechtliches</span>
           </div>
-          <h1 className="font-display text-5xl md:text-7xl text-cream leading-[0.95] mb-12">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-cream leading-[0.95] mb-12 break-words">
             Datenschutz&shy;erklärung
           </h1>
 
