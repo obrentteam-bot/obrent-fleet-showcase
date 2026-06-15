@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
-import { ChauffeurDetails } from "@/components/ChauffeurDetails";
+import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } from "@/components/ChauffeurDetails";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
@@ -92,6 +92,7 @@ function VehicleDetailPage() {
   const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
+  const [chauffeurFields, setChauffeurFields] = useState<ChauffeurFieldsValue>(emptyChauffeurFields);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [showAgeError, setShowAgeError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -134,15 +135,40 @@ function VehicleDetailPage() {
       .filter(Boolean)
       .join(" ");
 
+    const ccf = cf.chauffeurFields;
+    const tripTypeLabels: Record<string, string> = {
+      oneway: ccf.tripOneway, roundtrip: ccf.tripRound, hourly: ccf.tripHourly, fullday: ccf.tripFullday,
+    };
+    const occasionLabels: Record<string, string> = {
+      business: ccf.occBusiness, airport: ccf.occAirport, wedding: ccf.occWedding, event: ccf.occEvent, other: ccf.occOther,
+    };
+    const langLabels: Record<string, string> = {
+      any: ccf.langAny, de: ccf.langDe, en: ccf.langEn, tr: ccf.langTr,
+    };
+    const cd = chauffeurFields;
+    const chauffeurLines = chauffeur === "yes" ? [
+      cd.pickupAddress && `Abholadresse: ${cd.pickupAddress}`,
+      cd.destination && `Zielort: ${cd.destination}`,
+      cd.tripType && `Fahrttyp: ${tripTypeLabels[cd.tripType] ?? cd.tripType}`,
+      cd.occasion && `Anlass: ${occasionLabels[cd.occasion] ?? cd.occasion}`,
+      cd.passengers && `Passagiere: ${cd.passengers}`,
+      cd.luggage && `Gepäck: ${cd.luggage}`,
+      cd.language && `Sprache: ${langLabels[cd.language] ?? cd.language}`,
+      cd.flight && `Flugnummer: ${cd.flight}`,
+      cd.notes && `Hinweise Chauffeur: ${cd.notes.replace(/\n/g, " ")}`,
+    ] : [];
+
     const extra = [
       `Abholzeit: ${pickupTime}`,
       `Rückgabezeit: ${returnTime}`,
       `Übergabe: ${delivery === "pickup" ? "Abholung Standort" : `Lieferung — ${deliveryAddress}`}`,
       `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
-      message && `Nachricht: ${message}`,
+      ...chauffeurLines,
+      message && `Nachricht: ${message.replace(/\n/g, " ")}`,
     ]
       .filter(Boolean)
       .join("\n");
+
 
     const { error } = await submitBooking({
       vehicle_id: v!.id,
@@ -631,7 +657,7 @@ function VehicleDetailPage() {
               </div>
               <p className="mt-2 text-xs text-cream/40">{cf.chauffeurHint}</p>
             </div>
-            {chauffeur === "yes" && <ChauffeurDetails />}
+            {chauffeur === "yes" && <ChauffeurDetails value={chauffeurFields} onChange={setChauffeurFields} />}
 
             <div className="md:col-span-2">
               <label className="lux-label">{cf.delivery}</label>
