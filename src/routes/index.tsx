@@ -217,7 +217,7 @@ function HomePage() {
       <section className="py-32 md:py-40 px-6 md:px-12">
         <div className="max-w-3xl mx-auto text-center">
           <div className="eyebrow mb-8">{t.home.invitationEyebrow}</div>
-          <h2 className="font-display text-3xl md:text-4xl text-cream leading-[1.1] mb-10">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-cream leading-[1.1] mb-10">
             {t.home.invitationTitle} <span className="italic text-gold/90 font-light">{t.home.invitationItalic}</span>.
           </h2>
           <p className="text-lg text-cream/60 font-light mb-12 leading-relaxed">
