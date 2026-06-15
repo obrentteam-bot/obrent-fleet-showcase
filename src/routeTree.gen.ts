@@ -21,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as FleetIndexRouteImport } from './routes/fleet.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as FleetVehicleIdRouteImport } from './routes/fleet.$vehicleId'
+import { Route as ApiSendBookingEmailRouteImport } from './routes/api/send-booking-email'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminAiEditorRouteImport } from './routes/admin.ai-editor'
 
@@ -84,6 +85,11 @@ const FleetVehicleIdRoute = FleetVehicleIdRouteImport.update({
   path: '/fleet/$vehicleId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSendBookingEmailRoute = ApiSendBookingEmailRouteImport.update({
+  id: '/api/send-booking-email',
+  path: '/api/send-booking-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/vip-shuttle': typeof VipShuttleRoute
   '/admin/ai-editor': typeof AdminAiEditorRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/api/send-booking-email': typeof ApiSendBookingEmailRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/vip-shuttle': typeof VipShuttleRoute
   '/admin/ai-editor': typeof AdminAiEditorRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/api/send-booking-email': typeof ApiSendBookingEmailRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin': typeof AdminIndexRoute
   '/fleet': typeof FleetIndexRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/vip-shuttle': typeof VipShuttleRoute
   '/admin/ai-editor': typeof AdminAiEditorRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/api/send-booking-email': typeof ApiSendBookingEmailRoute
   '/fleet/$vehicleId': typeof FleetVehicleIdRoute
   '/admin/': typeof AdminIndexRoute
   '/fleet/': typeof FleetIndexRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/vip-shuttle'
     | '/admin/ai-editor'
     | '/admin/dashboard'
+    | '/api/send-booking-email'
     | '/fleet/$vehicleId'
     | '/admin/'
     | '/fleet/'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/vip-shuttle'
     | '/admin/ai-editor'
     | '/admin/dashboard'
+    | '/api/send-booking-email'
     | '/fleet/$vehicleId'
     | '/admin'
     | '/fleet'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/vip-shuttle'
     | '/admin/ai-editor'
     | '/admin/dashboard'
+    | '/api/send-booking-email'
     | '/fleet/$vehicleId'
     | '/admin/'
     | '/fleet/'
@@ -203,6 +215,7 @@ export interface RootRouteChildren {
   DatenschutzRoute: typeof DatenschutzRoute
   ImpressumRoute: typeof ImpressumRoute
   VipShuttleRoute: typeof VipShuttleRoute
+  ApiSendBookingEmailRoute: typeof ApiSendBookingEmailRoute
   FleetVehicleIdRoute: typeof FleetVehicleIdRoute
   FleetIndexRoute: typeof FleetIndexRoute
 }
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FleetVehicleIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/send-booking-email': {
+      id: '/api/send-booking-email'
+      path: '/api/send-booking-email'
+      fullPath: '/api/send-booking-email'
+      preLoaderRoute: typeof ApiSendBookingEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -334,6 +354,7 @@ const rootRouteChildren: RootRouteChildren = {
   DatenschutzRoute: DatenschutzRoute,
   ImpressumRoute: ImpressumRoute,
   VipShuttleRoute: VipShuttleRoute,
+  ApiSendBookingEmailRoute: ApiSendBookingEmailRoute,
   FleetVehicleIdRoute: FleetVehicleIdRoute,
   FleetIndexRoute: FleetIndexRoute,
 }

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { supabase as legacy } from "./supabase";
-import { supabase as cloud } from "@/integrations/supabase/client";
 
 export type SubmitBookingPayload = {
   vehicle_id?: string | null;
