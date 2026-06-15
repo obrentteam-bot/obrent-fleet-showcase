@@ -95,7 +95,7 @@ const renderRows = (rows: Row[]) => rows.map(([label, value, mono]) => `
     <td style="padding:11px 0;border-bottom:1px solid ${BORDER};color:${TEXT};font-size:15px;${mono ? "font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;" : "font-family:Arial,sans-serif;"}vertical-align:top;">${value}</td>
   </tr>`).join("");
 
-function buildEmails(d: Payload) {
+function buildEmails(d: Payload, vehicleName: string | null) {
   const parsed = parseMessage(d.message);
   const customerDisplayName = d.customer_name.trim() || d.customer_name;
   const sameDay = d.start_date === d.end_date;
@@ -105,6 +105,7 @@ function buildEmails(d: Payload) {
 
   const serviceType = (d.service_type ?? null) as ServiceType | null;
   const serviceLabel = serviceType ? SERVICE_LABEL[serviceType] : parsed.service;
+  const isFahrzeug = serviceType === "fahrzeug" || (!serviceType && !!d.vehicle_id);
 
   const baseRows: Row[] = [
     ["Name", esc(d.customer_name)],
@@ -112,6 +113,7 @@ function buildEmails(d: Payload) {
     ["Telefon", `<a href="tel:${esc(d.phone)}" style="color:${TEXT};text-decoration:none;">${esc(d.phone)}</a>`],
   ];
   if (serviceLabel) baseRows.push(["Service", esc(serviceLabel)]);
+  if (vehicleName) baseRows.push(["Fahrzeug", esc(vehicleName)]);
 
   // Prefer structured details over legacy message parsing.
   if (d.details && typeof d.details === "object") {
@@ -124,8 +126,14 @@ function buildEmails(d: Payload) {
     else if (d.start_date) baseRows.push(["Datum", esc(fmtDate(d.start_date))]);
     for (const [k, v] of parsed.extras) baseRows.push([k, esc(v)]);
   }
-  if (d.vehicle_id) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
+  // Fall back to raw ID only when we could not resolve a name.
+  if (d.vehicle_id && !vehicleName) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
   if (parsed.free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(parsed.free)}</div>`]);
+
+  const customerIntro = isFahrzeug && vehicleName
+    ? `Vielen Dank für Ihre Anfrage für den <strong>${esc(vehicleName)}</strong>. Wir melden uns in Kürze bei Ihnen.`
+    : `Ihre Anfrage wurde erfolgreich übermittelt. Unser Team wird sich zeitnah mit Ihnen in Verbindung setzen.`;
+
 
 
   const customerHtml = `<!doctype html>
