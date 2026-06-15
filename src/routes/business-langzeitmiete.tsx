@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceSubpage, type FieldDef } from "@/components/ServiceSubpage";
+import { useVehicles } from "@/lib/useVehicles";
 import {
   Crown,
   Users,
@@ -29,48 +31,56 @@ export const Route = createFileRoute("/business-langzeitmiete")({
 });
 
 const fields: FieldDef[] = [
-  { type: "text", key: "company", label: { de: "Firmenname", en: "Company name" }, required: true },
-  { type: "text", key: "contact", label: { de: "Ansprechpartner", en: "Contact person" }, required: true },
+  { type: "text", key: "firmenname", label: { de: "Firmenname", en: "Company name" }, required: true },
+  { type: "text", key: "ansprechpartner", label: { de: "Ansprechpartner", en: "Contact person" }, required: true },
   { type: "tel", key: "phone", label: { de: "Telefon", en: "Phone" }, required: true },
   { type: "email", key: "email", label: { de: "E-Mail", en: "Email" }, required: true },
   {
     type: "select",
-    key: "vehicle",
+    key: "fahrzeug",
     colSpan: 2,
     label: { de: "Gewünschtes Fahrzeug", en: "Desired vehicle" },
     placeholder: { de: "Bitte wählen", en: "Please select" },
-    options: [
-      { value: "porsche-cayenne", label: { de: "Porsche Cayenne", en: "Porsche Cayenne" } },
-      { value: "porsche-panamera", label: { de: "Porsche Panamera", en: "Porsche Panamera" } },
-      { value: "bmw-x5-m60i", label: { de: "BMW X5 M60i", en: "BMW X5 M60i" } },
-      { value: "bmw-x5-m50d", label: { de: "BMW X5 M50d", en: "BMW X5 M50d" } },
-      { value: "bmw-x4-m40i", label: { de: "BMW X4 M40i", en: "BMW X4 M40i" } },
-      { value: "audi-rs6-avant", label: { de: "Audi RS6 Avant", en: "Audi RS6 Avant" } },
-    ],
+    // Populated dynamically from Supabase vehicles at runtime.
+    options: [],
   },
   {
     type: "select",
-    key: "duration",
+    key: "mietdauer",
     label: { de: "Mietdauer", en: "Rental duration" },
     placeholder: { de: "Bitte wählen", en: "Please select" },
     options: [
       { value: "1m", label: { de: "1 Monat", en: "1 month" } },
-      { value: "3m", label: { de: "3 Monate", en: "3 months" } },
-      { value: "6m", label: { de: "6 Monate", en: "6 months" } },
-      { value: "12m", label: { de: "12 Monate", en: "12 months" } },
-      { value: "custom", label: { de: "Individuell", en: "Custom" } },
+      { value: "2-3m", label: { de: "2–3 Monate", en: "2–3 months" } },
+      { value: "4-6m", label: { de: "4–6 Monate", en: "4–6 months" } },
+      { value: "7-12m", label: { de: "7–12 Monate", en: "7–12 months" } },
+      { value: "12m+", label: { de: "Über 12 Monate", en: "Over 12 months" } },
     ],
   },
-  { type: "number", key: "quantity", label: { de: "Anzahl Fahrzeuge", en: "Number of vehicles" } },
+  { type: "number", key: "anzahl_fahrzeuge", label: { de: "Anzahl Fahrzeuge", en: "Number of vehicles" } },
   { type: "textarea", key: "message", label: { de: "Nachricht", en: "Message" }, colSpan: 2 },
 ];
 
 function BusinessLongTermPage() {
+  const { vehicles } = useVehicles();
+  const dynamicOptions = useMemo(
+    () => ({
+      fahrzeug: vehicles.map((v) => {
+        const fullName = `${v.marque} ${v.name}`.trim();
+        return { value: fullName, label: { de: fullName, en: fullName } };
+      }),
+    }),
+    [vehicles],
+  );
+
   return (
     <SiteLayout>
       <ServiceSubpage
         serviceTitleEn="Business Langzeitmiete"
+        serviceType="langzeitmiete"
         bgImage={bg}
+        dynamicOptions={dynamicOptions}
+        contactFieldKeys={["ansprechpartner", "email", "phone"]}
         hero={{
           eyebrow: { de: "Business Langzeitmiete", en: "Business Long-Term Rental" },
           headline: {
