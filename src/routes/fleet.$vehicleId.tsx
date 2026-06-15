@@ -258,17 +258,17 @@ function VehicleDetailPage() {
                 </div>
               </div>
 
-              <div className="mt-8 text-[0.76rem] uppercase font-medium" style={{ color: "#D4AF37", letterSpacing: "0.36em" }}>
+              <div className="mt-5 text-[0.76rem] uppercase font-medium" style={{ color: "#D4AF37", letterSpacing: "0.36em" }}>
                 {v.marque}
               </div>
-              <h1 className="mt-4 font-display leading-[0.95]" style={{ color: "#F8F4EC", fontSize: "clamp(2.6rem,6vw,4.8rem)" }}>
+              <h1 className="mt-3 font-display leading-[0.95]" style={{ color: "#F8F4EC", fontSize: "clamp(2.2rem,5vw,4rem)" }}>
                 {v.name}
               </h1>
-              <p className="mt-5 max-w-[44rem] text-base md:text-lg font-light italic leading-relaxed" style={{ color: "rgba(248,244,236,0.74)" }}>
+              <p className="mt-4 max-w-[44rem] text-sm md:text-base font-light italic leading-relaxed" style={{ color: "rgba(248,244,236,0.74)" }}>
                 {heroNarrative}
               </p>
 
-              <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                 {[
                   { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
                   { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
@@ -277,11 +277,11 @@ function VehicleDetailPage() {
                 ].map(({ icon: Icon, label, value }) => (
                   <div
                     key={label}
-                    className="rounded-2xl border p-4 md:p-5 min-w-0"
+                    className="rounded-2xl border p-3 md:p-4 min-w-0"
                     style={{ borderColor: "rgba(255,255,255,0.08)", background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))" }}
                   >
                     <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#D4AF37" }} />
-                    <div className="mt-4 text-[0.6rem] uppercase" style={{ color: "rgba(248,244,236,0.46)", letterSpacing: "0.28em" }}>
+                    <div className="mt-3 text-[0.6rem] uppercase" style={{ color: "rgba(248,244,236,0.46)", letterSpacing: "0.28em" }}>
                       {label}
                     </div>
                     <div className="mt-2 text-sm md:text-base font-medium leading-snug break-words" style={{ color: "#F8F4EC" }}>
@@ -291,7 +291,7 @@ function VehicleDetailPage() {
                 ))}
               </div>
 
-              <div className="mt-10 flex flex-col gap-6 border-t pt-8" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div className="mt-8 flex flex-col gap-5 border-t pt-6" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
                 <div className="flex flex-wrap items-end justify-between gap-5">
                   <div>
                     <div className="text-[0.62rem] uppercase mb-2" style={{ color: "rgba(248,244,236,0.42)", letterSpacing: "0.32em" }}>
