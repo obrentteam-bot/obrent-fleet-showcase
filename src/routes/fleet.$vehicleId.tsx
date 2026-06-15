@@ -292,12 +292,12 @@ function VehicleDetailPage() {
               </div>
 
               <div className="mt-8 flex flex-col gap-5 border-t pt-6" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-                <div className="flex flex-wrap items-end justify-between gap-5">
+                <div className="flex flex-wrap items-end justify-between gap-4">
                   <div>
-                    <div className="text-[0.62rem] uppercase mb-2" style={{ color: "rgba(248,244,236,0.42)", letterSpacing: "0.32em" }}>
+                    <div className="text-[0.62rem] uppercase mb-1" style={{ color: "rgba(248,244,236,0.42)", letterSpacing: "0.32em" }}>
                       {t.vehicle.reservationFrom}
                     </div>
-                    <div className="font-display italic leading-none" style={{ color: "#D4AF37", fontSize: "clamp(2rem,3.6vw,3rem)" }}>
+                    <div className="font-display italic leading-none" style={{ color: "#D4AF37", fontSize: "clamp(1.8rem,3vw,2.6rem)" }}>
                       {t.vehicle.priceOnRequest}
                     </div>
                   </div>
@@ -317,7 +317,7 @@ function VehicleDetailPage() {
                           } catch { /* ignore */ }
                         }
                       }}
-                      className="inline-flex min-h-[60px] items-center justify-center gap-2 px-5 md:px-6 text-[0.72rem] uppercase font-medium transition-all border hover:border-gold/70 hover:text-gold"
+                      className="inline-flex min-h-[52px] items-center justify-center gap-2 px-5 md:px-6 text-[0.72rem] uppercase font-medium transition-all border hover:border-gold/70 hover:text-gold"
                       style={{
                         color: "#F8F4EC",
                         letterSpacing: "0.28em",
@@ -332,7 +332,7 @@ function VehicleDetailPage() {
 
                     <a
                       href="#reservation"
-                      className="group/cta inline-flex min-h-[60px] items-center justify-center gap-3 px-7 md:px-9 text-[0.72rem] uppercase font-medium transition-all flex-1 sm:flex-none"
+                      className="group/cta inline-flex min-h-[52px] items-center justify-center gap-3 px-7 md:px-9 text-[0.72rem] uppercase font-medium transition-all flex-1 sm:flex-none"
                       style={{
                         background: "linear-gradient(135deg, #D4AF37 0%, #E2C980 100%)",
                         color: "#090909",
@@ -352,7 +352,7 @@ function VehicleDetailPage() {
 
 
           {/* ===== Feature pills ===== */}
-          <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
+          <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
             {[
               { icon: ShieldCheck, ...t.vehicle.featurePills[0] },
               { icon: CalendarDays, ...t.vehicle.featurePills[1] },
