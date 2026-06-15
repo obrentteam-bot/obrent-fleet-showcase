@@ -181,6 +181,10 @@ export function ChauffeurDetails({ value: valueProp, onChange }: Props = {}) {
             value={value.notes}
             onChange={(e) => set("notes", e.target.value)}
           />
+          <div className="flex justify-between mt-2 text-xs text-cream/50">
+            <span>Bitte schildern Sie Ihre Anfrage möglichst detailliert.</span>
+            <span>{value.notes.length} / 150 Zeichen</span>
+          </div>
         </div>
       </div>
     </div>

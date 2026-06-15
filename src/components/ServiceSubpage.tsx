@@ -285,6 +285,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
     }
 
     if (f.type === "textarea") {
+      const charCount = (values[f.key] || "").length;
       return (
         <div key={f.key} className={span || "md:col-span-2"}>
           <label className="lux-label">{f.label[lang]}</label>
@@ -294,6 +295,10 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             value={values[f.key] || ""}
             onChange={(e) => setVal(f.key, e.target.value)}
           />
+          <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+            <span>{lang === "de" ? "Bitte schildern Sie Ihre Anfrage möglichst detailliert." : "Please describe your request in as much detail as possible."}</span>
+            <span>{charCount} / 150 {lang === "de" ? "Zeichen" : "characters"}</span>
+          </div>
         </div>
       );
     }

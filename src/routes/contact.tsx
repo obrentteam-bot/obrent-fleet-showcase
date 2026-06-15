@@ -360,6 +360,10 @@ function ContactPage() {
               <div className="md:col-span-2">
                 <label className="lux-label">{f.message}</label>
                 <textarea className="lux-input resize-none" rows={6} value={messageText} onChange={(e) => setMessageText(e.target.value)} placeholder={f.messagePlaceholder} />
+                <div className="flex justify-between mt-2 text-xs text-cream/50">
+                  <span>{lang === "de" ? "Bitte schildern Sie Ihre Anfrage möglichst detailliert." : "Please describe your request in as much detail as possible."}</span>
+                  <span>{messageText.length} / 150 {lang === "de" ? "Zeichen" : "characters"}</span>
+                </div>
               </div>
               <div className="md:col-span-2 pt-2">
                 <label className="flex items-start gap-3 cursor-pointer group">
