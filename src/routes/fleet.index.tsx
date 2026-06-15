@@ -73,7 +73,7 @@ function FleetPage() {
         </div>
       </section>
 
-      <section className="py-16 px-6 md:px-12">
+      <section className="py-10 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto">
           {loading && (
             <div className="text-center text-cream/50 py-20">{t.common.filter}…</div>
@@ -92,7 +92,7 @@ function FleetPage() {
                 <Link
                   to="/fleet/$vehicleId"
                   params={{ vehicleId: v.id }}
-                  className="hidden md:block relative group rounded-[20px] overflow-hidden border border-border mb-8 min-h-[560px]"
+                  className="hidden md:block relative group rounded-[20px] overflow-hidden border border-border mb-6 min-h-[420px]"
                 >
                   <img
                     src={heroImg}
@@ -102,17 +102,17 @@ function FleetPage() {
                   <div className="absolute inset-0 bg-gradient-to-r from-black via-black/78 to-black/12" />
                   <div className="absolute inset-y-0 left-0 w-[52%] bg-gradient-to-r from-black/92 via-black/72 to-transparent" />
 
-                  <div className="relative z-10 flex min-h-[560px] max-w-[44%] flex-col justify-between p-10 lg:p-12" style={{ color: "#F5F0E8" }}>
+                  <div className="relative z-10 flex min-h-[420px] max-w-[44%] flex-col justify-between p-8 lg:p-10" style={{ color: "#F5F0E8" }}>
                     <div>
-                      <div className="mb-6 text-[0.7rem] uppercase tracking-[0.32em] text-gold">{v.marque}</div>
-                      <h2 className="font-display text-4xl leading-[0.95] lg:text-5xl xl:text-6xl" style={{ color: "#F5F0E8" }}>
+                      <div className="mb-4 text-[0.7rem] uppercase tracking-[0.32em] text-gold">{v.marque}</div>
+                      <h2 className="font-display text-3xl leading-[0.95] lg:text-4xl xl:text-5xl" style={{ color: "#F5F0E8" }}>
                         {v.name}
                       </h2>
                       {tagline && (
-                        <p className="mt-5 max-w-md text-base font-light leading-relaxed" style={{ color: "rgba(245,240,232,0.78)" }}>{tagline}</p>
+                        <p className="mt-4 max-w-md text-sm font-light leading-relaxed" style={{ color: "rgba(245,240,232,0.78)" }}>{tagline}</p>
                       )}
 
-                      <dl className="mt-8 grid grid-cols-4 gap-5">
+                      <dl className="mt-6 grid grid-cols-4 gap-4">
                         {[
                           { Icon: Cog, label: "Motor", val: v.specs.engine },
                           { Icon: Gauge, label: "Leistung", val: v.specs.power },
@@ -128,12 +128,12 @@ function FleetPage() {
                       </dl>
                     </div>
 
-                    <div className="mt-10 flex flex-col items-start gap-5 border-t border-cream/10 pt-6">
+                    <div className="mt-8 flex flex-col items-start gap-4 border-t border-cream/10 pt-5">
                       <div>
                         <div className="mb-1 text-[0.55rem] uppercase tracking-[0.28em]" style={{ color: "rgba(245,240,232,0.45)" }}>AB</div>
-                        <div className="font-display text-2xl italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
+                        <div className="font-display text-xl italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                       </div>
-                      <span className="inline-flex items-center gap-3 rounded-sm border border-gold/70 bg-gold/10 px-7 py-3.5 text-[0.7rem] font-medium uppercase tracking-[0.32em] text-gold transition hover:bg-gold hover:text-onyx">
+                      <span className="inline-flex items-center gap-3 rounded-sm border border-gold/70 bg-gold/10 px-6 py-3 text-[0.7rem] font-medium uppercase tracking-[0.32em] text-gold transition hover:bg-gold hover:text-onyx">
                         Jetzt anfragen
                         <ArrowRight className="h-4 w-4" />
                       </span>
