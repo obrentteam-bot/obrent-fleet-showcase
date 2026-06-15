@@ -254,6 +254,8 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
   const renderField = (f: FieldDef) => {
     const span = f.colSpan === 2 ? "md:col-span-2" : "";
     if (f.type === "select") {
+      const dyn = props.dynamicOptions?.[f.key] ?? [];
+      const opts = dyn.length ? dyn : f.options;
       return (
         <div key={f.key} className={span}>
           <label className="lux-label">{f.label[lang]}</label>
@@ -262,7 +264,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
               <SelectValue placeholder={f.placeholder[lang]} />
             </SelectTrigger>
             <SelectContent>
-              {f.options.map((o) => (
+              {opts.map((o) => (
                 <SelectItem key={o.value} value={o.value}>
                   {o.label[lang]}
                 </SelectItem>
@@ -272,6 +274,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
         </div>
       );
     }
+
     if (f.type === "textarea") {
       return (
         <div key={f.key} className={span || "md:col-span-2"}>
