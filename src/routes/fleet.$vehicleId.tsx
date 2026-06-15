@@ -194,7 +194,7 @@ function VehicleDetailPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-32 px-4 md:px-8 lg:px-12 pb-16">
+      <section className="pt-28 px-4 md:px-8 lg:px-12 pb-10">
         <div className="max-w-[1500px] mx-auto">
 
           {/* Top bar */}
@@ -218,7 +218,7 @@ function VehicleDetailPage() {
             <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(212,175,55,0.10), transparent 40%)" }} />
 
             {/* Banner image — tight crop on the centre (logo area), much smaller */}
-            <div className="relative w-full h-[220px] md:h-[300px] overflow-hidden">
+            <div className="relative w-full h-[180px] md:h-[240px] overflow-hidden">
               {v.hasImages ? (
                 <>
                   <img
@@ -245,7 +245,7 @@ function VehicleDetailPage() {
             </div>
 
             {/* Details below image */}
-            <div className="relative z-10 p-7 md:p-10 xl:p-14">
+            <div className="relative z-10 p-6 md:p-8 xl:p-10">
               <div className="flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center gap-2 rounded-full border px-4 py-2" style={{ borderColor: "rgba(212,175,55,0.24)", background: "rgba(255,255,255,0.02)" }}>
                   <Shield className="h-3.5 w-3.5" style={{ color: "#D4AF37" }} />
@@ -258,17 +258,17 @@ function VehicleDetailPage() {
                 </div>
               </div>
 
-              <div className="mt-8 text-[0.76rem] uppercase font-medium" style={{ color: "#D4AF37", letterSpacing: "0.36em" }}>
+              <div className="mt-5 text-[0.76rem] uppercase font-medium" style={{ color: "#D4AF37", letterSpacing: "0.36em" }}>
                 {v.marque}
               </div>
-              <h1 className="mt-4 font-display leading-[0.95]" style={{ color: "#F8F4EC", fontSize: "clamp(2.6rem,6vw,4.8rem)" }}>
+              <h1 className="mt-3 font-display leading-[0.95]" style={{ color: "#F8F4EC", fontSize: "clamp(2.2rem,5vw,4rem)" }}>
                 {v.name}
               </h1>
-              <p className="mt-5 max-w-[44rem] text-base md:text-lg font-light italic leading-relaxed" style={{ color: "rgba(248,244,236,0.74)" }}>
+              <p className="mt-4 max-w-[44rem] text-sm md:text-base font-light italic leading-relaxed" style={{ color: "rgba(248,244,236,0.74)" }}>
                 {heroNarrative}
               </p>
 
-              <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                 {[
                   { icon: Cog, label: t.vehicle.specs.engine, value: v.specs.engine },
                   { icon: Gauge, label: t.vehicle.specs.power, value: v.specs.power },
@@ -277,11 +277,11 @@ function VehicleDetailPage() {
                 ].map(({ icon: Icon, label, value }) => (
                   <div
                     key={label}
-                    className="rounded-2xl border p-4 md:p-5 min-w-0"
+                    className="rounded-2xl border p-3 md:p-4 min-w-0"
                     style={{ borderColor: "rgba(255,255,255,0.08)", background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))" }}
                   >
                     <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#D4AF37" }} />
-                    <div className="mt-4 text-[0.6rem] uppercase" style={{ color: "rgba(248,244,236,0.46)", letterSpacing: "0.28em" }}>
+                    <div className="mt-3 text-[0.6rem] uppercase" style={{ color: "rgba(248,244,236,0.46)", letterSpacing: "0.28em" }}>
                       {label}
                     </div>
                     <div className="mt-2 text-sm md:text-base font-medium leading-snug break-words" style={{ color: "#F8F4EC" }}>
@@ -291,13 +291,13 @@ function VehicleDetailPage() {
                 ))}
               </div>
 
-              <div className="mt-10 flex flex-col gap-6 border-t pt-8" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-                <div className="flex flex-wrap items-end justify-between gap-5">
+              <div className="mt-8 flex flex-col gap-5 border-t pt-6" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+                <div className="flex flex-wrap items-end justify-between gap-4">
                   <div>
-                    <div className="text-[0.62rem] uppercase mb-2" style={{ color: "rgba(248,244,236,0.42)", letterSpacing: "0.32em" }}>
+                    <div className="text-[0.62rem] uppercase mb-1" style={{ color: "rgba(248,244,236,0.42)", letterSpacing: "0.32em" }}>
                       {t.vehicle.reservationFrom}
                     </div>
-                    <div className="font-display italic leading-none" style={{ color: "#D4AF37", fontSize: "clamp(2rem,3.6vw,3rem)" }}>
+                    <div className="font-display italic leading-none" style={{ color: "#D4AF37", fontSize: "clamp(1.8rem,3vw,2.6rem)" }}>
                       {t.vehicle.priceOnRequest}
                     </div>
                   </div>
@@ -317,7 +317,7 @@ function VehicleDetailPage() {
                           } catch { /* ignore */ }
                         }
                       }}
-                      className="inline-flex min-h-[60px] items-center justify-center gap-2 px-5 md:px-6 text-[0.72rem] uppercase font-medium transition-all border hover:border-gold/70 hover:text-gold"
+                      className="inline-flex min-h-[52px] items-center justify-center gap-2 px-5 md:px-6 text-[0.72rem] uppercase font-medium transition-all border hover:border-gold/70 hover:text-gold"
                       style={{
                         color: "#F8F4EC",
                         letterSpacing: "0.28em",
@@ -332,7 +332,7 @@ function VehicleDetailPage() {
 
                     <a
                       href="#reservation"
-                      className="group/cta inline-flex min-h-[60px] items-center justify-center gap-3 px-7 md:px-9 text-[0.72rem] uppercase font-medium transition-all flex-1 sm:flex-none"
+                      className="group/cta inline-flex min-h-[52px] items-center justify-center gap-3 px-7 md:px-9 text-[0.72rem] uppercase font-medium transition-all flex-1 sm:flex-none"
                       style={{
                         background: "linear-gradient(135deg, #D4AF37 0%, #E2C980 100%)",
                         color: "#090909",
@@ -352,7 +352,7 @@ function VehicleDetailPage() {
 
 
           {/* ===== Feature pills ===== */}
-          <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
+          <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 p-5 rounded-2xl border border-border bg-jet/40">
             {[
               { icon: ShieldCheck, ...t.vehicle.featurePills[0] },
               { icon: CalendarDays, ...t.vehicle.featurePills[1] },
@@ -371,7 +371,7 @@ function VehicleDetailPage() {
 
           {/* ===== Gallery slideshow with thumbnails ===== */}
           {v.hasImages && imgCount > 0 && (
-            <div id="gallery" className="mt-10 space-y-4">
+            <div id="gallery" className="mt-6 space-y-4">
               <div className="relative mx-auto w-full max-w-4xl aspect-[16/9] overflow-hidden rounded-2xl bg-jet">
                 {v.images.map((src, i) => (
                   <img
@@ -417,8 +417,8 @@ function VehicleDetailPage() {
 
           {/* Vehicle features list */}
           {v.features.length > 0 && (
-            <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-              <div className="flex items-center gap-4 mb-6">
+            <div className="mt-6 p-5 md:p-6 rounded-2xl border border-border bg-jet/40">
+              <div className="flex items-center gap-4 mb-5">
                 <span className="eyebrow">{t.vehicle.specifications}</span>
                 <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
               </div>
@@ -435,21 +435,21 @@ function VehicleDetailPage() {
 
 
           {/* ===== MIETPREISSTAFFELUNG ===== */}
-          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-            <div className="flex items-center gap-4 mb-6">
+          <div className="mt-6 p-5 md:p-6 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-5">
               <span className="eyebrow">{t.vehicle.pricingTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: t.vehicle.pricing.h3, value: v.pricing.h3 },
                 { label: t.vehicle.pricing.h6, value: v.pricing.h6 },
                 { label: t.vehicle.pricing.h12, value: v.pricing.h12 },
                 { label: t.vehicle.pricing.h24, value: v.pricing.h24 },
               ].map(({ label, value }) => (
-                <div key={label} className="p-5 rounded-xl border border-border/70 bg-onyx/30 text-center">
+                <div key={label} className="p-4 rounded-xl border border-border/70 bg-onyx/30 text-center">
                   <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
-                  <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                  <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                     {SHOW_PRICES && value != null ? formatPrice(value) : t.vehicle.priceOnRequest}
                   </div>
                 </div>
@@ -458,29 +458,29 @@ function VehicleDetailPage() {
           </div>
 
           {/* ===== MIETKONDITIONEN ===== */}
-          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-            <div className="flex items-center gap-4 mb-6">
+          <div className="mt-6 p-5 md:p-6 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-5">
               <span className="eyebrow">{t.vehicle.conditionsTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.freeKm}</div>
-                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.freeKm ?? 150} km
                 </div>
                 <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.freeKmHint}</div>
               </div>
-              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+              <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.extraKm}</div>
-                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.extraKmPrice != null ? `${formatEuro2(v.conditions.extraKmPrice)} / km` : t.vehicle.onRequest}
                 </div>
                 <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.extraKmHint}</div>
               </div>
-              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+              <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.deposit}</div>
-                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.deposit != null ? formatPrice(v.conditions.deposit) : t.vehicle.onRequest}
                 </div>
                 <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.depositHint}</div>
@@ -489,21 +489,21 @@ function VehicleDetailPage() {
           </div>
 
           {/* ===== VORAUSSETZUNGEN ===== */}
-          <div className="mt-10 p-6 md:p-8 rounded-2xl border border-border bg-jet/40">
-            <div className="flex items-center gap-4 mb-6">
+          <div className="mt-6 p-5 md:p-6 rounded-2xl border border-border bg-jet/40">
+            <div className="flex items-center gap-4 mb-5">
               <span className="eyebrow">{t.vehicle.requirementsTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.minAge}</div>
-                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.minAge != null ? `${v.conditions.minAge} ${t.vehicle.ageUnit}` : t.vehicle.onRequest}
                 </div>
               </div>
-              <div className="p-5 rounded-xl border border-border/70 bg-onyx/30">
+              <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.license}</div>
-                <div className="mt-3 font-display text-2xl md:text-3xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.minLicenseYears != null ? t.vehicle.licenseMin.replace("{n}", String(v.conditions.minLicenseYears)) : t.vehicle.onRequest}
                 </div>
               </div>
@@ -516,30 +516,30 @@ function VehicleDetailPage() {
 
 
       {/* Reservation form */}
-      <section id="reservation" className="mt-12 py-24 md:py-32 px-6 md:px-12 bg-jet/40 border-y border-border scroll-mt-24">
+      <section id="reservation" className="mt-10 py-16 md:py-20 px-6 md:px-12 bg-jet/40 border-y border-border scroll-mt-24">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-4 mb-5">
               <span className="gold-rule" />
               <span className="eyebrow">{t.vehicle.enquiryEyebrow}</span>
               <span className="gold-rule" />
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-cream">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-cream">
               {t.vehicle.reserveTitle} <span className="italic text-gold/90 font-light">{v.name}</span>
             </h2>
-            <p className="mt-4 text-cream/55 font-light">{t.vehicle.reserveLead}</p>
+            <p className="mt-3 text-cream/55 font-light">{t.vehicle.reserveLead}</p>
           </div>
 
           {submitted ? (
-            <div className="text-center py-16 border border-gold/30 bg-onyx/40">
-              <div className="eyebrow text-gold mb-4">✓ {t.admin.status.confirmed}</div>
-              <h3 className="font-display text-3xl text-cream mb-4">{t.vehicle.thankYouTitle}</h3>
+            <div className="text-center py-12 border border-gold/30 bg-onyx/40">
+              <div className="eyebrow text-gold mb-3">✓ {t.admin.status.confirmed}</div>
+              <h3 className="font-display text-2xl text-cream mb-3">{t.vehicle.thankYouTitle}</h3>
               <p className="text-cream/60">{t.vehicle.thankYouLead}</p>
             </div>
           ) : (
           <form
             onSubmit={onSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
+            className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6"
           >
             <div>
               <label className="lux-label">{cf.salutation}</label>
