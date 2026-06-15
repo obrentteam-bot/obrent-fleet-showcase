@@ -5,7 +5,7 @@ import { de, enUS } from "date-fns/locale";
 import { CalendarIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { submitBooking } from "@/lib/submitBooking";
-import { Button } from "@/components/ui/button";
+
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 // TimeSelect replaced by inline Select for consistent layout across service forms.
