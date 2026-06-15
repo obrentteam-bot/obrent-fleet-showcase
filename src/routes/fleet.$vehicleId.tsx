@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
-import { ChauffeurDetails } from "@/components/ChauffeurDetails";
+import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } from "@/components/ChauffeurDetails";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
