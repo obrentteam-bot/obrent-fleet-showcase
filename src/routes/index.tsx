@@ -99,7 +99,7 @@ function HomePage() {
               <span className="gold-rule" />
               <span className="eyebrow">{t.home.eyebrow}</span>
             </div>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1] text-cream tracking-tight max-w-3xl">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1] text-cream tracking-tight max-w-3xl">
               {t.home.heroTitle} <span className="text-gold italic font-light">{t.home.heroTitleItalic}</span>{t.home.heroTitleRest}
             </h1>
             <p className="mt-10 text-lg md:text-xl text-cream/75 font-light max-w-xl leading-relaxed">
@@ -217,7 +217,7 @@ function HomePage() {
       <section className="py-32 md:py-40 px-6 md:px-12">
         <div className="max-w-3xl mx-auto text-center">
           <div className="eyebrow mb-8">{t.home.invitationEyebrow}</div>
-          <h2 className="font-display text-3xl md:text-4xl text-cream leading-[1.1] mb-10">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-cream leading-[1.1] mb-10">
             {t.home.invitationTitle} <span className="italic text-gold/90 font-light">{t.home.invitationItalic}</span>.
           </h2>
           <p className="text-lg text-cream/60 font-light mb-12 leading-relaxed">
