@@ -1,8 +1,10 @@
-// Vercel/TanStack server route — same-origin email send via Resend.
+// Vercel Serverless Function — same-origin email send via Resend.
 // POST /api/send-booking-email
 // RESEND_API_KEY must be set in Vercel env vars (NO VITE_ prefix → server-only).
-
-import { createFileRoute } from "@tanstack/react-router";
+//
+// NOTE: This file lives at the project-root `api/` directory (Vercel convention).
+// Vercel auto-detects `api/*.ts` as Node Serverless Functions, independent of
+// the Vite SPA build under `dist/client`.
 
 type Payload = {
   vehicle_id?: string | null;
@@ -153,59 +155,71 @@ function buildEmails(d: Payload) {
   return { customerHtml, adminHtml, customerSubject, adminSubject };
 }
 
-export const Route = createFileRoute("/api/send-booking-email")({
-  server: {
-    handlers: {
-      POST: async ({ request }) => {
-        let d: Payload;
-        try {
-          d = (await request.json()) as Payload;
-        } catch {
-          return Response.json({ error: "Invalid JSON" }, { status: 400 });
-        }
+// Vercel Node.js Serverless Function handler signature.
+export default async function handler(req: any, res: any) {
+  if (req.method === "OPTIONS") {
+    res.setHeader("Allow", "POST, OPTIONS");
+    res.status(204).end();
+    return;
+  }
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST, OPTIONS");
+    res.status(405).json({ error: "Method Not Allowed" });
+    return;
+  }
 
-        if (!d?.customer_name || !d?.email || !d?.phone) {
-          return Response.json({ error: "Missing fields" }, { status: 400 });
-        }
+  let d: Payload;
+  try {
+    // Vercel parses JSON bodies automatically when Content-Type is application/json,
+    // but fall back to manual parse if it arrives as a string.
+    d = typeof req.body === "string" ? JSON.parse(req.body) : (req.body as Payload);
+  } catch {
+    res.status(400).json({ error: "Invalid JSON" });
+    return;
+  }
 
-        const resendKey = process.env.RESEND_API_KEY;
-        if (!resendKey) {
-          console.error("[send-booking-email] RESEND_API_KEY not configured");
-          return Response.json({ error: "RESEND_API_KEY not configured" }, { status: 500 });
-        }
+  if (!d?.customer_name || !d?.email || !d?.phone) {
+    res.status(400).json({ error: "Missing fields" });
+    return;
+  }
 
-        const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d);
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) {
+    console.error("[send-booking-email] RESEND_API_KEY not configured");
+    res.status(500).json({ error: "RESEND_API_KEY not configured" });
+    return;
+  }
 
-        const send = async (from: string, to: string, subject: string, html: string, replyTo: string) => {
-          const res = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ from, to: [to], subject, html, reply_to: replyTo }),
-          });
-          const bodyText = await res.text().catch(() => "");
-          console.log(`[resend] from="${from}" to="${to}" status=${res.status} body=${bodyText.slice(0, 600)}`);
-          return { ok: res.ok, status: res.status, body: bodyText };
-        };
+  const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d);
 
-        console.log(`[send-booking-email] customer=${d.email} admin=info@obrent.de`);
-        const results = await Promise.allSettled([
-          send("OBRENT <noreply@obrent.de>", d.email, customerSubject, customerHtml, "info@obrent.de"),
-          send("OBRENT Anfragen <noreply@obrent.de>", "info@obrent.de", adminSubject, adminHtml, d.email),
-        ]);
+  const send = async (from: string, to: string, subject: string, html: string, replyTo: string) => {
+    const r = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to: [to], subject, html, reply_to: replyTo }),
+    });
+    const bodyText = await r.text().catch(() => "");
+    console.log(`[resend] from="${from}" to="${to}" status=${r.status} body=${bodyText.slice(0, 600)}`);
+    return { ok: r.ok, status: r.status, body: bodyText };
+  };
 
-        const failures: string[] = [];
-        for (const [i, r] of results.entries()) {
-          const label = i === 0 ? "customer" : "admin";
-          if (r.status === "rejected") failures.push(`${label}: ${String(r.reason)}`);
-          else if (!r.value.ok) failures.push(`${label}: HTTP ${r.value.status} ${r.value.body.slice(0, 300)}`);
-        }
+  console.log(`[send-booking-email] customer=${d.email} admin=info@obrent.de`);
+  const results = await Promise.allSettled([
+    send("OBRENT <noreply@obrent.de>", d.email, customerSubject, customerHtml, "info@obrent.de"),
+    send("OBRENT Anfragen <noreply@obrent.de>", "info@obrent.de", adminSubject, adminHtml, d.email),
+  ]);
 
-        if (failures.length === results.length) {
-          return Response.json({ error: "Both sends failed", failures }, { status: 502 });
-        }
+  const failures: string[] = [];
+  for (const [i, r] of results.entries()) {
+    const label = i === 0 ? "customer" : "admin";
+    if (r.status === "rejected") failures.push(`${label}: ${String(r.reason)}`);
+    else if (!r.value.ok) failures.push(`${label}: HTTP ${r.value.status} ${r.value.body.slice(0, 300)}`);
+  }
 
-        return Response.json({ ok: true, partial: failures.length > 0, failures });
-      },
-    },
-  },
-});
+  if (failures.length === results.length) {
+    res.status(502).json({ error: "Both sends failed", failures });
+    return;
+  }
+
+  res.status(200).json({ ok: true, partial: failures.length > 0, failures });
+}
