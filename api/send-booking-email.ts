@@ -61,7 +61,7 @@ const renderRows = (rows: Row[]) => rows.map(([label, value, mono]) => `
 
 function buildEmails(d: Payload) {
   const { service, extras, free } = parseMessage(d.message);
-  const firstName = d.customer_name.trim().split(/\s+/)[0] || d.customer_name;
+  const customerDisplayName = d.customer_name.trim() || d.customer_name;
   const sameDay = d.start_date === d.end_date;
   const timestamp = new Intl.DateTimeFormat("de-DE", {
     dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin",
@@ -91,7 +91,7 @@ function buildEmails(d: Payload) {
         </td></tr>
         <tr><td style="padding:40px 40px 8px 40px;">
           <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:14px;">Anfrage erhalten</div>
-          <h1 style="margin:0 0 14px 0;color:${ONYX};font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.2;font-weight:400;">Vielen Dank, ${esc(firstName)}.</h1>
+          <h1 style="margin:0 0 14px 0;color:${ONYX};font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.2;font-weight:400;">Vielen Dank, ${esc(customerDisplayName)}.</h1>
           <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Wir haben Ihre Anfrage erhalten und melden uns in Kürze persönlich bei Ihnen — typischerweise innerhalb weniger Stunden während unserer Geschäftszeiten.</p>
         </td></tr>
         <tr><td style="padding:24px 40px 8px 40px;">
