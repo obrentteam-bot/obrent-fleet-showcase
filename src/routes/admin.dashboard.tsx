@@ -36,7 +36,26 @@ const SERVICE_LABEL: Record<ServiceType, string> = {
   langzeitmiete: "Langzeitmiete",
   fahrzeug: "Fahrzeug",
 };
+const DETAIL_LABEL: Record<string, string> = {
+  abholdatum: "Abholdatum",
+  abholzeit: "Abholzeit",
+  abholort: "Abholort",
+  zielort: "Zielort",
+  anzahl_personen: "Anzahl Personen",
+  datum: "Datum",
+  uhrzeit: "Uhrzeit",
+  einsatzort: "Einsatzort / Route",
+  fahrzeugwunsch: "Fahrzeugwunsch",
+  dauer: "Ungefähre Dauer",
+  firmenname: "Firmenname",
+  ansprechpartner: "Ansprechpartner",
+  fahrzeug: "Gewünschtes Fahrzeug",
+  mietdauer: "Mietdauer",
+  anzahl_fahrzeuge: "Anzahl Fahrzeuge",
+  message: "Nachricht",
+};
 const CATEGORIES = ["SUV", "Limousine", "Kombi", "Sports"] as const;
+
 const SESSION_MAX_MS = 8 * 60 * 60 * 1000; // 8h
 
 function StatusBadge({ s }: { s: Status }) {
