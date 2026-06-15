@@ -63,6 +63,14 @@ export function SiteHeader() {
     closeTimer.current = setTimeout(() => setServicesOpen(false), 120);
   };
 
+  const toggleMobileMenu = () => {
+    setOpen((s) => {
+      const next = !s;
+      if (next) window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      return next;
+    });
+  };
+
   return (
     <header
       data-site-header
@@ -179,7 +187,7 @@ export function SiteHeader() {
         <button
           aria-label="Open menu"
           className={`md:hidden ${overDarkHero && theme === "dark" ? "text-cream" : "text-foreground"}`}
-          onClick={() => setOpen((s) => !s)}
+          onClick={toggleMobileMenu}
         >
           <div className="w-6 flex flex-col gap-1.5">
             <span className={`h-px bg-current transition-transform ${open ? "rotate-45 translate-y-1.5" : ""}`} />
@@ -190,7 +198,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="md:hidden fixed inset-0 z-50 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-4 duration-300 dark">
+        <div className="md:hidden fixed top-0 left-0 w-full h-[100dvh] z-50 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-4 duration-300 dark">
           <div className="flex items-center justify-between px-6 h-24">
             <Link to="/" onClick={() => setOpen(false)} aria-label="OBRENT">
               <img src={logo} alt="OBRENT" className="h-16 w-auto" />
