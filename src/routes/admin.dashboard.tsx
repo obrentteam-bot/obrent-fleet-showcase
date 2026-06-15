@@ -17,15 +17,24 @@ export const Route = createFileRoute("/admin/dashboard")({
 });
 
 type Status = "pending" | "confirmed" | "rejected";
+type ServiceType = "shuttle" | "chauffeur" | "langzeitmiete" | "fahrzeug";
 type BookingRow = DbBooking & {
   phone?: string | null;
   admin_note?: string | null;
+  service_type?: ServiceType | string | null;
+  details?: Record<string, unknown> | null;
   vehicles?: { name: string } | null;
 };
 type VehicleRow = DbVehicle & { sort_order?: number | null };
 
 const STATUS_LABEL: Record<Status, string> = {
   pending: "Offen", confirmed: "Bestätigt", rejected: "Abgelehnt",
+};
+const SERVICE_LABEL: Record<ServiceType, string> = {
+  shuttle: "Shuttle",
+  chauffeur: "Chauffeur",
+  langzeitmiete: "Langzeitmiete",
+  fahrzeug: "Fahrzeug",
 };
 const CATEGORIES = ["SUV", "Limousine", "Kombi", "Sports"] as const;
 const SESSION_MAX_MS = 8 * 60 * 60 * 1000; // 8h
@@ -38,6 +47,19 @@ function StatusBadge({ s }: { s: Status }) {
   };
   return <span className={`inline-block px-2.5 py-1 text-[0.65rem] tracking-[0.2em] uppercase border ${cls[s]}`}>{STATUS_LABEL[s]}</span>;
 }
+
+function ServiceBadge({ s }: { s?: string | null }) {
+  const key = (s ?? "fahrzeug") as ServiceType;
+  const cls: Record<ServiceType, string> = {
+    shuttle: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+    chauffeur: "bg-gold/10 text-gold border-gold/40",
+    langzeitmiete: "bg-green-500/10 text-green-400 border-green-500/30",
+    fahrzeug: "bg-cream/10 text-cream/70 border-cream/20",
+  };
+  const label = SERVICE_LABEL[key] ?? String(s ?? "—");
+  return <span className={`inline-block px-2.5 py-1 text-[0.6rem] tracking-[0.2em] uppercase border ${cls[key] ?? cls.fahrzeug}`}>{label}</span>;
+}
+
 
 type VehicleForm = {
   name: string; category: string; description: string; engine: string;
