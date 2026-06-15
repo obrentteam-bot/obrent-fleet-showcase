@@ -310,6 +310,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      set_maintenance_mode: { Args: { _enabled: boolean }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
