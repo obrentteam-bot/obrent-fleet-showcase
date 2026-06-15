@@ -58,10 +58,13 @@ export async function submitBooking(
     return { error: insertError.message };
   }
 
-  // Fire-and-forget email — never block the user on mail delivery.
+  // Fire-and-forget email — same-origin Vercel serverless route.
+  // RESEND_API_KEY lives in Vercel env vars (server-only, no VITE_ prefix).
   try {
-    const { error: fnError } = await cloud.functions.invoke("send-booking-email", {
-      body: {
+    const res = await fetch("/api/send-booking-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         vehicle_id: data.vehicle_id ?? null,
         customer_name: data.customer_name,
         email: data.email,
@@ -69,10 +72,11 @@ export async function submitBooking(
         start_date: data.start_date,
         end_date: data.end_date,
         message: data.message ?? null,
-      },
+      }),
     });
-    if (fnError) {
-      console.error("[submitBooking] email send failed", fnError);
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error("[submitBooking] email send failed", res.status, body);
     }
   } catch (e) {
     console.error("[submitBooking] email request threw", e);
