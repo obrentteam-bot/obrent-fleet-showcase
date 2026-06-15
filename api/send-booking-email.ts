@@ -6,6 +6,8 @@
 // Vercel auto-detects `api/*.ts` as Node Serverless Functions, independent of
 // the Vite SPA build under `dist/client`.
 
+type ServiceType = "shuttle" | "chauffeur" | "langzeitmiete" | "fahrzeug";
+
 type Payload = {
   vehicle_id?: string | null;
   customer_name: string;
@@ -14,7 +16,41 @@ type Payload = {
   start_date: string;
   end_date: string;
   message?: string | null;
+  service_type?: ServiceType | null;
+  details?: Record<string, unknown> | null;
 };
+
+const SERVICE_LABEL: Record<ServiceType, string> = {
+  shuttle: "Shuttle",
+  chauffeur: "Chauffeur",
+  langzeitmiete: "Langzeitmiete",
+  fahrzeug: "Fahrzeug",
+};
+
+const DETAIL_LABELS: Record<string, string> = {
+  // shuttle
+  abholdatum: "Abholdatum",
+  abholzeit: "Abholzeit",
+  abholort: "Abholort",
+  zielort: "Zielort",
+  anzahl_personen: "Anzahl Personen",
+  // chauffeur
+  datum: "Datum",
+  uhrzeit: "Uhrzeit",
+  einsatzort: "Einsatzort / Route",
+  fahrzeugwunsch: "Fahrzeugwunsch",
+  dauer: "Ungefähre Dauer",
+  // langzeitmiete
+  firmenname: "Firmenname",
+  ansprechpartner: "Ansprechpartner",
+  fahrzeug: "Gewünschtes Fahrzeug",
+  mietdauer: "Mietdauer",
+  anzahl_fahrzeuge: "Anzahl Fahrzeuge",
+};
+
+const labelFor = (k: string) =>
+  DETAIL_LABELS[k] ??
+  k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
