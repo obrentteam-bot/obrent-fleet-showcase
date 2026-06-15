@@ -7,9 +7,40 @@ import {
 } from "@/components/ui/select";
 import { useI18n } from "@/lib/i18n";
 
-export function ChauffeurDetails() {
+export type ChauffeurFieldsValue = {
+  pickupAddress: string;
+  destination: string;
+  tripType: string;
+  occasion: string;
+  passengers: string;
+  luggage: string;
+  language: string;
+  flight: string;
+  notes: string;
+};
+
+export const emptyChauffeurFields: ChauffeurFieldsValue = {
+  pickupAddress: "",
+  destination: "",
+  tripType: "",
+  occasion: "",
+  passengers: "1",
+  luggage: "0",
+  language: "any",
+  flight: "",
+  notes: "",
+};
+
+type Props = {
+  value: ChauffeurFieldsValue;
+  onChange: (next: ChauffeurFieldsValue) => void;
+};
+
+export function ChauffeurDetails({ value, onChange }: Props) {
   const { t } = useI18n();
   const c = t.contact.form.chauffeurFields;
+  const set = <K extends keyof ChauffeurFieldsValue>(k: K, v: ChauffeurFieldsValue[K]) =>
+    onChange({ ...value, [k]: v });
 
   return (
     <div className="md:col-span-2 mt-2 border-l-2 border-gold/40 pl-5 md:pl-7 py-5 bg-cream/[0.02]">
@@ -25,6 +56,8 @@ export function ChauffeurDetails() {
             type="text"
             maxLength={200}
             placeholder={c.pickupAddressPlaceholder}
+            value={value.pickupAddress}
+            onChange={(e) => set("pickupAddress", e.target.value)}
           />
         </div>
 
@@ -35,12 +68,14 @@ export function ChauffeurDetails() {
             type="text"
             maxLength={200}
             placeholder={c.destinationPlaceholder}
+            value={value.destination}
+            onChange={(e) => set("destination", e.target.value)}
           />
         </div>
 
         <div>
           <label className="lux-label">{c.tripType}</label>
-          <Select>
+          <Select value={value.tripType} onValueChange={(v) => set("tripType", v)}>
             <SelectTrigger className="lux-input h-auto">
               <SelectValue placeholder={c.tripTypePlaceholder} />
             </SelectTrigger>
@@ -55,7 +90,7 @@ export function ChauffeurDetails() {
 
         <div>
           <label className="lux-label">{c.occasion}</label>
-          <Select>
+          <Select value={value.occasion} onValueChange={(v) => set("occasion", v)}>
             <SelectTrigger className="lux-input h-auto">
               <SelectValue placeholder={c.occasionPlaceholder} />
             </SelectTrigger>
@@ -71,7 +106,7 @@ export function ChauffeurDetails() {
 
         <div>
           <label className="lux-label">{c.passengers}</label>
-          <Select defaultValue="1">
+          <Select value={value.passengers} onValueChange={(v) => set("passengers", v)}>
             <SelectTrigger className="lux-input h-auto">
               <SelectValue />
             </SelectTrigger>
@@ -87,7 +122,7 @@ export function ChauffeurDetails() {
 
         <div>
           <label className="lux-label">{c.luggage}</label>
-          <Select defaultValue="0">
+          <Select value={value.luggage} onValueChange={(v) => set("luggage", v)}>
             <SelectTrigger className="lux-input h-auto">
               <SelectValue />
             </SelectTrigger>
@@ -103,7 +138,7 @@ export function ChauffeurDetails() {
 
         <div>
           <label className="lux-label">{c.language}</label>
-          <Select defaultValue="any">
+          <Select value={value.language} onValueChange={(v) => set("language", v)}>
             <SelectTrigger className="lux-input h-auto">
               <SelectValue />
             </SelectTrigger>
@@ -123,6 +158,8 @@ export function ChauffeurDetails() {
             type="text"
             maxLength={20}
             placeholder={c.flightPlaceholder}
+            value={value.flight}
+            onChange={(e) => set("flight", e.target.value)}
           />
         </div>
 
@@ -133,6 +170,8 @@ export function ChauffeurDetails() {
             rows={3}
             maxLength={500}
             placeholder={c.notesPlaceholder}
+            value={value.notes}
+            onChange={(e) => set("notes", e.target.value)}
           />
         </div>
       </div>
