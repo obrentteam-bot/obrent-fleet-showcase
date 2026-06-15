@@ -96,24 +96,37 @@ const renderRows = (rows: Row[]) => rows.map(([label, value, mono]) => `
   </tr>`).join("");
 
 function buildEmails(d: Payload) {
-  const { service, extras, free } = parseMessage(d.message);
+  const parsed = parseMessage(d.message);
   const customerDisplayName = d.customer_name.trim() || d.customer_name;
   const sameDay = d.start_date === d.end_date;
   const timestamp = new Intl.DateTimeFormat("de-DE", {
     dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin",
   }).format(new Date());
 
+  const serviceType = (d.service_type ?? null) as ServiceType | null;
+  const serviceLabel = serviceType ? SERVICE_LABEL[serviceType] : parsed.service;
+
   const baseRows: Row[] = [
     ["Name", esc(d.customer_name)],
     ["E-Mail", `<a href="mailto:${esc(d.email)}" style="color:${TEXT};text-decoration:none;border-bottom:1px solid ${GOLD};">${esc(d.email)}</a>`],
     ["Telefon", `<a href="tel:${esc(d.phone)}" style="color:${TEXT};text-decoration:none;">${esc(d.phone)}</a>`],
   ];
-  if (service) baseRows.push(["Service", esc(service)]);
-  if (!sameDay) baseRows.push(["Zeitraum", `${esc(fmtDate(d.start_date))} &nbsp;&rarr;&nbsp; ${esc(fmtDate(d.end_date))}`]);
-  else if (d.start_date) baseRows.push(["Datum", esc(fmtDate(d.start_date))]);
-  for (const [k, v] of extras) baseRows.push([k, esc(v)]);
+  if (serviceLabel) baseRows.push(["Service", esc(serviceLabel)]);
+
+  // Prefer structured details over legacy message parsing.
+  if (d.details && typeof d.details === "object") {
+    for (const [k, v] of Object.entries(d.details)) {
+      if (v == null || v === "") continue;
+      baseRows.push([labelFor(k), esc(String(v))]);
+    }
+  } else {
+    if (!sameDay) baseRows.push(["Zeitraum", `${esc(fmtDate(d.start_date))} &nbsp;&rarr;&nbsp; ${esc(fmtDate(d.end_date))}`]);
+    else if (d.start_date) baseRows.push(["Datum", esc(fmtDate(d.start_date))]);
+    for (const [k, v] of parsed.extras) baseRows.push([k, esc(v)]);
+  }
   if (d.vehicle_id) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
-  if (free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(free)}</div>`]);
+  if (parsed.free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(parsed.free)}</div>`]);
+
 
   const customerHtml = `<!doctype html>
 <html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>OBRENT</title></head>
