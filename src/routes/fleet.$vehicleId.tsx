@@ -516,30 +516,30 @@ function VehicleDetailPage() {
 
 
       {/* Reservation form */}
-      <section id="reservation" className="mt-12 py-24 md:py-32 px-6 md:px-12 bg-jet/40 border-y border-border scroll-mt-24">
+      <section id="reservation" className="mt-10 py-16 md:py-20 px-6 md:px-12 bg-jet/40 border-y border-border scroll-mt-24">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-4 mb-5">
               <span className="gold-rule" />
               <span className="eyebrow">{t.vehicle.enquiryEyebrow}</span>
               <span className="gold-rule" />
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-cream">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-cream">
               {t.vehicle.reserveTitle} <span className="italic text-gold/90 font-light">{v.name}</span>
             </h2>
-            <p className="mt-4 text-cream/55 font-light">{t.vehicle.reserveLead}</p>
+            <p className="mt-3 text-cream/55 font-light">{t.vehicle.reserveLead}</p>
           </div>
 
           {submitted ? (
-            <div className="text-center py-16 border border-gold/30 bg-onyx/40">
-              <div className="eyebrow text-gold mb-4">✓ {t.admin.status.confirmed}</div>
-              <h3 className="font-display text-3xl text-cream mb-4">{t.vehicle.thankYouTitle}</h3>
+            <div className="text-center py-12 border border-gold/30 bg-onyx/40">
+              <div className="eyebrow text-gold mb-3">✓ {t.admin.status.confirmed}</div>
+              <h3 className="font-display text-2xl text-cream mb-3">{t.vehicle.thankYouTitle}</h3>
               <p className="text-cream/60">{t.vehicle.thankYouLead}</p>
             </div>
           ) : (
           <form
             onSubmit={onSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
+            className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6"
           >
             <div>
               <label className="lux-label">{cf.salutation}</label>
