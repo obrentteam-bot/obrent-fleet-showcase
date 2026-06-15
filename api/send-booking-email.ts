@@ -123,8 +123,8 @@ function buildEmails(d: Payload) {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF;">
     <tr><td align="center">
       <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;background:#FFFFFF;">
-        <tr><td style="background:${ONYX};padding:24px 32px;">
-          <img src="${LOGO_URL}" alt="OBRENT" width="120" style="display:inline-block;height:auto;max-width:120px;filter:brightness(0) invert(1);"/>
+        <tr><td style="background:${ONYX};padding:24px 32px;text-align:center;">
+          <img src="${LOGO_URL}" alt="OBRENT" width="120" style="display:block;margin:0 auto;height:auto;max-width:120px;filter:brightness(0) invert(1);"/>
         </td></tr>
         <tr><td style="padding:32px 40px 8px 40px;">
           <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Neue Anfrage</div>
