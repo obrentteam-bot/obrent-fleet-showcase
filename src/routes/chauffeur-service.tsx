@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceSubpage, type FieldDef } from "@/components/ServiceSubpage";
+import { useVehicles } from "@/lib/useVehicles";
 import {
   Briefcase,
   Plane,
@@ -32,32 +34,26 @@ const fields: FieldDef[] = [
   { type: "text", key: "name", label: { de: "Name", en: "Name" }, required: true },
   { type: "tel", key: "phone", label: { de: "Telefon", en: "Phone" }, required: true },
   { type: "email", key: "email", label: { de: "E-Mail", en: "Email" }, required: true, colSpan: 2 },
-  { type: "date", key: "date", label: { de: "Datum", en: "Date" } },
-  { type: "time", key: "time", label: { de: "Uhrzeit", en: "Time" } },
+  { type: "date", key: "datum", label: { de: "Datum", en: "Date" } },
+  { type: "time", key: "uhrzeit", label: { de: "Uhrzeit", en: "Time" } },
   {
     type: "text",
-    key: "route",
+    key: "einsatzort",
     label: { de: "Einsatzort / Route", en: "Location / Route" },
     colSpan: 2,
   },
   {
     type: "select",
-    key: "vehicle",
+    key: "fahrzeugwunsch",
     colSpan: 2,
     label: { de: "Fahrzeugwunsch", en: "Preferred vehicle" },
     placeholder: { de: "Bitte wählen", en: "Please select" },
-    options: [
-      { value: "porsche-cayenne", label: { de: "Porsche Cayenne", en: "Porsche Cayenne" } },
-      { value: "porsche-panamera", label: { de: "Porsche Panamera", en: "Porsche Panamera" } },
-      { value: "bmw-x5-m60i", label: { de: "BMW X5 M60i", en: "BMW X5 M60i" } },
-      { value: "bmw-x5-m50d", label: { de: "BMW X5 M50d", en: "BMW X5 M50d" } },
-      { value: "bmw-x4-m40i", label: { de: "BMW X4 M40i", en: "BMW X4 M40i" } },
-      { value: "audi-rs6-avant", label: { de: "Audi RS6 Avant", en: "Audi RS6 Avant" } },
-    ],
+    // Populated dynamically from Supabase vehicles at runtime.
+    options: [],
   },
   {
     type: "text",
-    key: "duration",
+    key: "dauer",
     label: { de: "Ungefähre Dauer", en: "Approx. duration" },
     placeholder: { de: "z.B. 4 Stunden", en: "e.g. 4 hours" },
     colSpan: 2,
@@ -66,11 +62,24 @@ const fields: FieldDef[] = [
 ];
 
 function ChauffeurServicePage() {
+  const { vehicles } = useVehicles();
+  const dynamicOptions = useMemo(
+    () => ({
+      fahrzeugwunsch: vehicles.map((v) => {
+        const fullName = `${v.marque} ${v.name}`.trim();
+        return { value: fullName, label: { de: fullName, en: fullName } };
+      }),
+    }),
+    [vehicles],
+  );
+
   return (
     <SiteLayout>
       <ServiceSubpage
         serviceTitleEn="Chauffeur Service"
+        serviceType="chauffeur"
         bgImage={bg}
+        dynamicOptions={dynamicOptions}
         hero={{
           eyebrow: { de: "Chauffeur Service", en: "Chauffeur Service" },
           headline: {
