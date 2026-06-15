@@ -657,7 +657,7 @@ function VehicleDetailPage() {
               </div>
               <p className="mt-2 text-xs text-cream/40">{cf.chauffeurHint}</p>
             </div>
-            {chauffeur === "yes" && <ChauffeurDetails />}
+            {chauffeur === "yes" && <ChauffeurDetails value={chauffeurFields} onChange={setChauffeurFields} />}
 
             <div className="md:col-span-2">
               <label className="lux-label">{cf.delivery}</label>
