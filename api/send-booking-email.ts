@@ -115,13 +115,6 @@ function buildEmails(d: Payload, vehicleName: string | null) {
   if (serviceLabel) baseRows.push(["Service", esc(serviceLabel)]);
   if (vehicleName) baseRows.push(["Fahrzeug", esc(vehicleName)]);
 
-  // Für Shuttle & Chauffeur erscheint der Name bereits in der Grußzeile,
-  // daher wird die Name-Zeile in der Kunden-Email ausgeblendet.
-  const customerRows =
-    serviceType === "shuttle" || serviceType === "chauffeur"
-      ? baseRows.filter(([label]) => label !== "Name")
-      : baseRows;
-
   // Prefer structured details over legacy message parsing.
   if (d.details && typeof d.details === "object") {
     for (const [k, v] of Object.entries(d.details)) {
@@ -136,6 +129,13 @@ function buildEmails(d: Payload, vehicleName: string | null) {
   // Fall back to raw ID only when we could not resolve a name.
   if (d.vehicle_id && !vehicleName) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
   if (parsed.free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(parsed.free)}</div>`]);
+
+  // Für Shuttle & Chauffeur erscheint der Name bereits in der Grußzeile,
+  // daher wird die Name-Zeile in der Kunden-Email ausgeblendet.
+  const customerRows =
+    serviceType === "shuttle" || serviceType === "chauffeur"
+      ? baseRows.filter(([label]) => label !== "Name")
+      : baseRows;
 
   const customerIntro = isFahrzeug && vehicleName
     ? `Vielen Dank für Ihre Anfrage für den <strong>${esc(vehicleName)}</strong>. Wir melden uns in Kürze bei Ihnen.`
