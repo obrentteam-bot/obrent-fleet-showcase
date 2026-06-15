@@ -194,7 +194,7 @@ function VehicleDetailPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-32 px-4 md:px-8 lg:px-12 pb-16">
+      <section className="pt-28 px-4 md:px-8 lg:px-12 pb-10">
         <div className="max-w-[1500px] mx-auto">
 
           {/* Top bar */}
@@ -218,7 +218,7 @@ function VehicleDetailPage() {
             <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(212,175,55,0.10), transparent 40%)" }} />
 
             {/* Banner image — tight crop on the centre (logo area), much smaller */}
-            <div className="relative w-full h-[220px] md:h-[300px] overflow-hidden">
+            <div className="relative w-full h-[180px] md:h-[240px] overflow-hidden">
               {v.hasImages ? (
                 <>
                   <img
@@ -245,7 +245,7 @@ function VehicleDetailPage() {
             </div>
 
             {/* Details below image */}
-            <div className="relative z-10 p-7 md:p-10 xl:p-14">
+            <div className="relative z-10 p-6 md:p-8 xl:p-10">
               <div className="flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center gap-2 rounded-full border px-4 py-2" style={{ borderColor: "rgba(212,175,55,0.24)", background: "rgba(255,255,255,0.02)" }}>
                   <Shield className="h-3.5 w-3.5" style={{ color: "#D4AF37" }} />
