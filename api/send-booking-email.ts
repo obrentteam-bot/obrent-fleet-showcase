@@ -95,7 +95,7 @@ const renderRows = (rows: Row[]) => rows.map(([label, value, mono]) => `
     <td style="padding:11px 0;border-bottom:1px solid ${BORDER};color:${TEXT};font-size:15px;${mono ? "font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;" : "font-family:Arial,sans-serif;"}vertical-align:top;">${value}</td>
   </tr>`).join("");
 
-function buildEmails(d: Payload) {
+function buildEmails(d: Payload, vehicleName: string | null) {
   const parsed = parseMessage(d.message);
   const customerDisplayName = d.customer_name.trim() || d.customer_name;
   const sameDay = d.start_date === d.end_date;
@@ -105,6 +105,7 @@ function buildEmails(d: Payload) {
 
   const serviceType = (d.service_type ?? null) as ServiceType | null;
   const serviceLabel = serviceType ? SERVICE_LABEL[serviceType] : parsed.service;
+  const isFahrzeug = serviceType === "fahrzeug" || (!serviceType && !!d.vehicle_id);
 
   const baseRows: Row[] = [
     ["Name", esc(d.customer_name)],
@@ -112,6 +113,7 @@ function buildEmails(d: Payload) {
     ["Telefon", `<a href="tel:${esc(d.phone)}" style="color:${TEXT};text-decoration:none;">${esc(d.phone)}</a>`],
   ];
   if (serviceLabel) baseRows.push(["Service", esc(serviceLabel)]);
+  if (vehicleName) baseRows.push(["Fahrzeug", esc(vehicleName)]);
 
   // Prefer structured details over legacy message parsing.
   if (d.details && typeof d.details === "object") {
@@ -124,8 +126,14 @@ function buildEmails(d: Payload) {
     else if (d.start_date) baseRows.push(["Datum", esc(fmtDate(d.start_date))]);
     for (const [k, v] of parsed.extras) baseRows.push([k, esc(v)]);
   }
-  if (d.vehicle_id) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
+  // Fall back to raw ID only when we could not resolve a name.
+  if (d.vehicle_id && !vehicleName) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
   if (parsed.free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(parsed.free)}</div>`]);
+
+  const customerIntro = isFahrzeug && vehicleName
+    ? `Vielen Dank für Ihre Anfrage für den <strong>${esc(vehicleName)}</strong>. Wir melden uns in Kürze bei Ihnen.`
+    : `Ihre Anfrage wurde erfolgreich übermittelt. Unser Team wird sich zeitnah mit Ihnen in Verbindung setzen.`;
+
 
 
   const customerHtml = `<!doctype html>
@@ -142,7 +150,8 @@ function buildEmails(d: Payload) {
           <div style="color:${GOLD};font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;margin-bottom:14px;">Anfrage erhalten</div>
           <h1 style="margin:0 0 14px 0;color:${ONYX};font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.2;font-weight:400;">Vielen Dank, ${esc(customerDisplayName)}.</h1>
           <p style="margin:0 0 8px 0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Vielen Dank für Ihr Interesse an OBRENT.</p>
-          <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">Ihre Anfrage wurde erfolgreich übermittelt. Unser Team wird sich zeitnah mit Ihnen in Verbindung setzen.</p>
+          <p style="margin:0;color:${TEXT};font-family:Arial,sans-serif;font-size:15px;line-height:1.7;">${customerIntro}</p>
+
         </td></tr>
         <tr><td style="padding:24px 40px 8px 40px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PANEL_BG};border:1px solid ${BORDER};">
@@ -195,16 +204,27 @@ function buildEmails(d: Payload) {
   </table>
 </body></html>`;
 
-  const customerSubject = "Ihre Anfrage bei OBRENT — Wir melden uns in Kürze";
+  const customerSubject = isFahrzeug && vehicleName
+    ? `Ihre Anfrage – ${vehicleName} | OBRENT`
+    : "Ihre Anfrage bei OBRENT — Wir melden uns in Kürze";
+
   // Per-service admin subject. For Langzeitmiete prefer the company name.
   let adminSubjectName = d.customer_name;
   if (serviceType === "langzeitmiete" && d.details && typeof d.details === "object") {
     const firma = (d.details as Record<string, unknown>)["firmenname"];
     if (typeof firma === "string" && firma.trim()) adminSubjectName = firma.trim();
   }
-  const adminSubject = serviceLabel
-    ? `Neue ${serviceLabel} Anfrage – ${adminSubjectName}`
-    : `Neue Anfrage · ${adminSubjectName}`;
+  let adminSubject: string;
+  if (isFahrzeug) {
+    adminSubject = vehicleName
+      ? `Neue Buchungsanfrage – ${vehicleName} – ${adminSubjectName}`
+      : `Neue Buchungsanfrage – ${adminSubjectName}`;
+  } else if (serviceLabel) {
+    adminSubject = `Neue ${serviceLabel} Anfrage – ${adminSubjectName}`;
+  } else {
+    adminSubject = `Neue Anfrage · ${adminSubjectName}`;
+  }
+
 
 
   return { customerHtml, adminHtml, customerSubject, adminSubject };
@@ -245,7 +265,32 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d);
+  // Resolve vehicle name from the LEGACY Supabase project (fiikwjyjgtdanoieanuc).
+  // Anon key is safe to embed: vehicles table is publicly readable.
+  const LEGACY_URL = "https://fiikwjyjgtdanoieanuc.supabase.co";
+  const LEGACY_ANON =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpaWt3anlqZ3RkYW5vaWVhbnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MzA5MzksImV4cCI6MjA5MzQwNjkzOX0.tBGKCTd4E53sPaU4X4iEpXPBukCZ7JHDsvQ_qZrdyGw";
+  let vehicleName: string | null = null;
+  if (d.vehicle_id) {
+    try {
+      const vr = await fetch(
+        `${LEGACY_URL}/rest/v1/vehicles?id=eq.${encodeURIComponent(d.vehicle_id)}&select=name&limit=1`,
+        { headers: { apikey: LEGACY_ANON, Authorization: `Bearer ${LEGACY_ANON}` } },
+      );
+      if (vr.ok) {
+        const rows = (await vr.json()) as Array<{ name?: string }>;
+        const n = rows?.[0]?.name?.trim();
+        if (n) vehicleName = n;
+      } else {
+        console.warn(`[send-booking-email] vehicle lookup HTTP ${vr.status}`);
+      }
+    } catch (e) {
+      console.warn("[send-booking-email] vehicle lookup failed", e);
+    }
+  }
+
+  const { customerHtml, adminHtml, customerSubject, adminSubject } = buildEmails(d, vehicleName);
+
 
   const send = async (from: string, to: string, subject: string, html: string, replyTo: string, headers?: Record<string, string>) => {
     const r = await fetch("https://api.resend.com/emails", {
