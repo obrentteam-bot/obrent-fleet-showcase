@@ -54,6 +54,7 @@ export type WhyCardDef = {
 
 export type ServiceSubpageProps = {
   serviceTitleEn: string;
+  serviceType?: "shuttle" | "chauffeur" | "langzeitmiete" | "fahrzeug";
   bgImage: string;
   hero: {
     eyebrow: Bilingual;
@@ -74,7 +75,12 @@ export type ServiceSubpageProps = {
     submit: Bilingual;
     fields: FieldDef[];
   };
+  /** Runtime-injected select options per field key (e.g. vehicle list from Supabase). */
+  dynamicOptions?: Record<string, { value: string; label: Bilingual }[]>;
+  /** Field keys whose values are stored on the booking row directly, NOT inside details. */
+  contactFieldKeys?: string[];
 };
+
 
 const PAGE_LABELS = {
   de: {
