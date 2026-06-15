@@ -568,14 +568,14 @@ function AdminDashboard() {
               </div>
             </div>
             <section className="bg-jet border border-border overflow-x-auto">
-              <table className="w-full text-sm min-w-[1100px]">
+              <table className="w-full text-sm min-w-[1200px]">
                 <thead><tr className="border-b border-border text-left">
-                  {["", "Datum", "Name", "E-Mail", "Telefon", "Fahrzeug", "Zeitraum", "Status", "Aktionen"].map((h, i) => (
+                  {["", "Datum", "Service", "Name", "E-Mail", "Telefon", "Fahrzeug", "Zeitraum", "Status", "Aktionen"].map((h, i) => (
                     <th key={i} className="px-4 py-4 text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 font-medium">{h}</th>
                   ))}
                 </tr></thead>
                 <tbody>
-                  {filteredBookings.length === 0 && <tr><td colSpan={9} className="px-4 py-12 text-center text-cream/40">Keine Buchungen</td></tr>}
+                  {filteredBookings.length === 0 && <tr><td colSpan={10} className="px-4 py-12 text-center text-cream/40">Keine Buchungen</td></tr>}
                   {filteredBookings.map((b) => {
                     const status = (b.status ?? "pending") as Status;
                     const isOpen = expandedBooking === b.id;
@@ -585,7 +585,9 @@ function AdminDashboard() {
                         <tr className="border-b border-border/60 align-top hover:bg-onyx/40 cursor-pointer" onClick={() => setExpandedBooking(isOpen ? null : b.id)}>
                           <td className="px-4 py-4 text-gold">{isOpen ? "▼" : "▸"}</td>
                           <td className="px-4 py-4 text-cream/70 whitespace-nowrap">{fmtDate(b.created_at)}</td>
+                          <td className="px-4 py-4"><ServiceBadge s={b.service_type ?? null} /></td>
                           <td className="px-4 py-4 text-cream">{b.customer_name}</td>
+
                           <td className="px-4 py-4 text-cream/70">{b.email}</td>
                           <td className="px-4 py-4 text-cream/70">{b.phone ?? "—"}</td>
                           <td className="px-4 py-4 text-cream/80">{b.vehicles?.name ?? "—"}</td>
