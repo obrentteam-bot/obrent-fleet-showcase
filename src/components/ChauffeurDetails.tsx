@@ -34,15 +34,21 @@ export const emptyChauffeurFields: ChauffeurFieldsValue = {
 };
 
 type Props = {
-  value: ChauffeurFieldsValue;
-  onChange: (next: ChauffeurFieldsValue) => void;
+  value?: ChauffeurFieldsValue;
+  onChange?: (next: ChauffeurFieldsValue) => void;
 };
 
-export function ChauffeurDetails({ value, onChange }: Props) {
+export function ChauffeurDetails({ value: valueProp, onChange }: Props = {}) {
   const { t } = useI18n();
   const c = t.contact.form.chauffeurFields;
-  const set = <K extends keyof ChauffeurFieldsValue>(k: K, v: ChauffeurFieldsValue[K]) =>
-    onChange({ ...value, [k]: v });
+  const [internal, setInternal] = useState<ChauffeurFieldsValue>(emptyChauffeurFields);
+  const value = valueProp ?? internal;
+  const set = <K extends keyof ChauffeurFieldsValue>(k: K, v: ChauffeurFieldsValue[K]) => {
+    const next = { ...value, [k]: v };
+    if (onChange) onChange(next);
+    else setInternal(next);
+  };
+
 
   return (
     <div className="md:col-span-2 mt-2 border-l-2 border-gold/40 pl-5 md:pl-7 py-5 bg-cream/[0.02]">
