@@ -6,6 +6,8 @@
 // Vercel auto-detects `api/*.ts` as Node Serverless Functions, independent of
 // the Vite SPA build under `dist/client`.
 
+type ServiceType = "shuttle" | "chauffeur" | "langzeitmiete" | "fahrzeug";
+
 type Payload = {
   vehicle_id?: string | null;
   customer_name: string;
@@ -14,7 +16,41 @@ type Payload = {
   start_date: string;
   end_date: string;
   message?: string | null;
+  service_type?: ServiceType | null;
+  details?: Record<string, unknown> | null;
 };
+
+const SERVICE_LABEL: Record<ServiceType, string> = {
+  shuttle: "Shuttle",
+  chauffeur: "Chauffeur",
+  langzeitmiete: "Langzeitmiete",
+  fahrzeug: "Fahrzeug",
+};
+
+const DETAIL_LABELS: Record<string, string> = {
+  // shuttle
+  abholdatum: "Abholdatum",
+  abholzeit: "Abholzeit",
+  abholort: "Abholort",
+  zielort: "Zielort",
+  anzahl_personen: "Anzahl Personen",
+  // chauffeur
+  datum: "Datum",
+  uhrzeit: "Uhrzeit",
+  einsatzort: "Einsatzort / Route",
+  fahrzeugwunsch: "Fahrzeugwunsch",
+  dauer: "Ungefähre Dauer",
+  // langzeitmiete
+  firmenname: "Firmenname",
+  ansprechpartner: "Ansprechpartner",
+  fahrzeug: "Gewünschtes Fahrzeug",
+  mietdauer: "Mietdauer",
+  anzahl_fahrzeuge: "Anzahl Fahrzeuge",
+};
+
+const labelFor = (k: string) =>
+  DETAIL_LABELS[k] ??
+  k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
@@ -60,24 +96,37 @@ const renderRows = (rows: Row[]) => rows.map(([label, value, mono]) => `
   </tr>`).join("");
 
 function buildEmails(d: Payload) {
-  const { service, extras, free } = parseMessage(d.message);
+  const parsed = parseMessage(d.message);
   const customerDisplayName = d.customer_name.trim() || d.customer_name;
   const sameDay = d.start_date === d.end_date;
   const timestamp = new Intl.DateTimeFormat("de-DE", {
     dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin",
   }).format(new Date());
 
+  const serviceType = (d.service_type ?? null) as ServiceType | null;
+  const serviceLabel = serviceType ? SERVICE_LABEL[serviceType] : parsed.service;
+
   const baseRows: Row[] = [
     ["Name", esc(d.customer_name)],
     ["E-Mail", `<a href="mailto:${esc(d.email)}" style="color:${TEXT};text-decoration:none;border-bottom:1px solid ${GOLD};">${esc(d.email)}</a>`],
     ["Telefon", `<a href="tel:${esc(d.phone)}" style="color:${TEXT};text-decoration:none;">${esc(d.phone)}</a>`],
   ];
-  if (service) baseRows.push(["Service", esc(service)]);
-  if (!sameDay) baseRows.push(["Zeitraum", `${esc(fmtDate(d.start_date))} &nbsp;&rarr;&nbsp; ${esc(fmtDate(d.end_date))}`]);
-  else if (d.start_date) baseRows.push(["Datum", esc(fmtDate(d.start_date))]);
-  for (const [k, v] of extras) baseRows.push([k, esc(v)]);
+  if (serviceLabel) baseRows.push(["Service", esc(serviceLabel)]);
+
+  // Prefer structured details over legacy message parsing.
+  if (d.details && typeof d.details === "object") {
+    for (const [k, v] of Object.entries(d.details)) {
+      if (v == null || v === "") continue;
+      baseRows.push([labelFor(k), esc(String(v))]);
+    }
+  } else {
+    if (!sameDay) baseRows.push(["Zeitraum", `${esc(fmtDate(d.start_date))} &nbsp;&rarr;&nbsp; ${esc(fmtDate(d.end_date))}`]);
+    else if (d.start_date) baseRows.push(["Datum", esc(fmtDate(d.start_date))]);
+    for (const [k, v] of parsed.extras) baseRows.push([k, esc(v)]);
+  }
   if (d.vehicle_id) baseRows.push(["Fahrzeug-ID", esc(d.vehicle_id), true]);
-  if (free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(free)}</div>`]);
+  if (parsed.free) baseRows.push(["Nachricht", `<div style="white-space:pre-wrap;line-height:1.6;">${esc(parsed.free)}</div>`]);
+
 
   const customerHtml = `<!doctype html>
 <html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>OBRENT</title></head>
@@ -147,9 +196,16 @@ function buildEmails(d: Payload) {
 </body></html>`;
 
   const customerSubject = "Ihre Anfrage bei OBRENT — Wir melden uns in Kürze";
-  const adminSubject = service
-    ? `Neue Anfrage · ${service} · ${d.customer_name}`
-    : `Neue Anfrage · ${d.customer_name}`;
+  // Per-service admin subject. For Langzeitmiete prefer the company name.
+  let adminSubjectName = d.customer_name;
+  if (serviceType === "langzeitmiete" && d.details && typeof d.details === "object") {
+    const firma = (d.details as Record<string, unknown>)["firmenname"];
+    if (typeof firma === "string" && firma.trim()) adminSubjectName = firma.trim();
+  }
+  const adminSubject = serviceLabel
+    ? `Neue ${serviceLabel} Anfrage – ${adminSubjectName}`
+    : `Neue Anfrage · ${adminSubjectName}`;
+
 
   return { customerHtml, adminHtml, customerSubject, adminSubject };
 }

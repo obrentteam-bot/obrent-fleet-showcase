@@ -17,9 +17,12 @@ export const Route = createFileRoute("/admin/dashboard")({
 });
 
 type Status = "pending" | "confirmed" | "rejected";
+type ServiceType = "shuttle" | "chauffeur" | "langzeitmiete" | "fahrzeug";
 type BookingRow = DbBooking & {
   phone?: string | null;
   admin_note?: string | null;
+  service_type?: ServiceType | string | null;
+  details?: Record<string, unknown> | null;
   vehicles?: { name: string } | null;
 };
 type VehicleRow = DbVehicle & { sort_order?: number | null };
@@ -27,7 +30,32 @@ type VehicleRow = DbVehicle & { sort_order?: number | null };
 const STATUS_LABEL: Record<Status, string> = {
   pending: "Offen", confirmed: "Bestätigt", rejected: "Abgelehnt",
 };
+const SERVICE_LABEL: Record<ServiceType, string> = {
+  shuttle: "Shuttle",
+  chauffeur: "Chauffeur",
+  langzeitmiete: "Langzeitmiete",
+  fahrzeug: "Fahrzeug",
+};
+const DETAIL_LABEL: Record<string, string> = {
+  abholdatum: "Abholdatum",
+  abholzeit: "Abholzeit",
+  abholort: "Abholort",
+  zielort: "Zielort",
+  anzahl_personen: "Anzahl Personen",
+  datum: "Datum",
+  uhrzeit: "Uhrzeit",
+  einsatzort: "Einsatzort / Route",
+  fahrzeugwunsch: "Fahrzeugwunsch",
+  dauer: "Ungefähre Dauer",
+  firmenname: "Firmenname",
+  ansprechpartner: "Ansprechpartner",
+  fahrzeug: "Gewünschtes Fahrzeug",
+  mietdauer: "Mietdauer",
+  anzahl_fahrzeuge: "Anzahl Fahrzeuge",
+  message: "Nachricht",
+};
 const CATEGORIES = ["SUV", "Limousine", "Kombi", "Sports"] as const;
+
 const SESSION_MAX_MS = 8 * 60 * 60 * 1000; // 8h
 
 function StatusBadge({ s }: { s: Status }) {
@@ -38,6 +66,19 @@ function StatusBadge({ s }: { s: Status }) {
   };
   return <span className={`inline-block px-2.5 py-1 text-[0.65rem] tracking-[0.2em] uppercase border ${cls[s]}`}>{STATUS_LABEL[s]}</span>;
 }
+
+function ServiceBadge({ s }: { s?: string | null }) {
+  const key = (s ?? "fahrzeug") as ServiceType;
+  const cls: Record<ServiceType, string> = {
+    shuttle: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+    chauffeur: "bg-gold/10 text-gold border-gold/40",
+    langzeitmiete: "bg-green-500/10 text-green-400 border-green-500/30",
+    fahrzeug: "bg-cream/10 text-cream/70 border-cream/20",
+  };
+  const label = SERVICE_LABEL[key] ?? String(s ?? "—");
+  return <span className={`inline-block px-2.5 py-1 text-[0.6rem] tracking-[0.2em] uppercase border ${cls[key] ?? cls.fahrzeug}`}>{label}</span>;
+}
+
 
 type VehicleForm = {
   name: string; category: string; description: string; engine: string;
@@ -258,13 +299,21 @@ function BookingDetails({
             <span className="w-8 h-8 rounded-full bg-gold/15 text-gold text-xs flex items-center justify-center font-medium">02</span>
             <h3 className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">Buchung</h3>
           </div>
+          <DetailRow label="Service" value={<ServiceBadge s={booking.service_type ?? null} />} />
           <DetailRow label="Fahrzeug" value={booking.vehicles?.name ?? "—"} />
           <DetailRow label="Abholung" value={fmtDate(booking.start_date)} />
           <DetailRow label="Rückgabe" value={fmtDate(booking.end_date)} />
           <DetailRow label="Dauer" value={days ? `${days} Tag${days === 1 ? "" : "e"}` : "—"} />
           <DetailRow label="Status" value={<StatusBadge s={status} />} />
-          {fields.map((f) => <DetailRow key={f.label} label={f.label} value={f.value} />)}
+          {booking.details && typeof booking.details === "object"
+            ? Object.entries(booking.details).map(([k, v]) =>
+                v == null || v === "" ? null : (
+                  <DetailRow key={k} label={DETAIL_LABEL[k] ?? k} value={String(v)} />
+                ),
+              )
+            : fields.map((f) => <DetailRow key={f.label} label={f.label} value={f.value} />)}
         </div>
+
 
         {/* Notiz + Aktionen */}
         <div className="space-y-5">
@@ -546,14 +595,14 @@ function AdminDashboard() {
               </div>
             </div>
             <section className="bg-jet border border-border overflow-x-auto">
-              <table className="w-full text-sm min-w-[1100px]">
+              <table className="w-full text-sm min-w-[1200px]">
                 <thead><tr className="border-b border-border text-left">
-                  {["", "Datum", "Name", "E-Mail", "Telefon", "Fahrzeug", "Zeitraum", "Status", "Aktionen"].map((h, i) => (
+                  {["", "Datum", "Service", "Name", "E-Mail", "Telefon", "Fahrzeug", "Zeitraum", "Status", "Aktionen"].map((h, i) => (
                     <th key={i} className="px-4 py-4 text-[0.6rem] tracking-[0.24em] uppercase text-cream/45 font-medium">{h}</th>
                   ))}
                 </tr></thead>
                 <tbody>
-                  {filteredBookings.length === 0 && <tr><td colSpan={9} className="px-4 py-12 text-center text-cream/40">Keine Buchungen</td></tr>}
+                  {filteredBookings.length === 0 && <tr><td colSpan={10} className="px-4 py-12 text-center text-cream/40">Keine Buchungen</td></tr>}
                   {filteredBookings.map((b) => {
                     const status = (b.status ?? "pending") as Status;
                     const isOpen = expandedBooking === b.id;
@@ -563,7 +612,9 @@ function AdminDashboard() {
                         <tr className="border-b border-border/60 align-top hover:bg-onyx/40 cursor-pointer" onClick={() => setExpandedBooking(isOpen ? null : b.id)}>
                           <td className="px-4 py-4 text-gold">{isOpen ? "▼" : "▸"}</td>
                           <td className="px-4 py-4 text-cream/70 whitespace-nowrap">{fmtDate(b.created_at)}</td>
+                          <td className="px-4 py-4"><ServiceBadge s={b.service_type ?? null} /></td>
                           <td className="px-4 py-4 text-cream">{b.customer_name}</td>
+
                           <td className="px-4 py-4 text-cream/70">{b.email}</td>
                           <td className="px-4 py-4 text-cream/70">{b.phone ?? "—"}</td>
                           <td className="px-4 py-4 text-cream/80">{b.vehicles?.name ?? "—"}</td>
@@ -579,7 +630,7 @@ function AdminDashboard() {
                         </tr>
                         {isOpen && (
                           <tr className="bg-onyx/40 border-b border-border">
-                            <td colSpan={9} className="px-0 py-0">
+                            <td colSpan={10} className="px-0 py-0">
                               <BookingDetails
                                 booking={b}
                                 note={note}

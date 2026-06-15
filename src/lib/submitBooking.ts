@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { supabase as legacy } from "./supabase";
 
+export type ServiceType = "shuttle" | "chauffeur" | "langzeitmiete" | "fahrzeug";
+
 export type SubmitBookingPayload = {
   vehicle_id?: string | null;
   customer_name: string;
@@ -10,6 +12,8 @@ export type SubmitBookingPayload = {
   end_date: string;   // YYYY-MM-DD
   message?: string | null;
   status?: "pending" | "new" | "confirmed" | "rejected";
+  service_type?: ServiceType | null;
+  details?: Record<string, unknown> | null;
 };
 
 const submitBookingSchema = z.object({
@@ -21,14 +25,14 @@ const submitBookingSchema = z.object({
   end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   message: z.string().max(5000).nullable().optional(),
   status: z.enum(["pending", "new", "confirmed", "rejected"]).optional(),
+  service_type: z.enum(["shuttle", "chauffeur", "langzeitmiete", "fahrzeug"]).nullable().optional(),
+  details: z.record(z.unknown()).nullable().optional(),
 });
 
 /**
  * Pure client-side booking submission.
  * 1) Inserts the booking into the LEGACY Supabase `bookings` table via anon key + RLS.
- * 2) Invokes the Lovable Cloud edge function `send-booking-email` for the notification mail.
- *
- * No server function — works on a static SPA host (Vercel) without an SSR runtime.
+ * 2) POSTs the same payload to /api/send-booking-email for Resend notifications.
  */
 export async function submitBooking(
   payload: SubmitBookingPayload,
@@ -41,7 +45,7 @@ export async function submitBooking(
     return { error: msg };
   }
 
-  const insertPayload = {
+  const insertPayload: Record<string, unknown> = {
     vehicle_id: data.vehicle_id ?? null,
     customer_name: data.customer_name,
     email: data.email,
@@ -50,16 +54,31 @@ export async function submitBooking(
     end_date: data.end_date,
     message: data.message ?? null,
     status: data.status ?? "pending",
+    service_type: data.service_type ?? "fahrzeug",
+    details: data.details ?? null,
   };
 
-  const { error: insertError } = await legacy.from("bookings").insert(insertPayload);
+  let { error: insertError } = await legacy.from("bookings").insert(insertPayload);
+
+  // Backward compatibility: if the legacy table doesn't yet have the new columns,
+  // retry without them so the booking is at least stored.
+  if (
+    insertError &&
+    /service_type|details|column .* does not exist|schema cache/i.test(insertError.message)
+  ) {
+    console.warn("[submitBooking] retrying without service_type/details:", insertError.message);
+    delete insertPayload.service_type;
+    delete insertPayload.details;
+    const retry = await legacy.from("bookings").insert(insertPayload);
+    insertError = retry.error;
+  }
+
   if (insertError) {
     console.error("[submitBooking] insert failed", insertError);
     return { error: insertError.message };
   }
 
   // Fire-and-forget email — same-origin Vercel serverless route.
-  // RESEND_API_KEY lives in Vercel env vars (server-only, no VITE_ prefix).
   try {
     const res = await fetch("/api/send-booking-email", {
       method: "POST",
@@ -72,6 +91,8 @@ export async function submitBooking(
         start_date: data.start_date,
         end_date: data.end_date,
         message: data.message ?? null,
+        service_type: data.service_type ?? null,
+        details: data.details ?? null,
       }),
     });
     if (!res.ok) {
