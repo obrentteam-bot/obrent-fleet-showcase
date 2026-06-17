@@ -27,6 +27,30 @@ function HomePage() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
   const [paused, setPaused] = useState(false);
+  const resumeTimer = useRef<number | null>(null);
+  const pauseForInteraction = (resumeAfterMs = 4000) => {
+    setPaused(true);
+    if (resumeTimer.current) {
+      window.clearTimeout(resumeTimer.current);
+      resumeTimer.current = null;
+    }
+    if (resumeAfterMs > 0) {
+      resumeTimer.current = window.setTimeout(() => {
+        setPaused(false);
+        resumeTimer.current = null;
+      }, resumeAfterMs);
+    }
+  };
+  const resumeNow = () => {
+    if (resumeTimer.current) {
+      window.clearTimeout(resumeTimer.current);
+      resumeTimer.current = null;
+    }
+    setPaused(false);
+  };
+  useEffect(() => () => {
+    if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
+  }, []);
   const sortedVehicles = [...vehicles].sort((a, b) => b.pricePerDay - a.pricePerDay);
   const loopVehicles = sortedVehicles.length > 0 ? [...sortedVehicles, ...sortedVehicles] : [];
 
@@ -159,15 +183,21 @@ function HomePage() {
 
             <div
               ref={scrollerRef}
-              onPointerDown={(e) => { setPaused(true); onPointerDown(e); }}
-              onPointerMove={onPointerMove}
-              onPointerUp={onPointerUp}
-              onPointerCancel={onPointerUp}
+              onPointerDown={(e) => { if (e.pointerType === "mouse") { setPaused(true); onPointerDown(e); } }}
+              onPointerMove={(e) => { if (e.pointerType === "mouse") onPointerMove(e); }}
+              onPointerUp={(e) => { if (e.pointerType === "mouse") onPointerUp(e); }}
+              onPointerCancel={(e) => { if (e.pointerType === "mouse") onPointerUp(e); }}
               onMouseEnter={() => setPaused(true)}
-              onMouseLeave={() => setPaused(false)}
+              onMouseLeave={() => resumeNow()}
+              onTouchStart={() => pauseForInteraction(0)}
+              onTouchMove={() => pauseForInteraction(0)}
+              onTouchEnd={() => pauseForInteraction(4000)}
+              onTouchCancel={() => pauseForInteraction(4000)}
+              
               className="flex gap-6 md:gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-              style={{ touchAction: "pan-y", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
+              style={{ touchAction: "pan-x pan-y", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
             >
+
               {loopVehicles.map((v, i) => (
                 <Link
                   key={`${v.id}-${i}`}
