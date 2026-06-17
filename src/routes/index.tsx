@@ -27,6 +27,30 @@ function HomePage() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
   const [paused, setPaused] = useState(false);
+  const resumeTimer = useRef<number | null>(null);
+  const pauseForInteraction = (resumeAfterMs = 4000) => {
+    setPaused(true);
+    if (resumeTimer.current) {
+      window.clearTimeout(resumeTimer.current);
+      resumeTimer.current = null;
+    }
+    if (resumeAfterMs > 0) {
+      resumeTimer.current = window.setTimeout(() => {
+        setPaused(false);
+        resumeTimer.current = null;
+      }, resumeAfterMs);
+    }
+  };
+  const resumeNow = () => {
+    if (resumeTimer.current) {
+      window.clearTimeout(resumeTimer.current);
+      resumeTimer.current = null;
+    }
+    setPaused(false);
+  };
+  useEffect(() => () => {
+    if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
+  }, []);
   const sortedVehicles = [...vehicles].sort((a, b) => b.pricePerDay - a.pricePerDay);
   const loopVehicles = sortedVehicles.length > 0 ? [...sortedVehicles, ...sortedVehicles] : [];
 
