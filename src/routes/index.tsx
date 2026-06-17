@@ -193,7 +193,7 @@ function HomePage() {
               onTouchMove={() => pauseForInteraction(0)}
               onTouchEnd={() => pauseForInteraction(4000)}
               onTouchCancel={() => pauseForInteraction(4000)}
-              onScroll={() => pauseForInteraction(4000)}
+              
               className="flex gap-6 md:gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               style={{ touchAction: "pan-x pan-y", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
             >
