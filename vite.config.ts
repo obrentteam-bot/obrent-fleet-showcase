@@ -5,88 +5,66 @@ import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import path from "node:path";
 
-export default defineConfig({
-  ssr: {
-    noExternal: [
-      "react",
-      "react-dom",
-      "react/jsx-runtime",
-      "react/jsx-dev-runtime",
-      "h3-v2",
-      "rou3",
-      "srvx",
-      "cookie-es",
-      "@tanstack/history",
-      "@tanstack/router-core",
-      "@tanstack/react-router",
-      "@tanstack/react-start",
-      "@tanstack/react-start-client",
-      "@tanstack/react-start-server",
-      "@tanstack/start-client-core",
-      "@tanstack/start-server-core",
-      "@tanstack/start-plugin-core",
-      "seroval",
-      "seroval-plugins",
-      "seroval-plugins/web",
-    ],
-  },
+// React must be bundled into the worker SSR output for production
+// (otherwise "No such module assets/react" at runtime on Cloudflare), but
+// in dev SSR Vite's ESM module runner cannot evaluate React's CJS entry
+// ("module is not defined"). So gate the React bundling to build only.
+export default defineConfig(({ command }) => {
+  const isBuild = command === "build";
+  const reactBundle = isBuild
+    ? ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"]
+    : [];
+  const sharedNoExternal = [
+    ...reactBundle,
+    "h3-v2",
+    "rou3",
+    "srvx",
+    "cookie-es",
+    "@tanstack/history",
+    "@tanstack/router-core",
+    "@tanstack/react-router",
+    "@tanstack/react-start",
+    "@tanstack/react-start-client",
+    "@tanstack/react-start-server",
+    "@tanstack/start-client-core",
+    "@tanstack/start-server-core",
+    "@tanstack/start-plugin-core",
+    "seroval",
+    "seroval-plugins",
+    "seroval-plugins/web",
+  ];
 
-
-  resolve: {
-    // TanStack Start's server runtime pulls in h3-v2, which in turn depends on
-    // rou3/srvx. On the published worker these must be bundled, otherwise the
-    // server chunk tries to import runtime modules like `assets/rou3` and every
-    // request fails with HTTP 500 before route handlers (including CORS) run.
-    // React also needs to stay bundled for the worker SSR output; otherwise the
-    // published app can crash with "No such module assets/react" on page load.
-    // Keep the same list here as a belt-and-braces hint for the dev/runtime
-    // pipeline, but the actual Worker SSR bundling is controlled by ssr.noExternal.
-    noExternal: [
-      "react",
-      "react-dom",
-      "react/jsx-runtime",
-      "react/jsx-dev-runtime",
-      "h3-v2",
-      "rou3",
-      "srvx",
-      "cookie-es",
-      "@tanstack/history",
-      "@tanstack/router-core",
-      "@tanstack/react-router",
-      "@tanstack/react-start",
-      "@tanstack/react-start-client",
-      "@tanstack/react-start-server",
-      "@tanstack/start-client-core",
-      "@tanstack/start-server-core",
-      "@tanstack/start-plugin-core",
-      "seroval",
-      "seroval-plugins",
-      "seroval-plugins/web",
-    ],
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+  return {
+    ssr: {
+      noExternal: sharedNoExternal,
     },
-    dedupe: ["react", "react-dom", "@tanstack/react-router", "@tanstack/react-start"],
-  },
-  plugins: [
-    tsConfigPaths(),
-    tailwindcss(),
-    tanstackStart({
-      server: {
-        entry: "./src/server.ts",
+    resolve: {
+      noExternal: sharedNoExternal,
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
       },
-      spa: {
-        enabled: true,
-        prerender: {
-          outputPath: "/index",
+      dedupe: ["react", "react-dom", "@tanstack/react-router", "@tanstack/react-start"],
+    },
+    plugins: [
+      tsConfigPaths(),
+      tailwindcss(),
+      tanstackStart({
+        server: {
+          entry: "./src/server.ts",
         },
-      },
-    }),
-    viteReact(),
-  ],
-  server: {
-    host: "::",
-    port: 8080,
-    strictPort: true,
-  },
+        spa: {
+          enabled: true,
+          prerender: {
+            outputPath: "/index",
+          },
+        },
+      }),
+      viteReact(),
+    ],
+    server: {
+      host: "::",
+      port: 8080,
+      strictPort: true,
+    },
+  };
 });
