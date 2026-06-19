@@ -194,12 +194,12 @@ function VehicleDetailPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-28 px-4 md:px-8 lg:px-12 pb-10">
+      <section className="pt-28 md:pt-36 px-4 md:px-8 lg:px-12 pb-10">
         <div className="max-w-[1500px] mx-auto">
 
           {/* Top bar */}
-          <div className="mb-6 flex items-center justify-between">
-            <Link to="/fleet" className="text-[0.7rem] tracking-[0.32em] uppercase text-cream/70 hover:text-gold transition flex items-center gap-2">
+          <div className="relative z-10 mb-6 flex items-center justify-between">
+            <Link to="/fleet" className="relative z-10 inline-flex items-center gap-2 text-[0.7rem] tracking-[0.32em] uppercase text-cream/70 hover:text-gold transition">
               <ChevronLeft className="w-3.5 h-3.5" /> {t.nav.fleet}
             </Link>
           </div>
