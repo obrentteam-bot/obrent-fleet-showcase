@@ -6,6 +6,7 @@ import { useTheme } from "@/lib/theme";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import logo from "@/assets/obrent-logo-header.webp";
+import { FEATURES } from "@/lib/features";
 
 export function SiteHeader() {
   const { t } = useI18n();
@@ -35,7 +36,9 @@ export function SiteHeader() {
 
   const services = [
     { path: "/vip-shuttle" as const, label: t.servicesMenu.vipShuttle, desc: t.servicesMenu.vipShuttleDesc },
-    { path: "/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc },
+    ...(FEATURES.chauffeurService
+      ? [{ path: "/chauffeur-service" as const, label: t.servicesMenu.chauffeur, desc: t.servicesMenu.chauffeurDesc }]
+      : []),
     { path: "/business-langzeitmiete" as const, label: t.servicesMenu.longterm, desc: t.servicesMenu.longtermDesc },
   ];
 

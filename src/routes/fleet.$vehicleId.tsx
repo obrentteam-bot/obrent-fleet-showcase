@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } from "@/components/ChauffeurDetails";
+import { FEATURES } from "@/lib/features";
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
@@ -643,21 +644,25 @@ function VehicleDetailPage() {
               </Popover>
               <TimeSelect value={returnTime} onChange={setReturnTime} ariaLabel={cf.time} />
             </div>
-            <div className="md:col-span-2">
-              <label className="lux-label">{cf.chauffeur}</label>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
-                <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                  <input type="radio" name="chauffeur" value="yes" checked={chauffeur === "yes"} onChange={() => setChauffeur("yes")} className="accent-gold" />
-                  <span className="text-sm">{cf.chauffeurYes}</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                  <input type="radio" name="chauffeur" value="no" checked={chauffeur === "no"} onChange={() => setChauffeur("no")} className="accent-gold" />
-                  <span className="text-sm">{cf.chauffeurNo}</span>
-                </label>
-              </div>
-              <p className="mt-2 text-xs text-cream/40">{cf.chauffeurHint}</p>
-            </div>
-            {chauffeur === "yes" && <ChauffeurDetails value={chauffeurFields} onChange={setChauffeurFields} />}
+            {FEATURES.chauffeurService && (
+              <>
+                <div className="md:col-span-2">
+                  <label className="lux-label">{cf.chauffeur}</label>
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
+                    <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                      <input type="radio" name="chauffeur" value="yes" checked={chauffeur === "yes"} onChange={() => setChauffeur("yes")} className="accent-gold" />
+                      <span className="text-sm">{cf.chauffeurYes}</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                      <input type="radio" name="chauffeur" value="no" checked={chauffeur === "no"} onChange={() => setChauffeur("no")} className="accent-gold" />
+                      <span className="text-sm">{cf.chauffeurNo}</span>
+                    </label>
+                  </div>
+                  <p className="mt-2 text-xs text-cream/40">{cf.chauffeurHint}</p>
+                </div>
+                {chauffeur === "yes" && <ChauffeurDetails value={chauffeurFields} onChange={setChauffeurFields} />}
+              </>
+            )}
 
             <div className="md:col-span-2">
               <label className="lux-label">{cf.delivery}</label>
