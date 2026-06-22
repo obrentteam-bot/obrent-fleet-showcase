@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { useSettings } from "@/lib/useSettings";
+import { FEATURES } from "@/lib/features";
 import logo from "@/assets/obrent-logo.webp";
 
 export function SiteFooter() {
@@ -43,7 +44,9 @@ export function SiteFooter() {
             <div className="eyebrow text-cream/50 mb-6">{t.footer.hours}</div>
             <ul className="space-y-3 text-sm text-cream/70 font-light">
               {settings.hours.split("\n").map((l, i) => <li key={i}>{l}</li>)}
-              <li className="pt-3 text-xs text-cream/40">{t.footer.chauffeur}</li>
+              {FEATURES.chauffeurService && (
+                <li className="pt-3 text-xs text-cream/40">{t.footer.chauffeur}</li>
+              )}
             </ul>
           </div>
         </div>

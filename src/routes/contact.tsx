@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { TimeSelect } from "@/components/TimeSelect";
 import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } from "@/components/ChauffeurDetails";
+import { FEATURES } from "@/lib/features";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
 import heroSunset from "@/assets/about-hero-sunset.png";
@@ -288,35 +289,39 @@ function ContactPage() {
                 <label className="lux-label">{f.subject}</label>
                 <input className="lux-input" type="text" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={f.subjectPlaceholder} />
               </div>
-              <div className="md:col-span-2">
-                <label className="lux-label">{f.chauffeur}</label>
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
-                  <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                    <input
-                      type="radio"
-                      name="chauffeur"
-                      value="yes"
-                      checked={chauffeur === "yes"}
-                      onChange={() => setChauffeur("yes")}
-                      className="accent-gold"
-                    />
-                    <span className="text-sm">{f.chauffeurYes}</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer text-cream/80">
-                    <input
-                      type="radio"
-                      name="chauffeur"
-                      value="no"
-                      checked={chauffeur === "no"}
-                      onChange={() => setChauffeur("no")}
-                      className="accent-gold"
-                    />
-                    <span className="text-sm">{f.chauffeurNo}</span>
-                  </label>
-                </div>
-                <p className="mt-2 text-xs text-cream/40">{f.chauffeurHint}</p>
-              </div>
-              {chauffeur === "yes" && <ChauffeurDetails value={chauffeurFields} onChange={setChauffeurFields} />}
+              {FEATURES.chauffeurService && (
+                <>
+                  <div className="md:col-span-2">
+                    <label className="lux-label">{f.chauffeur}</label>
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 mt-2">
+                      <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                        <input
+                          type="radio"
+                          name="chauffeur"
+                          value="yes"
+                          checked={chauffeur === "yes"}
+                          onChange={() => setChauffeur("yes")}
+                          className="accent-gold"
+                        />
+                        <span className="text-sm">{f.chauffeurYes}</span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer text-cream/80">
+                        <input
+                          type="radio"
+                          name="chauffeur"
+                          value="no"
+                          checked={chauffeur === "no"}
+                          onChange={() => setChauffeur("no")}
+                          className="accent-gold"
+                        />
+                        <span className="text-sm">{f.chauffeurNo}</span>
+                      </label>
+                    </div>
+                    <p className="mt-2 text-xs text-cream/40">{f.chauffeurHint}</p>
+                  </div>
+                  {chauffeur === "yes" && <ChauffeurDetails value={chauffeurFields} onChange={setChauffeurFields} />}
+                </>
+              )}
 
               <div className="md:col-span-2">
                 <label className="lux-label">{f.delivery}</label>

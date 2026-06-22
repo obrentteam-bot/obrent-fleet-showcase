@@ -6,6 +6,7 @@ import { useTheme } from "@/lib/theme";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import logo from "@/assets/obrent-logo-header.webp";
+import { FEATURES } from "@/lib/features";
 
 export function SiteHeader() {
   const { t } = useI18n();
