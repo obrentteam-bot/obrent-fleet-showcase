@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   address: "Industriestraße 60, 67063 Ludwigshafen am Rhein",
   phone: "+49 15569 459633",
   email: "info@obrent.de",
-  hours: "Mo–So: 24/7 Concierge",
+  hours: "Mo–Fr: 08:00–22:00 Uhr\nSa–So: 09:00–20:00 Uhr",
 };
 
 let cache: AppSettings | null = null;
