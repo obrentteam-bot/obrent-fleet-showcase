@@ -92,7 +92,7 @@ const emptyForm: VehicleForm = {
   power_ps: "", year: String(new Date().getFullYear()), color: "",
   price_per_day: "",
   price_3h: "", price_6h: "", price_12h: "", price_24h: "",
-  deposit: "", min_age: "", free_km: "", extra_km_price: "",
+  deposit: "", min_age: "", free_km: "100", extra_km_price: "",
   images: [""], available: true,
 };
 
@@ -413,6 +413,8 @@ function AdminDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<DbVehicle | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ kind: "vehicle" | "booking"; id: string } | null>(null);
+  const [bulkFreeKmLoading, setBulkFreeKmLoading] = useState(false);
+  const [bulkFreeKmMsg, setBulkFreeKmMsg] = useState<string | null>(null);
 
   // Session timeout
   useEffect(() => {
@@ -466,6 +468,16 @@ function AdminDashboard() {
     const next = !v.available;
     const { error } = await supabase.from("vehicles").update({ available: next }).eq("id", v.id);
     if (!error) setVehicles((p) => p.map((x) => (x.id === v.id ? { ...x, available: next } : x)));
+  };
+
+  const setAllFreeKm = async (km: number) => {
+    setBulkFreeKmLoading(true); setBulkFreeKmMsg(null);
+    const { error } = await supabase.from("vehicles").update({ free_km: km }).neq("id", "00000000-0000-0000-0000-000000000000");
+    setBulkFreeKmLoading(false);
+    if (error) { setBulkFreeKmMsg("Fehler: " + error.message); return; }
+    setVehicles((p) => p.map((x) => ({ ...x, free_km: km })));
+    setBulkFreeKmMsg(`Alle Fahrzeuge auf ${km} km gesetzt ✓`);
+    setTimeout(() => setBulkFreeKmMsg(null), 3000);
   };
 
   const moveVehicle = async (idx: number, dir: -1 | 1) => {
@@ -693,7 +705,18 @@ function AdminDashboard() {
           <>
             <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
               <div className="text-sm text-cream/60">{vehicles.length} Fahrzeuge insgesamt</div>
-              <button onClick={() => { setEditing(null); setModalOpen(true); }} className="btn-gold text-[0.65rem] py-3 px-6">+ Fahrzeug hinzufügen</button>
+              <div className="flex items-center gap-3">
+                {bulkFreeKmMsg && <span className="text-xs text-green-400">{bulkFreeKmMsg}</span>}
+                <button
+                  onClick={() => setAllFreeKm(100)}
+                  disabled={bulkFreeKmLoading}
+                  className="btn-ghost text-[0.65rem] py-3 px-4 disabled:opacity-50"
+                  title="Setzt die Freikilometer für alle Fahrzeuge auf 100 km"
+                >
+                  {bulkFreeKmLoading ? "Wird gesetzt…" : "Alle Freikilometer → 100 km"}
+                </button>
+                <button onClick={() => { setEditing(null); setModalOpen(true); }} className="btn-gold text-[0.65rem] py-3 px-6">+ Fahrzeug hinzufügen</button>
+              </div>
             </div>
             <section className="bg-jet border border-border overflow-x-auto">
               <table className="w-full text-sm min-w-[900px]">
