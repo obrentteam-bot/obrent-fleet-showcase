@@ -108,6 +108,7 @@ function HomePage() {
   const scrollByDir = (dir: number) => {
     const el = scrollerRef.current;
     if (!el) return;
+    pauseForInteraction(2500);
     el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
   };
 
