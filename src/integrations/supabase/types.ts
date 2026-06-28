@@ -63,6 +63,7 @@ export type Database = {
           id: string
           maintenance_mode: boolean
           phone: string
+          show_prices: boolean
           updated_at: string
         }
         Insert: {
@@ -74,6 +75,7 @@ export type Database = {
           id?: string
           maintenance_mode?: boolean
           phone: string
+          show_prices?: boolean
           updated_at?: string
         }
         Update: {
@@ -85,6 +87,7 @@ export type Database = {
           id?: string
           maintenance_mode?: boolean
           phone?: string
+          show_prices?: boolean
           updated_at?: string
         }
         Relationships: []

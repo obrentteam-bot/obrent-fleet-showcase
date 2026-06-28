@@ -10,6 +10,7 @@ export type AppSettings = {
   phone: string;
   email: string;
   hours: string;
+  show_prices: boolean;
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -18,6 +19,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   phone: "+49 15569 459633",
   email: "info@obrent.de",
   hours: "Mo–Fr: 08:00–22:00 Uhr\nSa–So: 09:00–20:00 Uhr",
+  show_prices: false,
 };
 
 let cache: AppSettings | null = null;
@@ -27,7 +29,8 @@ async function fetchSettings(): Promise<AppSettings> {
   if (!isSupabaseConfigured) return DEFAULT_SETTINGS;
   const { data } = await supabase.from("app_settings").select("*").limit(1).maybeSingle();
   if (data) {
-    return data as AppSettings;
+    const row = data as Partial<AppSettings>;
+    return { ...DEFAULT_SETTINGS, ...row, show_prices: row.show_prices ?? false };
   }
   return DEFAULT_SETTINGS;
 }
@@ -63,6 +66,7 @@ export async function saveSettings(s: AppSettings) {
     phone: s.phone,
     email: s.email,
     hours: s.hours,
+    show_prices: s.show_prices,
   };
   const res = existing
     ? await supabase.from("app_settings").update(payload).eq("id", existing.id)

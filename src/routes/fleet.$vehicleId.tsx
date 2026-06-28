@@ -4,7 +4,8 @@ import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarIcon, ChevronLeft, ChevronRight, Shield, CalendarDays, MapPin, Headphones, Cog, Gauge, Palette, ShieldCheck, ArrowRight, Share2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { formatPrice, formatEuro2, SHOW_PRICES } from "@/lib/vehicles";
+import { formatPrice, formatEuro2 } from "@/lib/vehicles";
+import { useSettings } from "@/lib/useSettings";
 import { useVehicle } from "@/lib/useVehicles";
 import { submitBooking } from "@/lib/submitBooking";
 import { useI18n } from "@/lib/i18n";
@@ -76,6 +77,8 @@ function VehicleDetailPage() {
   const { vehicleId } = Route.useParams();
   const { t, lang } = useI18n();
   const { vehicle: v, loading, notFound } = useVehicle(vehicleId);
+  const { settings } = useSettings();
+  const showPrices = settings.show_prices;
   const cf = t.contact.form;
   const f = t.vehicle.form;
   const cats = t.categories as Record<string, string>;
@@ -451,7 +454,7 @@ function VehicleDetailPage() {
                 <div key={label} className="p-4 rounded-xl border border-border/70 bg-onyx/30 text-center">
                   <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{label}</div>
                   <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
-                    {SHOW_PRICES && value != null ? formatPrice(value) : t.vehicle.priceOnRequest}
+                    {showPrices && value != null ? formatPrice(value) : t.vehicle.priceOnRequest}
                   </div>
                 </div>
               ))}
@@ -468,7 +471,7 @@ function VehicleDetailPage() {
               <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.freeKm}</div>
                 <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
-                  {v.conditions.freeKm ?? 150} km
+                  {v.conditions.freeKm != null ? `${v.conditions.freeKm} km` : t.vehicle.onRequest}
                 </div>
                 <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.freeKmHint}</div>
               </div>
