@@ -80,7 +80,7 @@ export const translations = {
       Convertible: "Cabriolet",
     },
     home: {
-      eyebrow: "Ludwigshafen am Rhein · Luxus Autovermietung",
+      eyebrow: "Luxus Autovermietung",
       heroTitle: "Luxus",
       heroTitleItalic: "fahren",
       heroTitleRest: ", ohne Kompromisse.",
@@ -429,7 +429,7 @@ export const translations = {
       Convertible: "Convertible",
     },
     home: {
-      eyebrow: "Ludwigshafen am Rhein · Luxury Car Rental",
+      eyebrow: "Luxury Car Rental",
       heroTitle: "Drive",
       heroTitleItalic: "luxury",
       heroTitleRest: ", without compromise.",
