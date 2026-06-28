@@ -194,7 +194,10 @@ function AboutPage() {
               <div className="mx-auto mt-6 h-px w-14 bg-gold" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-7">
+            <div
+              className="md:grid md:grid-cols-3 md:gap-7 flex md:block gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 pb-4 md:pb-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              data-allow-scroll
+            >
               {t.about.values.map(({ title, body }, i) => {
                 const Icon = VALUE_ICONS[i];
                 return (
@@ -203,11 +206,13 @@ function AboutPage() {
                     style={{ animationDelay: `${i * 120}ms` }}
                     className={cn(
                       "group text-center p-7 md:p-10 rounded-2xl border border-border bg-card/60 hover:border-gold/40 transition-colors",
+                      "shrink-0 w-[82%] snap-center md:w-auto md:shrink",
                       section === 2 ? "opacity-0 animate-[fade-in_0.6s_ease-out_forwards]" : "opacity-0",
                     )}
                   >
                     <div className="mx-auto w-12 h-12 md:w-14 md:h-14 rounded-full border border-gold/40 flex items-center justify-center mb-6 transition-colors group-hover:border-gold group-hover:bg-gold/5">
                       <Icon className="w-5 h-5 text-gold" strokeWidth={1.5} />
+
                     </div>
                     <h3 className="font-display text-xl md:text-2xl tracking-wide mb-3 text-foreground">{title}</h3>
                     <p className="text-muted-foreground font-light text-sm md:text-[0.95rem] leading-[1.8]">{body}</p>
