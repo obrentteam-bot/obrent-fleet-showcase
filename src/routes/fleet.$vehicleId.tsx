@@ -227,6 +227,9 @@ function VehicleDetailPage() {
                   <img
                     src={heroImage}
                     alt={v.name}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover object-[center_73%] transition-transform duration-[2200ms] ease-out group-hover:scale-[1.04]"
                   />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(5,5,5,0.50) 0%, rgba(5,5,5,0.10) 45%, rgba(5,5,5,0.70) 100%)" }} />
