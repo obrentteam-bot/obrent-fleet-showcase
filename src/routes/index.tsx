@@ -226,9 +226,10 @@ function HomePage() {
               style={{ touchAction: "pan-x pan-y", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
             >
 
-              {loopVehicles.map((v, i) => (
+              {sortedVehicles.map((v, i) => (
                 <Link
-                  key={`${v.id}-${i}`}
+                  key={v.id}
+                  ref={(el) => { itemRefs.current[i] = el; }}
                   to="/fleet/$vehicleId"
                   params={{ vehicleId: v.id }}
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
