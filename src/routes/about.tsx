@@ -23,6 +23,7 @@ const TOTAL_SECTIONS = 4;
 
 function AboutPage() {
   const { t } = useI18n();
+  const { vehicles } = useVehicles();
   const STAT_ICONS = [Car, MapPin, Star];
   const VALUE_ICONS = [Users, Handshake, Crown];
   const [section, setSection] = useState(0);
