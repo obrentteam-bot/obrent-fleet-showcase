@@ -4,6 +4,7 @@ import { ArrowRight, Cog, Gauge, CalendarDays, Palette } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Link } from "@tanstack/react-router";
 import { useVehicles } from "@/lib/useVehicles";
+import { formatPrice } from "@/lib/vehicles";
 import { useI18n } from "@/lib/i18n";
 import { useSettings } from "@/lib/useSettings";
 
