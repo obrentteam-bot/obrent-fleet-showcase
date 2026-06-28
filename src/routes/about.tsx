@@ -5,6 +5,7 @@ import heroSunset from "@/assets/about-hero-sunset.png";
 import { Users, Handshake, Crown, ArrowRight, Car, MapPin, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
+import { useVehicles } from "@/lib/useVehicles";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
