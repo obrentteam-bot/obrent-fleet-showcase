@@ -58,6 +58,8 @@ export type Database = {
           address: string
           company_name: string
           created_at: string
+          cta_request_label: string | null
+          cta_reserve_label: string | null
           email: string
           hours: string
           id: string
@@ -70,6 +72,8 @@ export type Database = {
           address: string
           company_name: string
           created_at?: string
+          cta_request_label?: string | null
+          cta_reserve_label?: string | null
           email: string
           hours: string
           id?: string
@@ -82,6 +86,8 @@ export type Database = {
           address?: string
           company_name?: string
           created_at?: string
+          cta_request_label?: string | null
+          cta_reserve_label?: string | null
           email?: string
           hours?: string
           id?: string
