@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { cloudSupabase as supabase } from "@/lib/cloudSupabase";
 
 const isSupabaseConfigured = true;
 

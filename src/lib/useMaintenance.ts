@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase as cloud } from "@/integrations/supabase/client";
+import { cloudSupabase as cloud } from "@/lib/cloudSupabase";
 
 // Maintenance flag lives in the Lovable Cloud `app_settings` table.
 // Read: direct Supabase client (publicly readable).
