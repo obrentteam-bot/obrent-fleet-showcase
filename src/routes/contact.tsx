@@ -14,7 +14,7 @@ import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } fro
 import { FEATURES } from "@/lib/features";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
-import heroSunset from "@/assets/about-hero-sunset.png";
+import contactHero from "@/assets/contact-hero.jpg.asset.json";
 
 import {
   Select,
@@ -71,7 +71,7 @@ function ContactPage() {
       {/* HERO */}
       <section className="relative w-full overflow-hidden bg-onyx">
         <img
-          src={heroSunset}
+          src={contactHero.url}
           alt=""
           aria-hidden
           className="absolute inset-0 w-full h-full object-cover opacity-50"
