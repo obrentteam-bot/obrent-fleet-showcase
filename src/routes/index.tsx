@@ -30,8 +30,10 @@ function HomePage() {
 
   const cats = t.categories as Record<string, string>;
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
   const [paused, setPaused] = useState(false);
+  const [index, setIndex] = useState(0);
   const resumeTimer = useRef<number | null>(null);
   const pauseForInteraction = (resumeAfterMs = 4000) => {
     setPaused(true);
@@ -57,34 +59,39 @@ function HomePage() {
     if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
   }, []);
   const sortedVehicles = [...vehicles].sort((a, b) => b.pricePerDay - a.pricePerDay);
-  const loopVehicles = sortedVehicles.length > 0 ? [...sortedVehicles, ...sortedVehicles] : [];
 
-  // Auto-scroll loop (sub-pixel accumulator for smooth motion)
+  const goTo = (target: number) => {
+    const n = sortedVehicles.length;
+    if (n === 0) return;
+    const wrapped = ((target % n) + n) % n;
+    setIndex(wrapped);
+    const scroller = scrollerRef.current;
+    const el = itemRefs.current[wrapped];
+    if (!scroller || !el) return;
+    const left = el.offsetLeft - scroller.offsetLeft;
+    scroller.scrollTo({ left, behavior: "smooth" });
+  };
+
+  // Auto-advance one card every 4s
   useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el || vehicles.length === 0) return;
-    let raf = 0;
-    let last = performance.now();
-    let pos = el.scrollLeft;
-    const speed = 55; // px per second
-    const tick = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.05);
-      last = now;
-      if (!paused && !drag.current.active) {
-        const half = el.scrollWidth / 2;
-        if (half > 0) {
-          pos += speed * dt;
-          if (pos >= half) pos -= half;
-          el.scrollLeft = pos;
+    const n = sortedVehicles.length;
+    if (n === 0 || paused) return;
+    const id = window.setInterval(() => {
+      setIndex((prev) => {
+        const next = (prev + 1) % n;
+        const scroller = scrollerRef.current;
+        const el = itemRefs.current[next];
+        if (scroller && el) {
+          scroller.scrollTo({
+            left: el.offsetLeft - scroller.offsetLeft,
+            behavior: "smooth",
+          });
         }
-      } else {
-        pos = el.scrollLeft;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [paused, vehicles.length]);
+        return next;
+      });
+    }, 4000);
+    return () => window.clearInterval(id);
+  }, [paused, sortedVehicles.length]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollerRef.current;
@@ -96,7 +103,6 @@ function HomePage() {
     const dx = e.clientX - drag.current.startX;
     if (Math.abs(dx) > 6) {
       drag.current.moved = true;
-      // Only capture once we know it's a drag, so simple clicks still reach the link
       try { scrollerRef.current.setPointerCapture(e.pointerId); } catch {}
       scrollerRef.current.scrollLeft = drag.current.startScroll - dx;
     }
@@ -106,10 +112,8 @@ function HomePage() {
     try { scrollerRef.current?.releasePointerCapture(e.pointerId); } catch {}
   };
   const scrollByDir = (dir: number) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    pauseForInteraction(2500);
-    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+    pauseForInteraction(4000);
+    goTo(index + dir);
   };
 
   return (
