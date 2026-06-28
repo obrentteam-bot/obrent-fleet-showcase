@@ -77,6 +77,8 @@ function VehicleDetailPage() {
   const { vehicleId } = Route.useParams();
   const { t, lang } = useI18n();
   const { vehicle: v, loading, notFound } = useVehicle(vehicleId);
+  const { settings } = useSettings();
+  const showPrices = settings.show_prices;
   const cf = t.contact.form;
   const f = t.vehicle.form;
   const cats = t.categories as Record<string, string>;
