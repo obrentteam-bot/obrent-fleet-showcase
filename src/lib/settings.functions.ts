@@ -27,6 +27,7 @@ const SettingsSchema = z.object({
   show_prices: z.boolean(),
   cta_request_label: z.string(),
   cta_reserve_label: z.string(),
+  hero_video_url: z.string(),
 });
 
 export const saveAppSettings = createServerFn({ method: "POST" })

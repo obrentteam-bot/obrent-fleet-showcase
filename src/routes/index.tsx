@@ -132,10 +132,23 @@ function HomePage() {
     <SiteLayout>
       {/* HERO */}
       <section className="relative h-screen min-h-[720px] w-full overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center scale-105"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        />
+        {settings.hero_video_url ? (
+          <video
+            className="absolute inset-0 w-full h-full object-cover scale-105"
+            src={settings.hero_video_url}
+            poster={heroImage}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          />
+        ) : (
+          <div
+            className="absolute inset-0 bg-cover bg-center scale-105"
+            style={{ backgroundImage: `url(${heroImage})` }}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-b from-onyx/70 via-onyx/40 to-onyx" />
         <div className="absolute inset-0 bg-onyx/30" />
 
