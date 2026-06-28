@@ -471,9 +471,13 @@ function AdminDashboard() {
   };
 
   const setAllFreeKm = async (km: number) => {
+    setBulkFreeKmLoading(true); setBulkFreeKmMsg(null);
     const { error } = await supabase.from("vehicles").update({ free_km: km }).neq("id", "00000000-0000-0000-0000-000000000000");
-    if (!error) setVehicles((p) => p.map((x) => ({ ...x, free_km: km })));
-    return error;
+    setBulkFreeKmLoading(false);
+    if (error) { setBulkFreeKmMsg("Fehler: " + error.message); return; }
+    setVehicles((p) => p.map((x) => ({ ...x, free_km: km })));
+    setBulkFreeKmMsg(`Alle Fahrzeuge auf ${km} km gesetzt ✓`);
+    setTimeout(() => setBulkFreeKmMsg(null), 3000);
   };
 
   const moveVehicle = async (idx: number, dir: -1 | 1) => {
