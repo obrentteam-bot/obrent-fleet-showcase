@@ -35,8 +35,8 @@ export function SiteFooter() {
             <div className="eyebrow text-cream/50 mb-6">{t.footer.atelier}</div>
             <ul className="space-y-3 text-sm text-cream/70 font-light">
               {addressLines.map((l, i) => <li key={i}>{l}</li>)}
-              <li>{settings.email}</li>
-              <li>{settings.phone}</li>
+              <li><a href={`mailto:${settings.email}`} className="hover:text-gold transition-colors">{settings.email}</a></li>
+              <li><a href={`tel:${settings.phone.replace(/\s+/g, "")}`} className="hover:text-gold transition-colors">{settings.phone}</a></li>
             </ul>
           </div>
 

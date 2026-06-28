@@ -39,7 +39,7 @@ function DatenschutzPage() {
                 Industriestraße 60<br />
                 67063 Ludwigshafen am Rhein<br />
                 Deutschland<br />
-                E-Mail: info@obrent.de
+                E-Mail: <a href="mailto:info@obrent.de" className="text-gold hover:underline">info@obrent.de</a>
               </p>
             </div>
 
@@ -197,7 +197,7 @@ function DatenschutzPage() {
                 Rheinland-Pfalz.
               </p>
               <p className="mt-3">
-                Datenschutzanfragen können an info@obrent.de gerichtet werden.
+                Datenschutzanfragen können an <a href="mailto:info@obrent.de" className="text-gold hover:underline">info@obrent.de</a> gerichtet werden.
               </p>
             </div>
 
