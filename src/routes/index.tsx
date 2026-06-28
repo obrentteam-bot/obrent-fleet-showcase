@@ -238,14 +238,14 @@ function HomePage() {
               style={{ touchAction: "pan-x pan-y", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
             >
 
-              {sortedVehicles.map((v, i) => (
+              {loopVehicles.map((v, i) => (
                 <Link
-                  key={v.id}
-                  ref={(el) => { itemRefs.current[i] = el; }}
+                  key={`${v.id}-${i}`}
                   to="/fleet/$vehicleId"
                   params={{ vehicleId: v.id }}
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
                   draggable={false}
+                  aria-hidden={i >= sortedVehicles.length ? true : undefined}
                   className="glass-card group overflow-hidden flex flex-col shrink-0 snap-center w-[85vw] max-w-[320px] sm:w-[60%] sm:max-w-none md:w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
