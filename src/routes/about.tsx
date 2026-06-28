@@ -125,7 +125,7 @@ function AboutPage() {
             <div className="absolute inset-y-0 left-0 w-12 md:w-16 bg-gradient-to-r from-black/5 to-transparent dark:from-black/20" />
             <div className="absolute inset-y-0 right-0 w-12 md:w-16 bg-gradient-to-l from-black/5 to-transparent dark:from-black/20" />
           </div>
-          <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-start pt-[16vh] md:pt-[18vh]">
+          <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-start pt-[8vh] md:pt-[10vh]">
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
               {t.about.eyebrow}
             </div>
