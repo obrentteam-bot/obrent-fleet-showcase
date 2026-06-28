@@ -97,10 +97,15 @@ function FleetPage() {
                   params={{ vehicleId: v.id }}
                   className="hidden md:block relative group rounded-[20px] overflow-hidden border border-border mb-6 min-h-[420px]"
                 >
-                  <img
-                    src={heroImg}
-                    alt={v.name}
-                    className="absolute inset-0 h-full w-full object-cover object-[10%_center] transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
+                  <div
+                    className="absolute inset-0 bg-no-repeat"
+                    role="img"
+                    aria-label={v.name}
+                    style={{
+                      backgroundImage: `url(${heroImg})`,
+                      backgroundSize: "150% auto",
+                      backgroundPosition: "0% 50%",
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black via-black/78 to-black/12" />
                   <div className="absolute inset-y-0 left-0 w-[52%] bg-gradient-to-r from-black/92 via-black/72 to-transparent" />
