@@ -80,8 +80,8 @@ export function SiteHeader() {
       data-over-dark={overDarkHero ? "true" : undefined}
       className={`${zeroRightClassName} fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-onyx/85 backdrop-blur-xl border-b border-border"
-          : "bg-transparent"
+          ? "bg-onyx/95 backdrop-blur-xl border-b border-border"
+          : "bg-gradient-to-b from-onyx/60 to-transparent backdrop-blur-sm"
       }`}
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-24 md:h-32 flex items-center justify-between">
