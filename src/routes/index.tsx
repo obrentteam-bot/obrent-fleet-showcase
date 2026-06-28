@@ -279,7 +279,7 @@ function HomePage() {
                     <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
                     <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
                     <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
-                      <div className="font-display text-xl italic text-foreground">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
+                      <div className="price text-2xl">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
                       <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
                     </div>
                   </div>
@@ -432,7 +432,7 @@ function MobileVehicleCarousel({
                   <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
                   <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
                   <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
-                    <div className="font-display text-xl italic text-foreground">
+                    <div className="price text-2xl">
                       {showPrices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}
                     </div>
                     <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{ctaLabel} →</span>
