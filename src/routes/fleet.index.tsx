@@ -103,8 +103,8 @@ function FleetPage() {
                     aria-label={v.name}
                     style={{
                       backgroundImage: `url(${heroImg})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center 55%",
+                      backgroundSize: "150% auto",
+                      backgroundPosition: "0% 55%",
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 via-35% to-transparent to-70%" />
