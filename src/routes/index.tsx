@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Car, ShieldCheck, Zap, MapPin } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
