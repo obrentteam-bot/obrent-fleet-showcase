@@ -78,8 +78,8 @@ function ContactPage() {
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-onyx/70 via-onyx/80 to-onyx" />
-        <div className="absolute inset-0 bg-gradient-to-r from-onyx/80 via-transparent to-onyx/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-onyx/35 via-onyx/45 to-onyx/60 dark:from-onyx/70 dark:via-onyx/80 dark:to-onyx" />
+        <div className="absolute inset-0 bg-gradient-to-r from-onyx/30 via-transparent to-onyx/15 dark:from-onyx/80 dark:via-transparent dark:to-onyx/40" />
         <div className="relative pt-32 pb-12 px-6 md:px-12">
           <div className="max-w-[1100px] mx-auto">
             <div className="flex items-center gap-4 mb-6">
