@@ -381,16 +381,15 @@ function VehicleDetailPage() {
           {v.hasImages && imgCount > 0 && (
             <div id="gallery" className="mt-6 space-y-4">
               <div className="relative mx-auto w-full max-w-4xl aspect-[16/9] overflow-hidden rounded-2xl bg-jet">
-                {v.images.map((src, i) => (
-                  <img
-                    key={src + i}
-                    src={src}
-                    alt={`${v.name} — ${i + 1}`}
-                    loading="lazy"
-                    decoding="async"
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
-                  />
-                ))}
+                <img
+                  key={v.images[imgIndex] + imgIndex}
+                  src={v.images[imgIndex]}
+                  alt={`${v.name} — ${imgIndex + 1}`}
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+                />
                 {imgCount > 1 && (
                   <>
                     <button type="button" aria-label="Vorheriges Bild" onClick={() => goImg(imgIndex - 1)} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-md border border-gold/50 bg-onyx/55 backdrop-blur-sm text-cream hover:border-gold hover:text-gold transition">
@@ -415,7 +414,7 @@ function VehicleDetailPage() {
                       aria-label={`Bild ${i + 1}`}
                       className={`relative w-20 h-14 md:w-24 md:h-16 shrink-0 overflow-hidden rounded-md border-2 transition ${i === imgIndex ? "border-gold" : "border-cream/20 hover:border-cream/50"}`}
                     >
-                      <img src={src} alt="" className="w-full h-full object-cover" />
+                      <img src={src} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>

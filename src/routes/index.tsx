@@ -251,6 +251,7 @@ function HomePage() {
                   key={`${v.id}-${i}`}
                   to="/fleet/$vehicleId"
                   params={{ vehicleId: v.id }}
+                  preload="viewport"
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
                   draggable={false}
                   aria-hidden={i >= sortedVehicles.length ? true : undefined}
@@ -404,6 +405,7 @@ function MobileVehicleCarousel({
               <Link
                 to="/fleet/$vehicleId"
                 params={{ vehicleId: v.id }}
+                preload="viewport"
                 onClick={(e) => { if (touch.current.swiped) { e.preventDefault(); touch.current.swiped = false; } }}
                 draggable={false}
                 className="glass-card group overflow-hidden flex flex-col"
