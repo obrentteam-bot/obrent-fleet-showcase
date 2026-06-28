@@ -4,7 +4,9 @@ import { format } from "date-fns";
 import { de, enUS } from "date-fns/locale";
 import { CalendarIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { useSettings } from "@/lib/useSettings";
 import { submitBooking } from "@/lib/submitBooking";
+
 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
