@@ -131,6 +131,10 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
       extra_km_price: numOrNull(form.extra_km_price),
       images: form.images.map((s) => s.trim()).filter(Boolean),
       available: form.available,
+      features: form.features
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
     };
     const res = editingId
       ? await supabase.from("vehicles").update(payload).eq("id", editingId)
