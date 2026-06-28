@@ -14,7 +14,7 @@ import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } fro
 import { FEATURES } from "@/lib/features";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
-import contactHero from "@/assets/contact-hero.jpg.asset.json";
+const contactHero = { url: "https://fiikwjyjgtdanoieanuc.supabase.co/storage/v1/object/public/page-images/contact-hero.jpg" };
 
 import {
   Select,
