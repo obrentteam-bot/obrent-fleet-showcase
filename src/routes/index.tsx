@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Car, ShieldCheck, Zap, MapPin } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
@@ -145,6 +146,24 @@ function HomePage() {
               Ludwigshafen am Rhein · Deutschland
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* TRUST SIGNALS */}
+      <section className="border-y border-cream/10 bg-onyx/60 py-14 md:py-16 px-6 md:px-12">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+          {[
+            { Icon: Car, value: `${Math.max(vehicles.length, 7)}+ Fahrzeuge`, label: "Premium-Flotte" },
+            { Icon: ShieldCheck, value: "100% Seriös", label: "Diskret & vertraulich" },
+            { Icon: Zap, value: "Sofort-Reaktion", label: "Schnelle Rückmeldung" },
+            { Icon: MapPin, value: "Mannheim & Umgebung", label: "Persönliche Übergabe" },
+          ].map(({ Icon, value, label }) => (
+            <div key={label} className="flex flex-col items-center text-center">
+              <Icon className="w-7 h-7 text-gold mb-4" strokeWidth={1.5} />
+              <div className="font-display text-base md:text-lg text-cream leading-tight">{value}</div>
+              <div className="mt-2 text-[0.6rem] md:text-[0.65rem] tracking-[0.28em] uppercase text-cream/50">{label}</div>
+            </div>
+          ))}
         </div>
       </section>
 

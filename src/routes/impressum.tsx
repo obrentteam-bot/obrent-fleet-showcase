@@ -46,8 +46,8 @@ function ImpressumPage() {
             <div>
               <h2 className="font-display text-2xl text-cream mb-3">Kontakt</h2>
               <p>
-                E-Mail: info@obrent.de<br />
-                Telefon: +49 15569 459633
+                E-Mail: <a href="mailto:info@obrent.de" className="text-gold hover:underline">info@obrent.de</a><br />
+                Telefon: <a href="tel:+4915569459633" className="text-gold hover:underline">+49 15569 459633</a>
               </p>
             </div>
 
