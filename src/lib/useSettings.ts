@@ -35,8 +35,15 @@ async function fetchSettings(): Promise<AppSettings> {
   const { data } = await supabase.from("app_settings").select("*").limit(1).maybeSingle();
   if (data) {
     const row = data as Partial<AppSettings>;
-    return { ...DEFAULT_SETTINGS, ...row, show_prices: row.show_prices ?? false };
+    return {
+      ...DEFAULT_SETTINGS,
+      ...row,
+      show_prices: row.show_prices ?? false,
+      cta_request_label: row.cta_request_label || DEFAULT_SETTINGS.cta_request_label,
+      cta_reserve_label: row.cta_reserve_label || DEFAULT_SETTINGS.cta_reserve_label,
+    };
   }
+
   return DEFAULT_SETTINGS;
 }
 
