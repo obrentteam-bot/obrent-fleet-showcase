@@ -813,6 +813,30 @@ function SettingsPanel({ initial, onSaved }: { initial: AppSettings; onSaved: ()
         </button>
       </div>
 
+      <div className="space-y-5 pt-2">
+        <div>
+          <h3 className="font-display text-lg text-cream mb-1">Button-Texte</h3>
+          <p className="text-xs text-cream/50">Texte für die wichtigsten Aktions-Buttons auf der Website.</p>
+        </div>
+        <Field label="Button-Text: Formular absenden">
+          <input
+            className="lux-input"
+            value={form.cta_request_label}
+            placeholder="Anfrage senden"
+            onChange={(e) => set("cta_request_label", e.target.value)}
+          />
+        </Field>
+        <Field label="Button-Text: Fahrzeug anfragen">
+          <input
+            className="lux-input"
+            value={form.cta_reserve_label}
+            placeholder="Anfragen"
+            onChange={(e) => set("cta_reserve_label", e.target.value)}
+          />
+        </Field>
+      </div>
+
+
       {msg && <div className={`text-sm ${msg.startsWith("Fehler") ? "text-red-400" : "text-green-400"}`}>{msg}</div>}
       <div className="flex justify-end">
         <button onClick={submit} disabled={saving} className="btn-gold text-[0.65rem] py-3 px-6 disabled:opacity-60">{saving ? "Speichert…" : "Speichern"}</button>

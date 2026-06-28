@@ -4,6 +4,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { useSettings } from "@/lib/useSettings";
+
 const heroImage = "/hero-fleet-sunset.webp";
 
 export const Route = createFileRoute("/")({
@@ -22,7 +24,9 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const { t } = useI18n();
+  const { settings } = useSettings();
   const { vehicles } = useVehicles();
+
   const cats = t.categories as Record<string, string>;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
@@ -233,7 +237,7 @@ function HomePage() {
                       <div>
                         <div className="font-display text-lg italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                       </div>
-                      <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{t.common.reserve} →</span>
+                      <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
                     </div>
                   </div>
                 </Link>

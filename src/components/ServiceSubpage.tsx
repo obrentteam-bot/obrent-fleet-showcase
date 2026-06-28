@@ -4,7 +4,9 @@ import { format } from "date-fns";
 import { de, enUS } from "date-fns/locale";
 import { CalendarIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { useSettings } from "@/lib/useSettings";
 import { submitBooking } from "@/lib/submitBooking";
+
 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -110,7 +112,9 @@ const TOTAL_SECTIONS = 4;
 
 export function ServiceSubpage(props: ServiceSubpageProps) {
   const { lang } = useI18n();
+  const { settings } = useSettings();
   const labels = PAGE_LABELS[lang];
+
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -513,7 +517,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                     disabled={submitting}
                     className="btn-gold w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {submitting ? labels.sending : props.form.submit[lang]}
+                    {submitting ? labels.sending : (settings.cta_request_label || props.form.submit[lang])}
                   </button>
                 </div>
               </form>

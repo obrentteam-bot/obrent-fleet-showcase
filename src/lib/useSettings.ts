@@ -11,6 +11,8 @@ export type AppSettings = {
   email: string;
   hours: string;
   show_prices: boolean;
+  cta_request_label: string;
+  cta_reserve_label: string;
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -20,7 +22,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
   email: "info@obrent.de",
   hours: "Mo–Fr: 08:00–22:00 Uhr\nSa–So: 09:00–20:00 Uhr",
   show_prices: false,
+  cta_request_label: "Anfrage senden",
+  cta_reserve_label: "Anfragen",
 };
+
 
 let cache: AppSettings | null = null;
 const listeners = new Set<(s: AppSettings) => void>();
@@ -30,8 +35,15 @@ async function fetchSettings(): Promise<AppSettings> {
   const { data } = await supabase.from("app_settings").select("*").limit(1).maybeSingle();
   if (data) {
     const row = data as Partial<AppSettings>;
-    return { ...DEFAULT_SETTINGS, ...row, show_prices: row.show_prices ?? false };
+    return {
+      ...DEFAULT_SETTINGS,
+      ...row,
+      show_prices: row.show_prices ?? false,
+      cta_request_label: row.cta_request_label || DEFAULT_SETTINGS.cta_request_label,
+      cta_reserve_label: row.cta_reserve_label || DEFAULT_SETTINGS.cta_reserve_label,
+    };
   }
+
   return DEFAULT_SETTINGS;
 }
 
@@ -67,7 +79,10 @@ export async function saveSettings(s: AppSettings) {
     email: s.email,
     hours: s.hours,
     show_prices: s.show_prices,
+    cta_request_label: s.cta_request_label,
+    cta_reserve_label: s.cta_reserve_label,
   };
+
   const res = existing
     ? await supabase.from("app_settings").update(payload).eq("id", existing.id)
     : await supabase.from("app_settings").insert(payload);

@@ -5,6 +5,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Link } from "@tanstack/react-router";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { useSettings } from "@/lib/useSettings";
+
 import { useTheme } from "@/lib/theme";
 const ferrariHero = { url: "/ferrari-fleet-hero.png" };
 
@@ -23,6 +25,8 @@ export const Route = createFileRoute("/fleet/")({
 
 function FleetPage() {
   const { t } = useI18n();
+  const { settings } = useSettings();
+
   const { theme } = useTheme();
   const isLight = theme === "light";
   const { vehicles, loading } = useVehicles();
@@ -289,7 +293,7 @@ function FleetPage() {
                       <div className="font-display text-base italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
                     </div>
                     <span className="inline-flex items-center gap-2 border border-gold text-gold px-4 py-2 text-[0.65rem] tracking-[0.28em] uppercase font-medium group-hover:bg-gold group-hover:text-onyx transition rounded-full">
-                      {t.common.reserve}
+                      {settings.cta_reserve_label || t.common.reserve}
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
