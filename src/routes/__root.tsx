@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouter, useRouterState } from "@tanstack/react-router";
 import { AppErrorState } from "@/components/AppErrorState";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { I18nProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import { SplashScreen } from "@/components/SplashScreen";
@@ -103,12 +104,14 @@ function RootComponent() {
     maintenance && !maintenanceLoading && !authLoading && !isAdminRoute && !isAdminUser;
 
   return (
-    <ThemeProvider>
-      <I18nProvider>
-        <SplashScreen />
-        <Outlet />
-        {showMaintenance && <MaintenancePage />}
-      </I18nProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <I18nProvider>
+          <SplashScreen />
+          <Outlet />
+          {showMaintenance && <MaintenancePage />}
+        </I18nProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
