@@ -1,28 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { format } from "date-fns";
-import { de } from "date-fns/locale";
-import { CalendarIcon, ChevronLeft, ChevronRight, Shield, CalendarDays, MapPin, Headphones, Cog, Gauge, Palette, ShieldCheck, ArrowRight, Share2 } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
+import { ChevronLeft, ChevronRight, Shield, CalendarDays, MapPin, Headphones, Cog, Gauge, Palette, ShieldCheck, ArrowRight, Share2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice, formatEuro2 } from "@/lib/vehicles";
 import { useSettings } from "@/lib/useSettings";
 import { useVehicle } from "@/lib/useVehicles";
-import { submitBooking } from "@/lib/submitBooking";
 import { useI18n } from "@/lib/i18n";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { TimeSelect } from "@/components/TimeSelect";
-import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } from "@/components/ChauffeurDetails";
-import { FEATURES } from "@/lib/features";
+
+const VehicleReservationForm = lazy(() =>
+  import("@/components/VehicleReservationForm").then((module) => ({
+    default: module.VehicleReservationForm,
+  }))
+);
 
 
 export const Route = createFileRoute("/fleet/$vehicleId")({
@@ -75,36 +64,11 @@ function FeatureList({ features }: { features: string[] }) {
 
 function VehicleDetailPage() {
   const { vehicleId } = Route.useParams();
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const { vehicle: v, loading, notFound } = useVehicle(vehicleId);
   const { settings } = useSettings();
-  const cf = t.contact.form;
-  const f = t.vehicle.form;
   const cats = t.categories as Record<string, string>;
-
-  const [salutation, setSalutation] = useState<string>("");
-  const [titleVal, setTitleVal] = useState<string>("none");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
-  const [pickupDate, setPickupDate] = useState<Date | undefined>();
-  const [returnDate, setReturnDate] = useState<Date | undefined>();
-  const [pickupTime, setPickupTime] = useState("10:00");
-  const [returnTime, setReturnTime] = useState("18:00");
-  const [delivery, setDelivery] = useState<"pickup" | "custom">("pickup");
-  const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [chauffeur, setChauffeur] = useState<"yes" | "no">("no");
-  const [chauffeurFields, setChauffeurFields] = useState<ChauffeurFieldsValue>(emptyChauffeurFields);
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
-  const [showAgeError, setShowAgeError] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [imgIndex, setImgIndex] = useState(0);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const dateLocale = lang === "de" ? de : undefined;
 
   if (loading) {
     return (
@@ -119,75 +83,6 @@ function VehicleDetailPage() {
     { label: t.vehicle.specs.engine, value: v.specs.engine },
     { label: t.vehicle.specs.power, value: v.specs.power },
   ];
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!ageConfirmed) {
-      setShowAgeError(true);
-      return;
-    }
-    if (!pickupDate || !returnDate) return;
-    setSubmitting(true);
-    setSubmitError(null);
-
-    const fullName = [
-      salutation && cf.salutationOptions[salutation as keyof typeof cf.salutationOptions],
-      titleVal !== "none" && cf.titleOptions[titleVal as keyof typeof cf.titleOptions],
-      name,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    const ccf = cf.chauffeurFields;
-    const tripTypeLabels: Record<string, string> = {
-      oneway: ccf.tripOneway, roundtrip: ccf.tripRound, hourly: ccf.tripHourly, fullday: ccf.tripFullday,
-    };
-    const occasionLabels: Record<string, string> = {
-      business: ccf.occBusiness, airport: ccf.occAirport, wedding: ccf.occWedding, event: ccf.occEvent, other: ccf.occOther,
-    };
-    const langLabels: Record<string, string> = {
-      any: ccf.langAny, de: ccf.langDe, en: ccf.langEn, tr: ccf.langTr,
-    };
-    const cd = chauffeurFields;
-    const chauffeurLines = chauffeur === "yes" ? [
-      cd.pickupAddress && `Abholadresse: ${cd.pickupAddress}`,
-      cd.destination && `Zielort: ${cd.destination}`,
-      cd.tripType && `Fahrttyp: ${tripTypeLabels[cd.tripType] ?? cd.tripType}`,
-      cd.occasion && `Anlass: ${occasionLabels[cd.occasion] ?? cd.occasion}`,
-      cd.passengers && `Passagiere: ${cd.passengers}`,
-      cd.luggage && `Gepäck: ${cd.luggage}`,
-      cd.language && `Sprache: ${langLabels[cd.language] ?? cd.language}`,
-      cd.flight && `Flugnummer: ${cd.flight}`,
-      cd.notes && `Hinweise Chauffeur: ${cd.notes.replace(/\n/g, " ")}`,
-    ] : [];
-
-    const extra = [
-      `Abholzeit: ${pickupTime}`,
-      `Rückgabezeit: ${returnTime}`,
-      `Übergabe: ${delivery === "pickup" ? "Abholung Standort" : `Lieferung — ${deliveryAddress}`}`,
-      `Chauffeur: ${chauffeur === "yes" ? "Ja" : "Nein"}`,
-      ...chauffeurLines,
-      message && `Nachricht: ${message.replace(/\n/g, " ")}`,
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-
-    const { error } = await submitBooking({
-      vehicle_id: v!.id,
-      customer_name: fullName || name,
-      email,
-      phone,
-      start_date: pickupDate.toISOString().slice(0, 10),
-      end_date: returnDate.toISOString().slice(0, 10),
-      message: extra,
-      status: "pending",
-    });
-
-    setSubmitting(false);
-    if (error) setSubmitError(error);
-    else setSubmitted(true);
-  }
 
   const imgCount = v.images.length;
   const goImg = (i: number) => imgCount > 0 && setImgIndex(((i % imgCount) + imgCount) % imgCount);
