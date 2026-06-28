@@ -517,7 +517,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                     disabled={submitting}
                     className="btn-gold w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {submitting ? labels.sending : props.form.submit[lang]}
+                    {submitting ? labels.sending : (settings.cta_request_label || props.form.submit[lang])}
                   </button>
                 </div>
               </form>
