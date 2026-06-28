@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
-import heroSunset from "@/assets/about-hero-sunset.png";
+import heroSunsetAsset from "@/assets/about-hero.jpg.asset.json";
+const heroSunset = heroSunsetAsset.url;
 import { Users, Handshake, Crown, ArrowRight, Car, MapPin, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
