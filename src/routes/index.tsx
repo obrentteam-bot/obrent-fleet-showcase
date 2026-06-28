@@ -59,38 +59,35 @@ function HomePage() {
     if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
   }, []);
   const sortedVehicles = [...vehicles].sort((a, b) => b.pricePerDay - a.pricePerDay);
+  // Visuelle Verdopplung NUR für die nahtlose Marquee-Animation.
+  // Die echte Anzahl bleibt sortedVehicles.length — Pfeile/Index arbeiten auf dieser.
+  const loopVehicles = sortedVehicles.length > 0 ? [...sortedVehicles, ...sortedVehicles] : [];
 
-  const goTo = (target: number) => {
-    const n = sortedVehicles.length;
-    if (n === 0) return;
-    const wrapped = ((target % n) + n) % n;
-    setIndex(wrapped);
-    const scroller = scrollerRef.current;
-    const el = itemRefs.current[wrapped];
-    if (!scroller || !el) return;
-    const left = el.offsetLeft - scroller.offsetLeft;
-    scroller.scrollTo({ left, behavior: "smooth" });
-  };
-
-  // Auto-advance one card every 4s
+  // Smooth continuous auto-scroll (RAF, sub-pixel)
   useEffect(() => {
-    const n = sortedVehicles.length;
-    if (n === 0 || paused) return;
-    const id = window.setInterval(() => {
-      setIndex((prev) => {
-        const next = (prev + 1) % n;
-        const scroller = scrollerRef.current;
-        const el = itemRefs.current[next];
-        if (scroller && el) {
-          scroller.scrollTo({
-            left: el.offsetLeft - scroller.offsetLeft,
-            behavior: "smooth",
-          });
+    const el = scrollerRef.current;
+    if (!el || sortedVehicles.length === 0) return;
+    let raf = 0;
+    let last = performance.now();
+    let pos = el.scrollLeft;
+    const speed = 55; // px/s
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      if (!paused && !drag.current.active) {
+        const half = el.scrollWidth / 2;
+        if (half > 0) {
+          pos += speed * dt;
+          if (pos >= half) pos -= half;
+          el.scrollLeft = pos;
         }
-        return next;
-      });
-    }, 4000);
-    return () => window.clearInterval(id);
+      } else {
+        pos = el.scrollLeft;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [paused, sortedVehicles.length]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -111,9 +108,26 @@ function HomePage() {
     drag.current.active = false;
     try { scrollerRef.current?.releasePointerCapture(e.pointerId); } catch {}
   };
+  // Arrows: page-by-page scroll with seamless wrap via the duplicated tail
   const scrollByDir = (dir: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
     pauseForInteraction(4000);
-    goTo(index + dir);
+    const half = el.scrollWidth / 2;
+    const step = el.clientWidth * 0.8;
+    let target = el.scrollLeft + dir * step;
+    // Wrap seamlessly within the first half (real vehicles)
+    if (half > 0) {
+      if (target < 0) {
+        // jump to mirrored position in second half, then smooth-scroll left
+        el.scrollLeft = target + half;
+        target = el.scrollLeft + dir * step;
+      } else if (target >= half) {
+        el.scrollLeft = target - half;
+        target = el.scrollLeft + dir * step;
+      }
+    }
+    el.scrollTo({ left: target, behavior: "smooth" });
   };
 
   return (
