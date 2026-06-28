@@ -3,9 +3,20 @@
 // client is anonymous (admin auth lives in Legacy Supabase) and the
 // app_settings RLS UPDATE policy requires a Cloud admin role.
 
-import { createServerFn } from "@tanstack/react-start";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
+import { supabase as legacySupabaseBrowser } from "@/lib/supabase";
+
+const attachLegacyAuth = createMiddleware({ type: "function" }).client(
+  async ({ next }) => {
+    const { data } = await legacySupabaseBrowser.auth.getSession();
+    const token = data.session?.access_token;
+    return next({
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
+);
 
 const SettingsSchema = z.object({
   company_name: z.string(),
@@ -19,7 +30,7 @@ const SettingsSchema = z.object({
 });
 
 export const saveAppSettings = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([attachLegacyAuth, requireAdmin])
   .inputValidator((data: unknown) => SettingsSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
