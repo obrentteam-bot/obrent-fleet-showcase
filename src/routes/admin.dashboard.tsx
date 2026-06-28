@@ -687,8 +687,18 @@ function AdminDashboard() {
                         </button>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 items-center">
                           <button onClick={() => { setEditing(v); setModalOpen(true); }} className="text-[0.6rem] tracking-[0.22em] uppercase text-gold hover:text-cream">Bearbeiten</button>
+                          <button
+                            onClick={() => toggleAvailable(v)}
+                            className={`text-[0.6rem] tracking-[0.22em] uppercase px-2 py-1 border transition-colors ${
+                              v.available
+                                ? "border-cream/30 text-cream/70 hover:text-cream hover:border-cream/60"
+                                : "border-green-500/40 text-green-400 hover:bg-green-500/10"
+                            }`}
+                          >
+                            {v.available ? "Ausblenden" : "Einblenden"}
+                          </button>
                           <button onClick={() => setConfirmDelete({ kind: "vehicle", id: v.id })} className="text-[0.6rem] tracking-[0.22em] uppercase text-red-400 hover:text-cream">Löschen</button>
                         </div>
                       </td>
