@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Car, ShieldCheck, Zap, MapPin } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
@@ -31,33 +29,88 @@ function HomePage() {
   const { vehicles } = useVehicles();
 
   const cats = t.categories as Record<string, string>;
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+  const [paused, setPaused] = useState(false);
+  const resumeTimer = useRef<number | null>(null);
+  const pauseForInteraction = (resumeAfterMs = 4000) => {
+    setPaused(true);
+    if (resumeTimer.current) {
+      window.clearTimeout(resumeTimer.current);
+      resumeTimer.current = null;
+    }
+    if (resumeAfterMs > 0) {
+      resumeTimer.current = window.setTimeout(() => {
+        setPaused(false);
+        resumeTimer.current = null;
+      }, resumeAfterMs);
+    }
+  };
+  const resumeNow = () => {
+    if (resumeTimer.current) {
+      window.clearTimeout(resumeTimer.current);
+      resumeTimer.current = null;
+    }
+    setPaused(false);
+  };
+  useEffect(() => () => {
+    if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
+  }, []);
   const sortedVehicles = [...vehicles].sort((a, b) => b.pricePerDay - a.pricePerDay);
+  const loopVehicles = sortedVehicles.length > 0 ? [...sortedVehicles, ...sortedVehicles] : [];
 
-  const autoplay = useRef(
-    Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true, stopOnFocusIn: true }),
-  );
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: "start", dragFree: false, containScroll: false, skipSnaps: false },
-    [autoplay.current],
-  );
-
-  // Re-init when vehicle count changes so loop boundaries are recalculated.
+  // Auto-scroll loop (sub-pixel accumulator for smooth motion)
   useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.reInit();
-  }, [emblaApi, sortedVehicles.length]);
+    const el = scrollerRef.current;
+    if (!el || vehicles.length === 0) return;
+    let raf = 0;
+    let last = performance.now();
+    let pos = el.scrollLeft;
+    const speed = 55; // px per second
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      if (!paused && !drag.current.active) {
+        const half = el.scrollWidth / 2;
+        if (half > 0) {
+          pos += speed * dt;
+          if (pos >= half) pos -= half;
+          el.scrollLeft = pos;
+        }
+      } else {
+        pos = el.scrollLeft;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [paused, vehicles.length]);
 
-  const scrollPrev = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollPrev();
-    autoplay.current?.reset();
-  }, [emblaApi]);
-  const scrollNext = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollNext();
-    autoplay.current?.reset();
-  }, [emblaApi]);
-
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    drag.current = { active: true, startX: e.clientX, startScroll: el.scrollLeft, moved: false };
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!drag.current.active || !scrollerRef.current) return;
+    const dx = e.clientX - drag.current.startX;
+    if (Math.abs(dx) > 6) {
+      drag.current.moved = true;
+      // Only capture once we know it's a drag, so simple clicks still reach the link
+      try { scrollerRef.current.setPointerCapture(e.pointerId); } catch {}
+      scrollerRef.current.scrollLeft = drag.current.startScroll - dx;
+    }
+  };
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    drag.current.active = false;
+    try { scrollerRef.current?.releasePointerCapture(e.pointerId); } catch {}
+  };
+  const scrollByDir = (dir: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    pauseForInteraction(2500);
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
 
   return (
     <SiteLayout>
@@ -138,7 +191,7 @@ function HomePage() {
             <button
               type="button"
               aria-label="Vorherige"
-              onClick={scrollPrev}
+              onClick={() => scrollByDir(-1)}
               className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
             >
               ←
@@ -146,57 +199,69 @@ function HomePage() {
             <button
               type="button"
               aria-label="Nächste"
-              onClick={scrollNext}
+              onClick={() => scrollByDir(1)}
               className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
             >
               →
             </button>
 
             <div
-              ref={emblaRef}
-              className="overflow-hidden -mx-6 md:-mx-12 px-6 md:px-12"
+              ref={scrollerRef}
+              onPointerDown={(e) => { if (e.pointerType === "mouse") { setPaused(true); onPointerDown(e); } }}
+              onPointerMove={(e) => { if (e.pointerType === "mouse") onPointerMove(e); }}
+              onPointerUp={(e) => { if (e.pointerType === "mouse") onPointerUp(e); }}
+              onPointerCancel={(e) => { if (e.pointerType === "mouse") onPointerUp(e); }}
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => resumeNow()}
+              onTouchStart={() => pauseForInteraction(0)}
+              onTouchMove={() => pauseForInteraction(0)}
+              onTouchEnd={() => pauseForInteraction(4000)}
+              onTouchCancel={() => pauseForInteraction(4000)}
+              
+              className="flex gap-6 md:gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              style={{ touchAction: "pan-x pan-y", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
             >
-              <div className="flex gap-6 md:gap-8 touch-pan-y">
-                {sortedVehicles.map((v, i) => (
-                  <Link
-                    key={v.id}
-                    to="/fleet/$vehicleId"
-                    params={{ vehicleId: v.id }}
-                    draggable={false}
-                    className="glass-card group overflow-hidden flex flex-col shrink-0 basis-[85vw] max-w-[320px] sm:basis-[60%] sm:max-w-none md:basis-[calc((100%-4rem)/3)]"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                      {v.hasImages ? (
-                        <img
-                          src={v.image}
-                          alt={v.name}
-                          draggable={false}
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
-                          loading={i < 2 ? "eager" : "lazy"}
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
-                        </div>
-                      )}
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
-                      <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
-                    </div>
-                    <div className="p-8 flex flex-col flex-1">
-                      <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
-                      <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
-                      <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
-                      <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
-                        <div>
-                          <div className="font-display text-xl italic text-foreground">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
-                        </div>
-                        <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
+              {loopVehicles.map((v, i) => (
+                <Link
+                  key={`${v.id}-${i}`}
+                  to="/fleet/$vehicleId"
+                  params={{ vehicleId: v.id }}
+                  onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
+                  draggable={false}
+                  className="glass-card group overflow-hidden flex flex-col shrink-0 snap-center w-[85vw] max-w-[320px] sm:w-[60%] sm:max-w-none md:w-[calc((100%-4rem)/3)]"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-jet">
+                    {v.hasImages ? (
+                      <img
+                        src={v.image}
+                        alt={v.name}
+                        draggable={false}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
+                        loading={i < 2 ? "eager" : "lazy"}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
                       </div>
+                    )}
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
+                    <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
+                  </div>
+                  <div className="p-8 flex flex-col flex-1">
+                    <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
+                    <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
+                    <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
+                    <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
+                      <div>
+                        <div className="font-display text-xl italic text-foreground">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
+                      </div>
+                      <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
                     </div>
-                  </Link>
-                ))}
-              </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
