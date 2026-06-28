@@ -83,12 +83,17 @@ function ServiceBadge({ s }: { s?: string | null }) {
 type VehicleForm = {
   name: string; category: string; description: string; engine: string;
   power_ps: string; year: string; color: string; price_per_day: string;
+  price_3h: string; price_6h: string; price_12h: string; price_24h: string;
+  deposit: string; min_age: string; free_km: string; extra_km_price: string;
   images: string[]; available: boolean;
 };
 const emptyForm: VehicleForm = {
   name: "", category: "SUV", description: "", engine: "",
   power_ps: "", year: String(new Date().getFullYear()), color: "",
-  price_per_day: "", images: [""], available: true,
+  price_per_day: "",
+  price_3h: "", price_6h: "", price_12h: "", price_24h: "",
+  deposit: "", min_age: "", free_km: "", extra_km_price: "",
+  images: [""], available: true,
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -107,6 +112,7 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
     setError(null);
     if (!form.name.trim() || !form.price_per_day) { setError("Name und Preis sind erforderlich."); return; }
     setSaving(true);
+    const numOrNull = (v: string) => (v === "" || v == null ? null : Number(v));
     const payload = {
       name: form.name.trim(), category: form.category,
       description: form.description.trim() || null,
@@ -115,6 +121,14 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
       year: form.year ? Number(form.year) : null,
       color: form.color.trim() || null,
       price_per_day: Number(form.price_per_day),
+      price_3h: numOrNull(form.price_3h),
+      price_6h: numOrNull(form.price_6h),
+      price_12h: numOrNull(form.price_12h),
+      price_24h: numOrNull(form.price_24h),
+      deposit: numOrNull(form.deposit),
+      min_age: numOrNull(form.min_age),
+      free_km: numOrNull(form.free_km),
+      extra_km_price: numOrNull(form.extra_km_price),
       images: form.images.map((s) => s.trim()).filter(Boolean),
       available: form.available,
     };
@@ -152,6 +166,24 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
                 {form.available ? "Ja" : "Nein"}
               </button>
             </Field>
+          </div>
+          <div className="pt-2 border-t border-border/40">
+            <div className="text-[0.65rem] tracking-[0.28em] uppercase text-gold/80 mb-3">Preise</div>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Preis 3h (€)"><input type="number" className="lux-input" value={form.price_3h} onChange={(e) => set("price_3h", e.target.value)} /></Field>
+              <Field label="Preis 6h (€)"><input type="number" className="lux-input" value={form.price_6h} onChange={(e) => set("price_6h", e.target.value)} /></Field>
+              <Field label="Preis 12h (€)"><input type="number" className="lux-input" value={form.price_12h} onChange={(e) => set("price_12h", e.target.value)} /></Field>
+              <Field label="Preis 24h (€)"><input type="number" className="lux-input" value={form.price_24h} onChange={(e) => set("price_24h", e.target.value)} /></Field>
+            </div>
+          </div>
+          <div className="pt-2 border-t border-border/40">
+            <div className="text-[0.65rem] tracking-[0.28em] uppercase text-gold/80 mb-3">Mietkonditionen</div>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Kaution (€)"><input type="number" className="lux-input" value={form.deposit} onChange={(e) => set("deposit", e.target.value)} /></Field>
+              <Field label="Mindestalter (Jahre)"><input type="number" className="lux-input" value={form.min_age} onChange={(e) => set("min_age", e.target.value)} /></Field>
+              <Field label="Freikilometer"><input type="number" className="lux-input" value={form.free_km} onChange={(e) => set("free_km", e.target.value)} /></Field>
+              <Field label="Preis pro Extra-km (€)"><input type="number" step="0.01" className="lux-input" value={form.extra_km_price} onChange={(e) => set("extra_km_price", e.target.value)} /></Field>
+            </div>
           </div>
           <div>
             <label className="lux-label">Bilder (URL) — erste = Hauptbild</label>
@@ -192,12 +224,17 @@ function ConfirmDialog({ message, onConfirm, onCancel }: { message: string; onCo
 }
 
 function vehicleToForm(v: DbVehicle): VehicleForm {
+  const str = (n: number | null | undefined) => (n == null ? "" : String(n));
   return {
     name: v.name ?? "", category: v.category ?? "SUV",
     description: v.description ?? "", engine: v.engine ?? "",
-    power_ps: v.power_ps != null ? String(v.power_ps) : "",
-    year: v.year != null ? String(v.year) : "",
+    power_ps: str(v.power_ps),
+    year: str(v.year),
     color: v.color ?? "", price_per_day: String(v.price_per_day ?? ""),
+    price_3h: str(v.price_3h), price_6h: str(v.price_6h),
+    price_12h: str(v.price_12h), price_24h: str(v.price_24h),
+    deposit: str(v.deposit), min_age: str(v.min_age),
+    free_km: str(v.free_km), extra_km_price: str(v.extra_km_price),
     images: v.images && v.images.length ? v.images : [""],
     available: v.available ?? true,
   };

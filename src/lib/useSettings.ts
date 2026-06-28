@@ -27,9 +27,7 @@ async function fetchSettings(): Promise<AppSettings> {
   if (!isSupabaseConfigured) return DEFAULT_SETTINGS;
   const { data } = await supabase.from("app_settings").select("*").limit(1).maybeSingle();
   if (data) {
-    // Always enforce the current company address from defaults so it stays in sync
-    // across the site even if an older value is cached in the database.
-    return { ...(data as AppSettings), address: DEFAULT_SETTINGS.address, email: DEFAULT_SETTINGS.email };
+    return data as AppSettings;
   }
   return DEFAULT_SETTINGS;
 }
