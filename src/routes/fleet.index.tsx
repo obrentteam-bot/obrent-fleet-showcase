@@ -139,7 +139,7 @@ function FleetPage() {
                     <div className="mt-8 flex flex-col items-start gap-4 border-t border-cream/10 pt-5">
                       <div>
                         <div className="mb-1 text-[0.55rem] uppercase tracking-[0.28em]" style={{ color: "rgba(245,240,232,0.45)" }}>AB</div>
-                        <div className="font-display text-xl italic" style={{ color: "#B8975A" }}>{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
+                        <div className="price text-2xl">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
                       </div>
                       <span className="inline-flex items-center gap-3 rounded-sm border border-gold/70 bg-gold/10 px-6 py-3 text-[0.7rem] font-medium uppercase tracking-[0.32em] text-gold transition hover:bg-gold hover:text-onyx">
                         Jetzt anfragen
@@ -207,7 +207,7 @@ function FleetPage() {
                         className="text-[0.55rem] tracking-[0.28em] uppercase mb-1"
                         style={{ color: isLight ? "rgba(10,10,10,0.55)" : "rgba(245,240,232,0.4)" }}
                       >AB</div>
-                      <div className="font-display text-xl italic" style={{ color: "#B8975A" }}>{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
+                      <div className="price text-2xl">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
                     </div>
                     <span className="inline-flex items-center gap-3 border border-gold/70 bg-gold/10 text-gold px-6 py-3 text-[0.7rem] tracking-[0.32em] uppercase font-medium hover:bg-gold hover:text-onyx transition rounded-sm">
                       Jetzt anfragen
@@ -294,7 +294,7 @@ function FleetPage() {
                   </dl>
                   <div className="mt-auto pt-4 border-t border-border flex items-end justify-between gap-4">
                     <div>
-                      <div className="font-display text-base italic" style={{ color: "#B8975A" }}>{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
+                      <div className="price text-lg">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
                     </div>
                     <span className="inline-flex items-center gap-2 border border-gold text-gold px-4 py-2 text-[0.65rem] tracking-[0.28em] uppercase font-medium group-hover:bg-gold group-hover:text-onyx transition rounded-full">
                       {settings.cta_reserve_label || t.common.reserve}

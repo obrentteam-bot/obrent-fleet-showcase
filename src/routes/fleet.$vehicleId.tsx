@@ -217,7 +217,7 @@ function VehicleDetailPage() {
                     <div className="text-[0.62rem] uppercase mb-1" style={{ color: "rgba(248,244,236,0.42)", letterSpacing: "0.32em" }}>
                       {t.vehicle.reservationFrom}
                     </div>
-                    <div className="font-display italic leading-none" style={{ color: "#D4AF37", fontSize: "clamp(1.8rem,3vw,2.6rem)" }}>
+                    <div className="price leading-none" style={{ fontSize: "clamp(2rem,3.5vw,3rem)" }}>
                       {settings.show_prices && v.pricePerDay > 0
                         ? `${formatPrice(v.pricePerDay)} / Tag`
                         : t.vehicle.priceOnRequest}
@@ -385,14 +385,14 @@ function VehicleDetailPage() {
               </div>
               <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.extraKm}</div>
-                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 price text-xl md:text-2xl leading-tight">
                   {v.conditions.extraKmPrice != null ? `${formatEuro2(v.conditions.extraKmPrice)} / km` : t.vehicle.onRequest}
                 </div>
                 <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.extraKmHint}</div>
               </div>
               <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.deposit}</div>
-                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 price text-xl md:text-2xl leading-tight">
                   {v.conditions.deposit != null ? formatPrice(v.conditions.deposit) : t.vehicle.onRequest}
                 </div>
                 <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.depositHint}</div>
