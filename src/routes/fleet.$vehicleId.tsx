@@ -417,7 +417,7 @@ function VehicleDetailPage() {
               </div>
               <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.license}</div>
-                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 price text-xl md:text-2xl leading-tight" style={{ color: "#B8975A" }}>
                   {v.conditions.minLicenseYears != null ? t.vehicle.licenseMin.replace("{n}", String(v.conditions.minLicenseYears)) : t.vehicle.onRequest}
                 </div>
               </div>
