@@ -790,6 +790,29 @@ function SettingsPanel({ initial, onSaved }: { initial: AppSettings; onSaved: ()
       <Field label="Telefon"><input className="lux-input" value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
       <Field label="E-Mail"><input className="lux-input" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
       <Field label="Öffnungszeiten (eine pro Zeile)"><textarea className="lux-input min-h-[100px]" value={form.hours} onChange={(e) => set("hours", e.target.value)} /></Field>
+
+      <div className="flex items-center justify-between gap-4 border border-border bg-onyx px-5 py-4">
+        <div className="flex flex-col gap-1">
+          <span className="text-[0.7rem] tracking-[0.28em] uppercase text-cream font-medium">Preise anzeigen</span>
+          <span className="text-xs text-cream/55 leading-relaxed">Aktivieren um Preise öffentlich auf der Website anzuzeigen</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => set("show_prices", !form.show_prices)}
+          aria-pressed={form.show_prices}
+          aria-label="Preise öffentlich anzeigen"
+          className={`relative inline-flex h-7 w-14 shrink-0 items-center rounded-full border transition-colors ${
+            form.show_prices ? "bg-green-500/80 border-green-400" : "bg-cream/10 border-border"
+          }`}
+        >
+          <span
+            className={`inline-block h-5 w-5 transform rounded-full bg-cream transition-transform ${
+              form.show_prices ? "translate-x-8" : "translate-x-1"
+            }`}
+          />
+        </button>
+      </div>
+
       {msg && <div className={`text-sm ${msg.startsWith("Fehler") ? "text-red-400" : "text-green-400"}`}>{msg}</div>}
       <div className="flex justify-end">
         <button onClick={submit} disabled={saving} className="btn-gold text-[0.65rem] py-3 px-6 disabled:opacity-60">{saving ? "Speichert…" : "Speichern"}</button>
