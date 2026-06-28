@@ -114,12 +114,14 @@ function AboutPage() {
               className="w-full h-full object-cover object-center"
               fetchPriority="high"
               decoding="async"
+              style={{
+                maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%)",
+              }}
             />
             <div className="absolute inset-0 bg-white/30 dark:bg-black/55" />
             <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/5 to-white/40 dark:from-transparent dark:via-black/20 dark:to-black/80" />
-            {/* Top blend into header / page background */}
-            <div className="absolute inset-x-0 top-0 h-[18%] bg-gradient-to-b from-background/35 via-background/10 to-transparent" />
-            {/* Soft corner vignettes */}
+            {/* Soft side vignettes */}
             <div className="absolute inset-y-0 left-0 w-12 md:w-16 bg-gradient-to-r from-black/15 to-transparent dark:from-black/20" />
             <div className="absolute inset-y-0 right-0 w-12 md:w-16 bg-gradient-to-l from-black/15 to-transparent dark:from-black/20" />
           </div>
