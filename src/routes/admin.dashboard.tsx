@@ -468,6 +468,12 @@ function AdminDashboard() {
     if (!error) setVehicles((p) => p.map((x) => (x.id === v.id ? { ...x, available: next } : x)));
   };
 
+  const setAllFreeKm = async (km: number) => {
+    const { error } = await supabase.from("vehicles").update({ free_km: km }).neq("id", "00000000-0000-0000-0000-000000000000");
+    if (!error) setVehicles((p) => p.map((x) => ({ ...x, free_km: km })));
+    return error;
+  };
+
   const moveVehicle = async (idx: number, dir: -1 | 1) => {
     const newIdx = idx + dir;
     if (newIdx < 0 || newIdx >= vehicles.length) return;
