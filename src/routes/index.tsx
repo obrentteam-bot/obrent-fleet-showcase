@@ -255,7 +255,7 @@ function HomePage() {
                     <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
                     <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
                       <div>
-                        <div className="font-display text-lg italic" style={{ color: "#B8975A" }}>Preis auf Anfrage</div>
+                        <div className="font-display text-lg italic" style={{ color: "#B8975A" }}>{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
                       </div>
                       <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
                     </div>
