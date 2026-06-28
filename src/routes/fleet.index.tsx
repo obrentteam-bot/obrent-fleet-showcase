@@ -5,6 +5,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Link } from "@tanstack/react-router";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { useSettings } from "@/lib/useSettings";
+
 import { useTheme } from "@/lib/theme";
 const ferrariHero = { url: "/ferrari-fleet-hero.png" };
 
