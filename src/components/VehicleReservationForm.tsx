@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
@@ -51,7 +51,7 @@ export function VehicleReservationForm({ vehicle }: { vehicle: UiVehicle }) {
   today.setHours(0, 0, 0, 0);
   const dateLocale = lang === "de" ? de : undefined;
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (!ageConfirmed) {
       setShowAgeError(true);
@@ -120,7 +120,7 @@ export function VehicleReservationForm({ vehicle }: { vehicle: UiVehicle }) {
   }
 
   return (
-    <section id="reservation" className="mt-10 py-16 md:py-20 px-6 md:px-12 bg-jet/40 border-y border-border scroll-mt-24">
+    <section className="mt-10 py-16 md:py-20 px-6 md:px-12 bg-jet/40 border-y border-border scroll-mt-24">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-4 mb-5">

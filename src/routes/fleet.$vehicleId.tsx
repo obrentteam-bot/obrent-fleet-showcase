@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Shield, CalendarDays, MapPin, Headphones, Cog, Gauge, Palette, ShieldCheck, ArrowRight, Share2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice, formatEuro2 } from "@/lib/vehicles";
@@ -69,6 +69,25 @@ function VehicleDetailPage() {
   const { settings } = useSettings();
   const cats = t.categories as Record<string, string>;
   const [imgIndex, setImgIndex] = useState(0);
+  const [loadReservationForm, setLoadReservationForm] = useState(false);
+  const reservationRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (loadReservationForm) return;
+    const el = reservationRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLoadReservationForm(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "700px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadReservationForm]);
 
   if (loading) {
     return (
@@ -300,7 +319,8 @@ function VehicleDetailPage() {
                 )}
               </div>
               {imgCount > 1 && (
-              <div className="flex gap-2.5 overflow-x-auto pb-1 justify-center">
+                <>
+                  <div className="hidden md:flex gap-2.5 overflow-x-auto pb-1 justify-center">
                   {v.images.map((src, i) => (
                     <button
                       key={src + i}
@@ -312,7 +332,19 @@ function VehicleDetailPage() {
                       <img src={src} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     </button>
                   ))}
-                </div>
+                  </div>
+                  <div className="flex md:hidden justify-center gap-2 pt-1">
+                    {v.images.map((_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => goImg(i)}
+                        aria-label={`Bild ${i + 1}`}
+                        className={`h-1.5 rounded-full transition-all ${i === imgIndex ? "w-7 bg-gold" : "w-2 bg-cream/30"}`}
+                      />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           )}
@@ -391,9 +423,15 @@ function VehicleDetailPage() {
           </div>
         </div>
       </section>
-      <Suspense fallback={<div id="reservation" className="mt-10 py-16 text-center text-cream/50">…</div>}>
-        <VehicleReservationForm vehicle={v} />
-      </Suspense>
+      <div ref={reservationRef} id="reservation" className="scroll-mt-24">
+        {loadReservationForm ? (
+          <Suspense fallback={<div className="mt-10 py-16 text-center text-cream/50">…</div>}>
+            <VehicleReservationForm vehicle={v} />
+          </Suspense>
+        ) : (
+          <section className="mt-10 py-16 md:py-20 px-6 md:px-12 bg-jet/40 border-y border-border min-h-[320px]" />
+        )}
+      </div>
     </SiteLayout>
   );
 }
