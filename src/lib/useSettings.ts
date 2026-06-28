@@ -13,6 +13,7 @@ export type AppSettings = {
   show_prices: boolean;
   cta_request_label: string;
   cta_reserve_label: string;
+  hero_video_url: string;
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -24,6 +25,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   show_prices: false,
   cta_request_label: "Anfrage senden",
   cta_reserve_label: "Anfragen",
+  hero_video_url: "",
 };
 
 
@@ -41,6 +43,7 @@ async function fetchSettings(): Promise<AppSettings> {
       show_prices: row.show_prices ?? false,
       cta_request_label: row.cta_request_label || DEFAULT_SETTINGS.cta_request_label,
       cta_reserve_label: row.cta_reserve_label || DEFAULT_SETTINGS.cta_reserve_label,
+      hero_video_url: row.hero_video_url || "",
     };
   }
 
@@ -80,6 +83,7 @@ export async function saveSettings(s: AppSettings) {
     show_prices: s.show_prices,
     cta_request_label: s.cta_request_label,
     cta_reserve_label: s.cta_reserve_label,
+    hero_video_url: s.hero_video_url,
   };
   try {
     const { saveAppSettings } = await import("@/lib/settings.functions");

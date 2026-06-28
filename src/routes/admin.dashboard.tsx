@@ -859,6 +859,21 @@ function SettingsPanel({ initial, onSaved }: { initial: AppSettings; onSaved: ()
         </Field>
       </div>
 
+      <div className="space-y-3 pt-2">
+        <div>
+          <h3 className="font-display text-lg text-cream mb-1">Hero-Video (Startseite)</h3>
+          <p className="text-xs text-cream/50">Öffentliche URL zu einer MP4/WebM-Datei. Leer lassen, um wieder das Hero-Bild zu nutzen. Autoplay, stumm, Loop.</p>
+        </div>
+        <Field label="Video-URL">
+          <input
+            className="lux-input"
+            value={form.hero_video_url}
+            placeholder="https://…/hero.mp4"
+            onChange={(e) => set("hero_video_url", e.target.value)}
+          />
+        </Field>
+      </div>
+
 
       {msg && <div className={`text-sm ${msg.startsWith("Fehler") ? "text-red-400" : "text-green-400"}`}>{msg}</div>}
       <div className="flex justify-end">
