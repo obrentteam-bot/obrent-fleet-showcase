@@ -92,7 +92,7 @@ const emptyForm: VehicleForm = {
   power_ps: "", year: String(new Date().getFullYear()), color: "",
   price_per_day: "",
   price_3h: "", price_6h: "", price_12h: "", price_24h: "",
-  deposit: "", min_age: "", free_km: "", extra_km_price: "",
+  deposit: "", min_age: "", free_km: "100", extra_km_price: "",
   images: [""], available: true,
 };
 
