@@ -159,6 +159,7 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
             </select>
           </Field>
           <Field label="Beschreibung"><textarea className="lux-input min-h-[80px]" value={form.description} onChange={(e) => set("description", e.target.value)} /></Field>
+          <Field label="Spezifikationen (eine pro Zeile)"><textarea className="lux-input min-h-[100px]" placeholder="Quattro Allrad&#10;22 Zoll&#10;..." value={form.features} onChange={(e) => set("features", e.target.value)} /></Field>
           <div className="grid grid-cols-2 gap-4">
             <Field label="Motor"><input className="lux-input" value={form.engine} onChange={(e) => set("engine", e.target.value)} /></Field>
             <Field label="PS"><input type="number" className="lux-input" value={form.power_ps} onChange={(e) => set("power_ps", e.target.value)} /></Field>
