@@ -154,10 +154,11 @@ function AboutPage() {
                 <div className="grid grid-cols-3 gap-6 md:gap-6 pt-8">
                   {t.about.stats.map(({ value, label }, i) => {
                     const Icon = STAT_ICONS[i];
+                    const displayValue = i === 0 ? String(vehicles.length || value) : value;
                     return (
                       <div key={label} className="flex flex-col items-center text-center">
                         <Icon className="w-6 h-6 md:w-7 md:h-7 text-gold mb-4" strokeWidth={1.5} />
-                        <div className="font-display text-2xl md:text-4xl text-foreground mb-2">{value}</div>
+                        <div className="font-display text-2xl md:text-4xl text-foreground mb-2">{displayValue}</div>
                         <div className="text-[0.6rem] md:text-[0.65rem] tracking-[0.28em] uppercase text-muted-foreground leading-relaxed">{label}</div>
                       </div>
                     );
