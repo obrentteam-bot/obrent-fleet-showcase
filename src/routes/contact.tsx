@@ -14,7 +14,7 @@ import { ChauffeurDetails, emptyChauffeurFields, type ChauffeurFieldsValue } fro
 import { FEATURES } from "@/lib/features";
 import { submitBooking } from "@/lib/submitBooking";
 import { useSettings } from "@/lib/useSettings";
-import heroSunset from "@/assets/about-hero-sunset.png";
+import contactHero from "@/assets/contact-hero.jpg.asset.json";
 
 import {
   Select,
