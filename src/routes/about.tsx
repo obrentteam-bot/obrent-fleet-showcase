@@ -129,12 +129,12 @@ function AboutPage() {
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
               {t.about.eyebrow}
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-black dark:text-cream leading-[0.95] max-w-4xl drop-shadow-sm">
               {t.about.headline1}<br />
               {t.about.headline2}<br />
-              <span className="text-gold italic font-light">{t.about.headlineItalic}</span>
+              <span className="text-black dark:text-gold italic font-light">{t.about.headlineItalic}</span>
             </h1>
-            <p className="mt-6 md:mt-8 text-base md:text-lg text-onyx/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed">
+            <p className="mt-6 md:mt-8 text-base md:text-lg text-black/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed">
               {t.about.intro}
             </p>
           </div>
