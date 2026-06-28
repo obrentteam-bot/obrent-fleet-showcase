@@ -4,6 +4,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice } from "@/lib/vehicles";
 import { useVehicles } from "@/lib/useVehicles";
 import { useI18n } from "@/lib/i18n";
+import { useSettings } from "@/lib/useSettings";
+
 const heroImage = "/hero-fleet-sunset.webp";
 
 export const Route = createFileRoute("/")({
