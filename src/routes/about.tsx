@@ -126,17 +126,23 @@ function AboutPage() {
             <div className="absolute inset-y-0 right-0 w-12 md:w-16 bg-gradient-to-l from-black/5 to-transparent dark:from-black/20" />
           </div>
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-start pt-[4vh] md:pt-[5vh]">
-            <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
-              {t.about.eyebrow}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
+              <div>
+                <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
+                  {t.about.eyebrow}
+                </div>
+                <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-black dark:text-cream leading-[0.95] max-w-4xl drop-shadow-sm">
+                  {t.about.headline1}<br />
+                  {t.about.headline2}<br />
+                  <span className="text-gold italic font-light">{t.about.headlineItalic}</span>
+                </h1>
+              </div>
+              <div className="flex items-center justify-center lg:justify-end">
+                <p className="text-base md:text-lg text-black/80 dark:text-cream/75 font-light max-w-md leading-relaxed text-center lg:text-right">
+                  {t.about.intro}
+                </p>
+              </div>
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-black dark:text-cream leading-[0.95] max-w-4xl drop-shadow-sm">
-              {t.about.headline1}<br />
-              {t.about.headline2}<br />
-              <span className="text-gold italic font-light">{t.about.headlineItalic}</span>
-            </h1>
-            <p className="mt-6 md:mt-8 text-base md:text-lg text-black/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed">
-              {t.about.intro}
-            </p>
           </div>
           <PulseArrow onClick={next} />
         </SectionWrap>
