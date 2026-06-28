@@ -24,7 +24,9 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const { t } = useI18n();
+  const { settings } = useSettings();
   const { vehicles } = useVehicles();
+
   const cats = t.categories as Record<string, string>;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
