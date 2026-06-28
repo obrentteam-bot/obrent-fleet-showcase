@@ -5,52 +5,54 @@ let vehiclesCache: UiVehicle[] | null = null;
 let vehiclesRequest: Promise<UiVehicle[]> | null = null;
 const vehicleRequests = new Map<string, Promise<UiVehicle | null>>();
 
-async function fetchAvailableVehicles() {
+async function fetchAvailableVehicles(): Promise<UiVehicle[]> {
   if (vehiclesRequest) return vehiclesRequest;
 
-  vehiclesRequest = supabase
-    .from("vehicles")
-    .select("*")
-    .neq("available", false)
-    .order("sort_order", { ascending: true, nullsFirst: false })
-    .order("created_at", { ascending: false })
-    .then(({ data, error }) => {
+  vehiclesRequest = (async () => {
+    try {
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("*")
+        .neq("available", false)
+        .order("sort_order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
       if (error) throw error;
       const vehicles = ((data ?? []) as DbVehicle[]).map(adaptVehicle);
       vehiclesCache = vehicles;
       return vehicles;
-    })
-    .finally(() => {
+    } finally {
       vehiclesRequest = null;
-    });
+    }
+  })();
 
   return vehiclesRequest;
 }
 
-async function fetchVehicleById(id: string) {
+async function fetchVehicleById(id: string): Promise<UiVehicle | null> {
   const cached = vehiclesCache?.find((vehicle) => vehicle.id === id);
   if (cached) return cached;
 
   const existing = vehicleRequests.get(id);
   if (existing) return existing;
 
-  const request = supabase
-    .from("vehicles")
-    .select("*")
-    .eq("id", id)
-    .neq("available", false)
-    .maybeSingle()
-    .then(({ data, error }) => {
+  const request = (async () => {
+    try {
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("*")
+        .eq("id", id)
+        .neq("available", false)
+        .maybeSingle();
       if (error || !data) return null;
       const vehicle = adaptVehicle(data as DbVehicle);
       vehiclesCache = vehiclesCache
         ? [...vehiclesCache.filter((item) => item.id !== vehicle.id), vehicle]
         : [vehicle];
       return vehicle;
-    })
-    .finally(() => {
+    } finally {
       vehicleRequests.delete(id);
-    });
+    }
+  })();
 
   vehicleRequests.set(id, request);
   return request;
