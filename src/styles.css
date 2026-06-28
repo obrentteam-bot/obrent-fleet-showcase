@@ -392,3 +392,13 @@ header[data-site-header][data-over-dark="true"] {
   --gold: oklch(0.68 0.08 80);
   --gold-soft: oklch(0.78 0.06 80);
 }
+
+@utility price {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+}
+
