@@ -88,10 +88,8 @@ function FleetPage() {
           {!loading && filtered[0] && (() => {
             const v = filtered[0];
             const isFerrari = /ferrari/i.test(v.marque) || /ferrari/i.test(v.name);
-            const heroImg = isFerrari ? ferrariHero.url : v.image;
-            const tagline = isFerrari
-              ? "Ikonischer V12-Gran-Turismo mit kompromissloser Ferrari-Präsenz."
-              : v.tagline ?? "";
+            const heroImg = v.image;
+            const tagline = v.tagline ?? "";
             if (isFerrari) {
               return (
                 <Link
