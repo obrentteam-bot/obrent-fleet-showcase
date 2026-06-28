@@ -25,6 +25,8 @@ export const Route = createFileRoute("/fleet/")({
 
 function FleetPage() {
   const { t } = useI18n();
+  const { settings } = useSettings();
+
   const { theme } = useTheme();
   const isLight = theme === "light";
   const { vehicles, loading } = useVehicles();
