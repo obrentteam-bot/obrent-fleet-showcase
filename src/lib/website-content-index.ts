@@ -289,7 +289,7 @@ export const WEBSITE_CONTENT_INDEX: PageEntry[] = [
       heroSection({
         source: "i18n",
         i18nKey: "home.hero",
-        eyebrow: "Ludwigshafen am Rhein · Luxus Autovermietung",
+        eyebrow: "Luxus Autovermietung",
         title: "Luxus fahren, ohne Kompromisse.",
         description: "",
         cta: { label: "Unsere Flotte entdecken", href: "/fleet" },
