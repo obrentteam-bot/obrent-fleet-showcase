@@ -112,7 +112,9 @@ const TOTAL_SECTIONS = 4;
 
 export function ServiceSubpage(props: ServiceSubpageProps) {
   const { lang } = useI18n();
+  const { settings } = useSettings();
   const labels = PAGE_LABELS[lang];
+
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
