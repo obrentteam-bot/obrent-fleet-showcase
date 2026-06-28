@@ -71,7 +71,7 @@ function ContactPage() {
       {/* HERO */}
       <section className="relative w-full overflow-hidden bg-onyx">
         <img
-          src={heroSunset}
+          src={contactHero.url}
           alt=""
           aria-hidden
           className="absolute inset-0 w-full h-full object-cover opacity-50"
