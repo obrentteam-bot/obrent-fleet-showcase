@@ -702,7 +702,7 @@ function VehicleDetailPage() {
             <div className="md:col-span-2 flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-4">
               <p className="text-xs text-cream/40 max-w-md">{f.disclaimer}</p>
               <button type="submit" disabled={!ageConfirmed || submitting} className="btn-gold disabled:opacity-40 disabled:cursor-not-allowed">
-                {submitting ? "…" : f.submit}
+                {submitting ? "…" : (settings.cta_request_label || f.submit)}
               </button>
             </div>
           </form>
