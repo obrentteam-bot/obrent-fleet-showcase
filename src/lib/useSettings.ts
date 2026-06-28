@@ -71,7 +71,6 @@ export function useSettings() {
 
 export async function saveSettings(s: AppSettings) {
   if (!isSupabaseConfigured) return new Error("Supabase is not configured.");
-  const { data: existing } = await supabase.from("app_settings").select("id").limit(1).maybeSingle();
   const payload = {
     company_name: s.company_name,
     address: s.address,
@@ -82,13 +81,14 @@ export async function saveSettings(s: AppSettings) {
     cta_request_label: s.cta_request_label,
     cta_reserve_label: s.cta_reserve_label,
   };
-
-  const res = existing
-    ? await supabase.from("app_settings").update(payload).eq("id", existing.id)
-    : await supabase.from("app_settings").insert(payload);
-  if (!res.error) {
+  try {
+    const { saveAppSettings } = await import("@/lib/settings.functions");
+    await saveAppSettings({ data: payload });
     cache = { ...s };
     listeners.forEach((l) => l(cache!));
+    return null;
+  } catch (e: any) {
+    return new Error(e?.message || "Speichern fehlgeschlagen");
   }
-  return res.error;
 }
+
