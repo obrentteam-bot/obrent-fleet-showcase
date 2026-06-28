@@ -115,8 +115,10 @@ function AboutPage() {
               fetchPriority="high"
               decoding="async"
               style={{
-                maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%)",
-                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%)",
+                maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+                maskComposite: "intersect",
+                WebkitMaskComposite: "source-in",
               }}
             />
             <div className="absolute inset-0 bg-white/30 dark:bg-black/55" />
