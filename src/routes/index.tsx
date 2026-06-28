@@ -30,10 +30,8 @@ function HomePage() {
 
   const cats = t.categories as Record<string, string>;
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
   const [paused, setPaused] = useState(false);
-  const [index, setIndex] = useState(0);
   const resumeTimer = useRef<number | null>(null);
   const pauseForInteraction = (resumeAfterMs = 4000) => {
     setPaused(true);
