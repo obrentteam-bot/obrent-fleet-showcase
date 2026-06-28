@@ -126,19 +126,19 @@ function AboutPage() {
             <div className="absolute inset-y-0 right-0 w-12 md:w-16 bg-gradient-to-l from-black/5 to-transparent dark:from-black/20" />
           </div>
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-start pt-[4vh] md:pt-[5vh]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-12 items-center w-full">
               <div>
-                <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
+                <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-4 md:mb-6">
                   {t.about.eyebrow}
                 </div>
-                <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-black dark:text-cream leading-[0.95] max-w-4xl drop-shadow-sm">
+                <h1 className="font-display text-[2rem] leading-[1.02] sm:text-4xl md:text-5xl lg:text-6xl lg:leading-[0.95] text-black dark:text-cream max-w-4xl drop-shadow-sm">
                   {t.about.headline1}<br />
                   {t.about.headline2}<br />
                   <span className="text-gold italic font-light">{t.about.headlineItalic}</span>
                 </h1>
               </div>
               <div className="flex items-center justify-center lg:justify-end">
-                <p className="text-base md:text-lg text-black/80 dark:text-cream/75 font-light max-w-md leading-relaxed text-center lg:text-right">
+                <p className="text-sm md:text-lg text-black/90 dark:text-cream/80 font-light max-w-md leading-relaxed text-left lg:text-right rounded-lg bg-white/70 dark:bg-black/45 backdrop-blur-md px-4 py-3 shadow-sm lg:bg-transparent lg:dark:bg-transparent lg:backdrop-blur-0 lg:p-0 lg:shadow-none">
                   {t.about.intro}
                 </p>
               </div>
