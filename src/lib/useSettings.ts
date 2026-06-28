@@ -11,6 +11,8 @@ export type AppSettings = {
   email: string;
   hours: string;
   show_prices: boolean;
+  cta_request_label: string;
+  cta_reserve_label: string;
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -20,7 +22,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
   email: "info@obrent.de",
   hours: "Mo–Fr: 08:00–22:00 Uhr\nSa–So: 09:00–20:00 Uhr",
   show_prices: false,
+  cta_request_label: "Anfrage senden",
+  cta_reserve_label: "Anfragen",
 };
+
 
 let cache: AppSettings | null = null;
 const listeners = new Set<(s: AppSettings) => void>();
