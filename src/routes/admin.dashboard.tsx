@@ -705,7 +705,18 @@ function AdminDashboard() {
           <>
             <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
               <div className="text-sm text-cream/60">{vehicles.length} Fahrzeuge insgesamt</div>
-              <button onClick={() => { setEditing(null); setModalOpen(true); }} className="btn-gold text-[0.65rem] py-3 px-6">+ Fahrzeug hinzufügen</button>
+              <div className="flex items-center gap-3">
+                {bulkFreeKmMsg && <span className="text-xs text-green-400">{bulkFreeKmMsg}</span>}
+                <button
+                  onClick={() => setAllFreeKm(100)}
+                  disabled={bulkFreeKmLoading}
+                  className="btn-ghost text-[0.65rem] py-3 px-4 disabled:opacity-50"
+                  title="Setzt die Freikilometer für alle Fahrzeuge auf 100 km"
+                >
+                  {bulkFreeKmLoading ? "Wird gesetzt…" : "Alle Freikilometer → 100 km"}
+                </button>
+                <button onClick={() => { setEditing(null); setModalOpen(true); }} className="btn-gold text-[0.65rem] py-3 px-6">+ Fahrzeug hinzufügen</button>
+              </div>
             </div>
             <section className="bg-jet border border-border overflow-x-auto">
               <table className="w-full text-sm min-w-[900px]">
