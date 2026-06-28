@@ -413,6 +413,8 @@ function AdminDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<DbVehicle | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ kind: "vehicle" | "booking"; id: string } | null>(null);
+  const [bulkFreeKmLoading, setBulkFreeKmLoading] = useState(false);
+  const [bulkFreeKmMsg, setBulkFreeKmMsg] = useState<string | null>(null);
 
   // Session timeout
   useEffect(() => {
