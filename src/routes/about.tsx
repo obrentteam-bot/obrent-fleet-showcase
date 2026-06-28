@@ -22,6 +22,10 @@ export const Route = createFileRoute("/about")({
 
 const TOTAL_SECTIONS = 4;
 
+function isMobile() {
+  return typeof window !== "undefined" && window.innerWidth < 1024;
+}
+
 function AboutPage() {
   const { t } = useI18n();
   const { vehicles } = useVehicles();
@@ -31,6 +35,7 @@ function AboutPage() {
   const lastNav = useRef(0);
 
   useEffect(() => {
+    if (isMobile()) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -49,6 +54,7 @@ function AboutPage() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (isMobile()) return;
       const target = e.target as HTMLElement | null;
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
       if (e.key === "ArrowDown" || e.key === "PageDown") {
@@ -65,9 +71,11 @@ function AboutPage() {
 
   const touchStart = useRef<{ y: number; t: number } | null>(null);
   const onTouchStart = (e: React.TouchEvent) => {
+    if (isMobile()) return;
     touchStart.current = { y: e.touches[0].clientY, t: Date.now() };
   };
   const onTouchEnd = (e: React.TouchEvent) => {
+    if (isMobile()) return;
     if (!touchStart.current) return;
     const dy = e.changedTouches[0].clientY - touchStart.current.y;
     touchStart.current = null;
@@ -79,6 +87,7 @@ function AboutPage() {
   useEffect(() => {
     let cooldown = 0;
     const onWheel = (e: WheelEvent) => {
+      if (isMobile()) return;
       const target = e.target as HTMLElement | null;
       const scrollable = target?.closest("[data-allow-scroll]") as HTMLElement | null;
       if (scrollable) {
@@ -101,7 +110,7 @@ function AboutPage() {
   return (
     <SiteLayout>
       <div
-        className="fixed inset-0 top-24 md:top-32 z-30 overflow-hidden bg-background"
+        className="relative h-auto overflow-visible bg-background lg:fixed lg:inset-0 lg:top-24 lg:md:top-32 lg:z-30 lg:overflow-hidden"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -203,7 +212,7 @@ function AboutPage() {
                     style={{ animationDelay: `${i * 120}ms` }}
                     className={cn(
                       "group text-center p-7 md:p-10 rounded-2xl border border-border bg-card/60 hover:border-gold/40 transition-colors",
-                      section === 2 ? "opacity-0 animate-[fade-in_0.6s_ease-out_forwards]" : "opacity-0",
+                      section === 2 ? "lg:opacity-0 lg:animate-[fade-in_0.6s_ease-out_forwards]" : "lg:opacity-0",
                     )}
                   >
                     <div className="mx-auto w-12 h-12 md:w-14 md:h-14 rounded-full border border-gold/40 flex items-center justify-center mb-6 transition-colors group-hover:border-gold group-hover:bg-gold/5">
@@ -261,7 +270,7 @@ function AboutPage() {
               </div>
             </div>
           </div>
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 hidden lg:block">
             <button
               type="button"
               onClick={prev}
@@ -274,7 +283,7 @@ function AboutPage() {
         </SectionWrap>
 
         {/* DOT NAV */}
-        <div className="fixed right-3 md:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-4">
+        <div className="fixed right-3 md:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-4">
           {Array.from({ length: TOTAL_SECTIONS }).map((_, i) => (
             <button
               key={i}
@@ -300,10 +309,10 @@ function SectionWrap({ active, children }: { active: boolean; children: ReactNod
     <section
       aria-hidden={!active}
       className={cn(
-        "absolute inset-0 transition-all duration-[600ms] ease-out overflow-hidden",
+        "relative h-auto min-h-screen lg:absolute lg:inset-0 lg:overflow-hidden lg:transition-all lg:duration-[600ms] lg:ease-out",
         active
-          ? "opacity-100 translate-y-0 pointer-events-auto"
-          : "opacity-0 translate-y-5 pointer-events-none",
+          ? "lg:opacity-100 lg:translate-y-0 lg:pointer-events-auto"
+          : "lg:opacity-0 lg:translate-y-5 lg:pointer-events-none",
       )}
     >
       {children}
@@ -313,7 +322,7 @@ function SectionWrap({ active, children }: { active: boolean; children: ReactNod
 
 function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) {
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 hidden lg:flex items-center gap-3">
       <button
         type="button"
         onClick={onPrev}
@@ -340,7 +349,7 @@ function PulseArrow({ onClick }: { onClick: () => void }) {
       type="button"
       onClick={onClick}
       aria-label="Next section"
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-12 h-12 rounded-full border border-gold/50 text-gold flex items-center justify-center bg-background/50 backdrop-blur animate-bounce hover:border-gold hover:bg-background/80 transition"
+      className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 hidden lg:flex w-12 h-12 rounded-full border border-gold/50 text-gold items-center justify-center bg-background/50 backdrop-blur animate-bounce hover:border-gold hover:bg-background/80 transition"
     >
       <ChevronDown className="w-6 h-6" />
     </button>
