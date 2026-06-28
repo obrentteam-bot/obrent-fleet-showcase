@@ -282,7 +282,7 @@ export const WEBSITE_CONTENT_INDEX: PageEntry[] = [
     meta: {
       title: "OBRENT — Luxus Autovermietung Ludwigshafen am Rhein",
       description:
-        "OBRENT vermietet Premium-Fahrzeuge von Porsche, BMW und Audi in Ludwigshafen am Rhein — fair, schnell verfügbar und persönlich übergeben.",
+        "OBRENT — Luxus Autovermietung in Ludwigshafen am Rhein. Exklusive Fahrzeuge, persönliche Übergabe, flexible Mietlaufzeiten.",
       pageTitle: "Luxus fahren, ohne Kompromisse.",
     },
     sections: [
@@ -291,8 +291,7 @@ export const WEBSITE_CONTENT_INDEX: PageEntry[] = [
         i18nKey: "home.hero",
         eyebrow: "Ludwigshafen am Rhein · Luxus Autovermietung",
         title: "Luxus fahren, ohne Kompromisse.",
-        description:
-          "Premium-Fahrzeuge von Porsche, BMW und Audi — fair kalkuliert, schnell verfügbar und persönlich übergeben.",
+        description: "",
         cta: { label: "Unsere Flotte entdecken", href: "/fleet" },
       }),
       {

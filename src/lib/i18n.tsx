@@ -84,8 +84,7 @@ export const translations = {
       heroTitle: "Luxus",
       heroTitleItalic: "fahren",
       heroTitleRest: ", ohne Kompromisse.",
-      heroLead:
-        "Premium-Fahrzeuge von Porsche, BMW und Audi — fair kalkuliert, schnell verfügbar und persönlich übergeben.",
+      heroLead: "",
       ctaFleet: "Unsere Flotte entdecken",
       ctaAppointment: "Kontakt aufnehmen",
       scroll: "Scrollen",
@@ -434,8 +433,7 @@ export const translations = {
       heroTitle: "Drive",
       heroTitleItalic: "luxury",
       heroTitleRest: ", without compromise.",
-      heroLead:
-        "Premium vehicles from Porsche, BMW and Audi — fairly priced, quickly available, and personally handed over.",
+      heroLead: "",
       ctaFleet: "Discover Our Fleet",
       ctaAppointment: "Get in Touch",
       scroll: "Scroll",

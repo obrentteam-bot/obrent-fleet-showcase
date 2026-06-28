@@ -13,9 +13,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "OBRENT — Luxus Autovermietung Ludwigshafen am Rhein" },
-      { name: "description", content: "OBRENT vermietet Premium-Fahrzeuge von Porsche, BMW und Audi in Ludwigshafen am Rhein — fair, schnell verfügbar und persönlich übergeben." },
+      { name: "description", content: "OBRENT — Luxus Autovermietung in Ludwigshafen am Rhein. Exklusive Fahrzeuge, persönliche Übergabe, flexible Mietlaufzeiten." },
       { property: "og:title", content: "OBRENT — Luxus Autovermietung Ludwigshafen am Rhein" },
-      { property: "og:description", content: "Premium-Fahrzeuge zur Miete in Ludwigshafen am Rhein — Porsche, BMW, Audi." },
+      { property: "og:description", content: "OBRENT — Luxus Autovermietung in Ludwigshafen am Rhein. Exklusive Fahrzeuge, persönliche Übergabe." },
     ],
   }),
   component: HomePage,
@@ -161,9 +161,11 @@ function HomePage() {
             <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1] text-cream tracking-tight max-w-3xl">
               {t.home.heroTitle} <span className="text-gold italic font-light">{t.home.heroTitleItalic}</span>{t.home.heroTitleRest}
             </h1>
-            <p className="mt-10 text-lg md:text-xl text-cream/75 font-light max-w-xl leading-relaxed">
-              {t.home.heroLead}
-            </p>
+            {t.home.heroLead && (
+              <p className="mt-10 text-lg md:text-xl text-cream/75 font-light max-w-xl leading-relaxed">
+                {t.home.heroLead}
+              </p>
+            )}
             <div className="mt-12 flex flex-col sm:flex-row gap-4">
               <Link to="/fleet" className="btn-gold">{t.home.ctaFleet}</Link>
               <Link to="/contact" className="btn-ghost">{t.home.ctaAppointment}</Link>
