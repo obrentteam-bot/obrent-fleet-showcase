@@ -98,7 +98,7 @@ function FleetPage() {
                   className="hidden md:block relative group rounded-[20px] overflow-hidden border border-border mb-6 min-h-[420px]"
                 >
                   <div
-                    className="absolute inset-0 bg-no-repeat"
+                    className="absolute inset-0 bg-no-repeat transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
                     role="img"
                     aria-label={v.name}
                     style={{
