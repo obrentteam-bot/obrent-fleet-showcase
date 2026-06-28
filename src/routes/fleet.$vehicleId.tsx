@@ -378,7 +378,8 @@ function VehicleDetailPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="p-4 rounded-xl border border-border/70 bg-onyx/30">
                 <div className="text-[0.62rem] tracking-[0.22em] uppercase text-cream/50 leading-tight">{t.vehicle.freeKm}</div>
-                <div className="mt-2 font-display text-xl md:text-2xl italic leading-tight" style={{ color: "#B8975A" }}>
+                <div className="mt-2 price text-xl md:text-2xl leading-tight" style={{ color: "#B8975A" }}>
+
                   {v.conditions.freeKm != null ? `${v.conditions.freeKm} km` : t.vehicle.onRequest}
                 </div>
                 <div className="mt-1 text-xs text-cream/50 font-light">{t.vehicle.freeKmHint}</div>
