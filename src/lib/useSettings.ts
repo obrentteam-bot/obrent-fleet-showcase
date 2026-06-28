@@ -79,7 +79,10 @@ export async function saveSettings(s: AppSettings) {
     email: s.email,
     hours: s.hours,
     show_prices: s.show_prices,
+    cta_request_label: s.cta_request_label,
+    cta_reserve_label: s.cta_reserve_label,
   };
+
   const res = existing
     ? await supabase.from("app_settings").update(payload).eq("id", existing.id)
     : await supabase.from("app_settings").insert(payload);
