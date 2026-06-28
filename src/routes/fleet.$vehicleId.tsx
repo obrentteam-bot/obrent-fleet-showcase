@@ -301,7 +301,9 @@ function VehicleDetailPage() {
                       {t.vehicle.reservationFrom}
                     </div>
                     <div className="font-display italic leading-none" style={{ color: "#D4AF37", fontSize: "clamp(1.8rem,3vw,2.6rem)" }}>
-                      {t.vehicle.priceOnRequest}
+                      {settings.show_prices && v.pricePerDay > 0
+                        ? `${formatPrice(v.pricePerDay)} / Tag`
+                        : t.vehicle.priceOnRequest}
                     </div>
                   </div>
 
