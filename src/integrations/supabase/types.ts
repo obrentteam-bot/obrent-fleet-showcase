@@ -61,6 +61,7 @@ export type Database = {
           cta_request_label: string | null
           cta_reserve_label: string | null
           email: string
+          hero_video_url: string | null
           hours: string
           id: string
           maintenance_mode: boolean
@@ -75,6 +76,7 @@ export type Database = {
           cta_request_label?: string | null
           cta_reserve_label?: string | null
           email: string
+          hero_video_url?: string | null
           hours: string
           id?: string
           maintenance_mode?: boolean
@@ -89,6 +91,7 @@ export type Database = {
           cta_request_label?: string | null
           cta_reserve_label?: string | null
           email?: string
+          hero_video_url?: string | null
           hours?: string
           id?: string
           maintenance_mode?: boolean
