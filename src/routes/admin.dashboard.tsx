@@ -85,7 +85,7 @@ type VehicleForm = {
   power_ps: string; year: string; color: string; price_per_day: string;
   price_3h: string; price_6h: string; price_12h: string; price_24h: string;
   deposit: string; min_age: string; free_km: string; extra_km_price: string;
-  images: string[]; available: boolean;
+  images: string[]; available: boolean; features: string;
 };
 const emptyForm: VehicleForm = {
   name: "", category: "SUV", description: "", engine: "",
@@ -93,7 +93,7 @@ const emptyForm: VehicleForm = {
   price_per_day: "",
   price_3h: "", price_6h: "", price_12h: "", price_24h: "",
   deposit: "", min_age: "", free_km: "100", extra_km_price: "",
-  images: [""], available: true,
+  images: [""], available: true, features: "",
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -131,6 +131,10 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
       extra_km_price: numOrNull(form.extra_km_price),
       images: form.images.map((s) => s.trim()).filter(Boolean),
       available: form.available,
+      features: form.features
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
     };
     const res = editingId
       ? await supabase.from("vehicles").update(payload).eq("id", editingId)
@@ -155,6 +159,7 @@ function VehicleModal({ initial, editingId, onClose, onSaved }: {
             </select>
           </Field>
           <Field label="Beschreibung"><textarea className="lux-input min-h-[80px]" value={form.description} onChange={(e) => set("description", e.target.value)} /></Field>
+          <Field label="Spezifikationen (eine pro Zeile)"><textarea className="lux-input min-h-[100px]" placeholder="Quattro Allrad&#10;22 Zoll&#10;..." value={form.features} onChange={(e) => set("features", e.target.value)} /></Field>
           <div className="grid grid-cols-2 gap-4">
             <Field label="Motor"><input className="lux-input" value={form.engine} onChange={(e) => set("engine", e.target.value)} /></Field>
             <Field label="PS"><input type="number" className="lux-input" value={form.power_ps} onChange={(e) => set("power_ps", e.target.value)} /></Field>
@@ -237,6 +242,7 @@ function vehicleToForm(v: DbVehicle): VehicleForm {
     free_km: str(v.free_km), extra_km_price: str(v.extra_km_price),
     images: v.images && v.images.length ? v.images : [""],
     available: v.available ?? true,
+    features: (v.features ?? []).join("\n"),
   };
 }
 
