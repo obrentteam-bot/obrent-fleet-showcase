@@ -85,7 +85,7 @@ type VehicleForm = {
   power_ps: string; year: string; color: string; price_per_day: string;
   price_3h: string; price_6h: string; price_12h: string; price_24h: string;
   deposit: string; min_age: string; free_km: string; extra_km_price: string;
-  images: string[]; available: boolean;
+  images: string[]; available: boolean; features: string;
 };
 const emptyForm: VehicleForm = {
   name: "", category: "SUV", description: "", engine: "",
@@ -93,7 +93,7 @@ const emptyForm: VehicleForm = {
   price_per_day: "",
   price_3h: "", price_6h: "", price_12h: "", price_24h: "",
   deposit: "", min_age: "", free_km: "100", extra_km_price: "",
-  images: [""], available: true,
+  images: [""], available: true, features: "",
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
