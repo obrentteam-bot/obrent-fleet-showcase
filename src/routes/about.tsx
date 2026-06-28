@@ -114,9 +114,16 @@ function AboutPage() {
               className="w-full h-full object-cover object-center"
               fetchPriority="high"
               decoding="async"
+              style={{
+                maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 100%)",
+              }}
             />
             <div className="absolute inset-0 bg-white/30 dark:bg-black/55" />
             <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/5 to-white/40 dark:from-transparent dark:via-black/20 dark:to-black/80" />
+            {/* Soft side vignettes */}
+            <div className="absolute inset-y-0 left-0 w-12 md:w-16 bg-gradient-to-r from-black/15 to-transparent dark:from-black/20" />
+            <div className="absolute inset-y-0 right-0 w-12 md:w-16 bg-gradient-to-l from-black/15 to-transparent dark:from-black/20" />
           </div>
           <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center">
             <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
