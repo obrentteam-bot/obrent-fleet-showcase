@@ -242,6 +242,7 @@ function vehicleToForm(v: DbVehicle): VehicleForm {
     free_km: str(v.free_km), extra_km_price: str(v.extra_km_price),
     images: v.images && v.images.length ? v.images : [""],
     available: v.available ?? true,
+    features: (v.features ?? []).join("\n"),
   };
 }
 
