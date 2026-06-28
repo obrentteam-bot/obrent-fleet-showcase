@@ -138,7 +138,7 @@ function HomePage() {
             <button
               type="button"
               aria-label="Vorherige"
-              onClick={() => scrollByDir(-1)}
+              onClick={scrollPrev}
               className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
             >
               ←
@@ -146,69 +146,57 @@ function HomePage() {
             <button
               type="button"
               aria-label="Nächste"
-              onClick={() => scrollByDir(1)}
+              onClick={scrollNext}
               className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
             >
               →
             </button>
 
             <div
-              ref={scrollerRef}
-              onPointerDown={(e) => { if (e.pointerType === "mouse") { setPaused(true); onPointerDown(e); } }}
-              onPointerMove={(e) => { if (e.pointerType === "mouse") onPointerMove(e); }}
-              onPointerUp={(e) => { if (e.pointerType === "mouse") onPointerUp(e); }}
-              onPointerCancel={(e) => { if (e.pointerType === "mouse") onPointerUp(e); }}
-              onMouseEnter={() => setPaused(true)}
-              onMouseLeave={() => resumeNow()}
-              onTouchStart={() => pauseForInteraction(0)}
-              onTouchMove={() => pauseForInteraction(0)}
-              onTouchEnd={() => pauseForInteraction(4000)}
-              onTouchCancel={() => pauseForInteraction(4000)}
-              
-              className="flex gap-6 md:gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-              style={{ touchAction: "pan-x pan-y", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
+              ref={emblaRef}
+              className="overflow-hidden -mx-6 md:-mx-12 px-6 md:px-12"
             >
+              <div className="flex gap-6 md:gap-8 touch-pan-y">
+                {sortedVehicles.map((v, i) => (
+                  <Link
+                    key={v.id}
+                    to="/fleet/$vehicleId"
+                    params={{ vehicleId: v.id }}
+                    draggable={false}
+                    className="glass-card group overflow-hidden flex flex-col shrink-0 basis-[85vw] max-w-[320px] sm:basis-[60%] sm:max-w-none md:basis-[calc((100%-4rem)/3)]"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-jet">
+                      {v.hasImages ? (
+                        <img
+                          src={v.image}
+                          alt={v.name}
+                          draggable={false}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
+                          loading={i < 2 ? "eager" : "lazy"}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+                        </div>
+                      )}
 
-              {loopVehicles.map((v, i) => (
-                <Link
-                  key={`${v.id}-${i}`}
-                  to="/fleet/$vehicleId"
-                  params={{ vehicleId: v.id }}
-                  onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
-                  draggable={false}
-                  className="glass-card group overflow-hidden flex flex-col shrink-0 snap-center w-[85vw] max-w-[320px] sm:w-[60%] sm:max-w-none md:w-[calc((100%-4rem)/3)]"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-jet">
-                    {v.hasImages ? (
-                      <img
-                        src={v.image}
-                        alt={v.name}
-                        draggable={false}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110 pointer-events-none"
-                        loading={i < 2 ? "eager" : "lazy"}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
-                      </div>
-                    )}
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
-                    <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
-                  </div>
-                  <div className="p-8 flex flex-col flex-1">
-                    <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
-                    <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
-                    <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
-                    <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
-                      <div>
-                        <div className="font-display text-xl italic text-foreground">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
-                      </div>
-                      <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
+                      <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                    <div className="p-8 flex flex-col flex-1">
+                      <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
+                      <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
+                      <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
+                      <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
+                        <div>
+                          <div className="font-display text-xl italic text-foreground">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
+                        </div>
+                        <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
