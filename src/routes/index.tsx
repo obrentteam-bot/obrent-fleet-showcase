@@ -153,7 +153,7 @@ function HomePage() {
       <section className="border-y border-cream/10 bg-onyx/60 py-14 md:py-16 px-6 md:px-12">
         <div className="max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
           {[
-            { Icon: Car, value: `${Math.max(vehicles.length, 7)}+ Fahrzeuge`, label: "Premium-Flotte" },
+            { Icon: Car, value: `${vehicles.length}+ Fahrzeuge`, label: "Premium-Flotte" },
             { Icon: ShieldCheck, value: "100% Seriös", label: "Diskret & vertraulich" },
             { Icon: Zap, value: "Sofort-Reaktion", label: "Schnelle Rückmeldung" },
             { Icon: MapPin, value: "Mannheim & Umgebung", label: "Persönliche Übergabe" },
