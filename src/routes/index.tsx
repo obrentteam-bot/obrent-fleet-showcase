@@ -132,11 +132,11 @@ function HomePage() {
     <SiteLayout>
       {/* HERO */}
       <section className="relative h-screen min-h-[720px] w-full overflow-hidden">
+        <div className="absolute inset-0 bg-onyx" />
         {settings.hero_video_url ? (
           <video
             className="absolute inset-0 w-full h-full object-cover scale-105"
             src={settings.hero_video_url}
-            poster={heroImage}
             autoPlay
             muted
             loop
