@@ -215,13 +215,13 @@ function HomePage() {
             </Link>
           </div>
 
-          <div className="relative">
-            {/* Arrows */}
+          {/* DESKTOP / TABLET — marquee with arrows */}
+          <div className="relative hidden md:block">
             <button
               type="button"
               aria-label="Vorherige"
               onClick={() => scrollByDir(-1)}
-              className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
+              className="flex absolute -left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
             >
               ←
             </button>
@@ -229,7 +229,7 @@ function HomePage() {
               type="button"
               aria-label="Nächste"
               onClick={() => scrollByDir(1)}
-              className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
+              className="flex absolute -right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-onyx/70 backdrop-blur border border-cream/15 text-cream hover:text-gold hover:border-gold/50 transition"
             >
               →
             </button>
@@ -242,15 +242,8 @@ function HomePage() {
               onPointerCancel={(e) => { if (e.pointerType === "mouse") onPointerUp(e); }}
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => resumeNow()}
-              onTouchStart={() => pauseForInteraction(0)}
-              onTouchMove={() => pauseForInteraction(0)}
-              onTouchEnd={() => pauseForInteraction(4000)}
-              onTouchCancel={() => pauseForInteraction(4000)}
-              
-              className="flex gap-6 md:gap-8 overflow-x-auto pb-4 -mx-6 md:-mx-12 px-6 md:px-12 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-              style={{ touchAction: "pan-x pan-y", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
+              className="flex gap-8 overflow-x-auto pb-4 -mx-12 px-12 cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             >
-
               {loopVehicles.map((v, i) => (
                 <Link
                   key={`${v.id}-${i}`}
@@ -259,7 +252,7 @@ function HomePage() {
                   onClick={(e) => { if (drag.current.moved) { e.preventDefault(); } }}
                   draggable={false}
                   aria-hidden={i >= sortedVehicles.length ? true : undefined}
-                  className="glass-card group overflow-hidden flex flex-col shrink-0 snap-center w-[85vw] max-w-[320px] sm:w-[60%] sm:max-w-none md:w-[calc((100%-4rem)/3)]"
+                  className="glass-card group overflow-hidden flex flex-col shrink-0 w-[calc((100%-4rem)/3)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-jet">
                     {v.hasImages ? (
@@ -275,7 +268,6 @@ function HomePage() {
                         <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
                       </div>
                     )}
-
                     <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
                     <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
                   </div>
@@ -284,15 +276,23 @@ function HomePage() {
                     <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
                     <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
                     <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
-                      <div>
-                        <div className="font-display text-xl italic text-foreground">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
-                      </div>
+                      <div className="font-display text-xl italic text-foreground">{settings.show_prices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}</div>
                       <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{settings.cta_reserve_label || t.common.reserve} →</span>
                     </div>
                   </div>
                 </Link>
               ))}
             </div>
+          </div>
+
+          {/* MOBILE — index-based carousel with auto-advance + swipe */}
+          <div className="md:hidden">
+            <MobileVehicleCarousel
+              vehicles={sortedVehicles}
+              cats={cats}
+              showPrices={settings.show_prices}
+              ctaLabel={settings.cta_reserve_label || t.common.reserve}
+            />
           </div>
         </div>
       </section>
@@ -311,5 +311,147 @@ function HomePage() {
         </div>
       </section>
     </SiteLayout>
+  );
+}
+
+type Vehicle = ReturnType<typeof useVehicles>["vehicles"][number];
+
+function MobileVehicleCarousel({
+  vehicles,
+  cats,
+  showPrices,
+  ctaLabel,
+}: {
+  vehicles: Vehicle[];
+  cats: Record<string, string>;
+  showPrices: boolean;
+  ctaLabel: string;
+}) {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const touch = useRef({ startX: 0, startY: 0, dx: 0, dragging: false, swiped: false });
+  const [dragX, setDragX] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const n = vehicles.length;
+
+  // Auto-advance every 4.5s
+  useEffect(() => {
+    if (n <= 1 || paused) return;
+    const id = window.setInterval(() => {
+      setIndex((i) => (i + 1) % n);
+    }, 4500);
+    return () => window.clearInterval(id);
+  }, [n, paused]);
+
+  const resumeTimer = useRef<number | null>(null);
+  const pauseTemporarily = () => {
+    setPaused(true);
+    if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
+    resumeTimer.current = window.setTimeout(() => setPaused(false), 5000);
+  };
+  useEffect(() => () => { if (resumeTimer.current) window.clearTimeout(resumeTimer.current); }, []);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t0 = e.touches[0];
+    touch.current = { startX: t0.clientX, startY: t0.clientY, dx: 0, dragging: true, swiped: false };
+    setPaused(true);
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!touch.current.dragging) return;
+    const t0 = e.touches[0];
+    const dx = t0.clientX - touch.current.startX;
+    const dy = t0.clientY - touch.current.startY;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      touch.current.dx = dx;
+      setDragX(dx);
+    }
+  };
+  const onTouchEnd = () => {
+    const width = trackRef.current?.clientWidth ?? 1;
+    const threshold = width * 0.18;
+    const dx = touch.current.dx;
+    if (Math.abs(dx) > threshold) {
+      touch.current.swiped = true;
+      if (dx < 0) setIndex((i) => (i + 1) % n);
+      else setIndex((i) => (i - 1 + n) % n);
+    }
+    touch.current.dragging = false;
+    touch.current.dx = 0;
+    setDragX(0);
+    pauseTemporarily();
+  };
+
+  if (n === 0) return null;
+
+  return (
+    <div className="relative">
+      <div ref={trackRef} className="overflow-hidden -mx-6">
+        <div
+          className="flex"
+          style={{
+            transform: `translateX(calc(${-index * 100}% + ${dragX}px))`,
+            transition: touch.current.dragging ? "none" : "transform 600ms cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onTouchCancel={onTouchEnd}
+        >
+          {vehicles.map((v, i) => (
+            <div key={v.id} className="w-full shrink-0 px-6">
+              <Link
+                to="/fleet/$vehicleId"
+                params={{ vehicleId: v.id }}
+                onClick={(e) => { if (touch.current.swiped) { e.preventDefault(); touch.current.swiped = false; } }}
+                draggable={false}
+                className="glass-card group overflow-hidden flex flex-col"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-jet">
+                  {v.hasImages ? (
+                    <img
+                      src={v.image}
+                      alt={v.name}
+                      draggable={false}
+                      className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                      loading={i === 0 ? "eager" : "lazy"}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[#B8975A] text-sm tracking-[0.2em] uppercase font-light">Bilder folgen in Kürze</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-onyx/80 via-transparent to-transparent" />
+                  <div className="absolute top-5 left-5 eyebrow text-cream/70">{cats[v.category] ?? v.category}</div>
+                </div>
+                <div className="p-8 flex flex-col flex-1">
+                  <div className="text-xs tracking-[0.28em] uppercase text-cream/45 mb-2">{v.marque}</div>
+                  <h3 className="font-display text-3xl text-cream mb-4">{v.name}</h3>
+                  <p className="text-sm text-cream/55 font-light italic mb-6 line-clamp-3 flex-1">{v.tagline}</p>
+                  <div className="flex items-end justify-between pt-6 border-t border-border mt-auto">
+                    <div className="font-display text-xl italic text-foreground">
+                      {showPrices && v.pricePerDay > 0 ? `${formatPrice(v.pricePerDay)} / Tag` : "Preis auf Anfrage"}
+                    </div>
+                    <span className="text-xs tracking-[0.28em] uppercase text-cream/60 group-hover:text-gold transition">{ctaLabel} →</span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-2 mt-6">
+        {vehicles.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            aria-label={`Slide ${i + 1}`}
+            onClick={() => { setIndex(i); pauseTemporarily(); }}
+            className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-gold" : "w-1.5 bg-cream/30"}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
