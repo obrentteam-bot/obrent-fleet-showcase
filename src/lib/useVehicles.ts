@@ -15,15 +15,23 @@ export function useVehicles() {
         setLoading(false);
         return;
       }
-      const { data, error } = await supabase
-        .from("vehicles")
-        .select("*")
-        .order("sort_order", { ascending: true, nullsFirst: false })
-        .order("created_at", { ascending: false });
-      if (!mounted) return;
-      if (error) setError(error.message);
-      else setVehicles((data as DbVehicle[]).map(adaptVehicle));
-      setLoading(false);
+      try {
+        const { data, error } = await supabase
+          .from("vehicles")
+          .select("*")
+          .order("sort_order", { ascending: true, nullsFirst: false })
+          .order("created_at", { ascending: false });
+        if (!mounted) return;
+        if (error) setError(error.message);
+        else setVehicles((data as DbVehicle[]).map(adaptVehicle));
+      } catch (e) {
+        if (!mounted) return;
+        console.error("[useVehicles] fetch failed:", e);
+        setError(e instanceof Error ? e.message : "Unknown error");
+        setVehicles([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     })();
     return () => {
       mounted = false;
@@ -47,11 +55,18 @@ export function useVehicle(id: string) {
         setLoading(false);
         return;
       }
-      const { data, error } = await supabase.from("vehicles").select("*").eq("id", id).maybeSingle();
-      if (!mounted) return;
-      if (error || !data) setNotFound(true);
-      else setVehicle(adaptVehicle(data as DbVehicle));
-      setLoading(false);
+      try {
+        const { data, error } = await supabase.from("vehicles").select("*").eq("id", id).maybeSingle();
+        if (!mounted) return;
+        if (error || !data) setNotFound(true);
+        else setVehicle(adaptVehicle(data as DbVehicle));
+      } catch (e) {
+        if (!mounted) return;
+        console.error("[useVehicle] fetch failed:", e);
+        setNotFound(true);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     })();
     return () => {
       mounted = false;
