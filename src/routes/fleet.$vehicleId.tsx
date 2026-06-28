@@ -444,11 +444,8 @@ function VehicleDetailPage() {
               <span className="eyebrow">{t.vehicle.pricingTitle}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               {[
-                { label: t.vehicle.pricing.h3, value: v.pricing.h3 },
-                { label: t.vehicle.pricing.h6, value: v.pricing.h6 },
-                { label: t.vehicle.pricing.h12, value: v.pricing.h12 },
                 { label: t.vehicle.pricing.h24, value: v.pricing.h24 },
               ].map(({ label, value }) => (
                 <div key={label} className="p-4 rounded-xl border border-border/70 bg-onyx/30 text-center">
@@ -459,6 +456,7 @@ function VehicleDetailPage() {
                 </div>
               ))}
             </div>
+
           </div>
 
           {/* ===== MIETKONDITIONEN ===== */}
