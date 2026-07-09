@@ -272,25 +272,20 @@ function FleetPage() {
                   </div>
                 </div>
                 <div className="p-5 flex flex-col flex-1">
-                  <div className="text-[0.65rem] tracking-[0.28em] uppercase text-cream/45 mb-1">{v.marque}</div>
-                  <h3 className="font-display text-lg text-cream mb-4">{v.name}</h3>
+                  <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-2">{v.marque}</div>
+                  <h3 className="font-display text-xl text-cream mb-4 leading-tight">{v.name}</h3>
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-3 mb-5">
-                    <div className="min-w-0">
-                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Motor</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.specs.engine}</dd>
-                    </div>
-                    <div className="min-w-0">
-                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Leistung</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.specs.power}</dd>
-                    </div>
-                    <div className="min-w-0">
-                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Baujahr</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.year}</dd>
-                    </div>
-                    <div className="min-w-0">
-                      <dt className="text-[0.55rem] tracking-[0.22em] uppercase text-cream/40">Farbe</dt>
-                      <dd className="text-cream/85 font-light mt-1 text-xs leading-snug">{v.color}</dd>
-                    </div>
+                    {[
+                      { label: "Motor", val: v.specs.engine },
+                      { label: "Leistung", val: v.specs.power },
+                      { label: "Baujahr", val: String(v.year) },
+                      { label: "Farbe", val: v.color },
+                    ].map(({ label, val }) => (
+                      <div key={label} className="min-w-0">
+                        <dt className="text-[0.55rem] tracking-[0.26em] uppercase text-cream/45">{label}</dt>
+                        <dd className="text-cream font-medium mt-1 text-xs leading-snug truncate">{val}</dd>
+                      </div>
+                    ))}
                   </dl>
                   <div className="mt-auto pt-4 border-t border-border flex items-end justify-between gap-4">
                     <div>
