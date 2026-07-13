@@ -249,7 +249,7 @@ function VehicleDetailPage() {
                       }}
                     >
                       <Share2 className="w-4 h-4" />
-                      Teilen
+                      {t.vehicle.share}
                     </button>
 
                     <a
