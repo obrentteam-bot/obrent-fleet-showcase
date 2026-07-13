@@ -103,6 +103,17 @@ export const translations = {
       invitationLead:
         "Schreiben Sie uns oder rufen Sie an — wir finden gemeinsam das passende Fahrzeug für Ihren Anlass.",
       invitationCta: "Jetzt anfragen",
+      location: "Ludwigshafen am Rhein · Deutschland",
+      trust: {
+        vehicles: "{n}+ Fahrzeuge",
+        vehiclesLabel: "Premium-Flotte",
+        trusted: "100% Seriös",
+        trustedLabel: "Diskret & vertraulich",
+        fast: "Sofort-Reaktion",
+        fastLabel: "Schnelle Rückmeldung",
+        region: "Mannheim & Umgebung",
+        regionLabel: "Persönliche Übergabe",
+      },
     },
     fleet: {
       eyebrow: "Fahrzeuge",
