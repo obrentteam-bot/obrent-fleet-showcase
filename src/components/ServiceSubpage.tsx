@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Bilingual = { de: string; en: string };
+type Bilingual = { de: string; en: string; fr?: string };
 
 type SelectFieldDef = {
   type: "select";
@@ -106,14 +106,23 @@ const PAGE_LABELS = {
     success: "Thank you — we will personally get back to you shortly.",
     sending: "Sending…",
   },
+  fr: {
+    services: "Services",
+    back: "Retour aux services",
+    success: "Merci — nous revenons vers vous personnellement très rapidement.",
+    sending: "Envoi…",
+  },
 };
+
 
 const TOTAL_SECTIONS = 4;
 
 export function ServiceSubpage(props: ServiceSubpageProps) {
   const { lang } = useI18n();
   const { settings } = useSettings();
-  const labels = PAGE_LABELS[L];
+  const L: "de" | "en" = lang === "de" ? "de" : "en";
+  const labels = PAGE_LABELS[lang];
+
 
 
   const [values, setValues] = useState<Record<string, string>>({});
