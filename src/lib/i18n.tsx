@@ -869,6 +869,8 @@ export const translations = {
       ],
       requestNow: "Faire une demande",
       share: "Partager",
+      showMore: "+ Afficher plus ({n})",
+      showLess: "− Afficher moins",
       linkCopied: "Lien copié !",
       shareText: "Découvrez ce véhicule chez OBRENT — location de voitures de luxe à Ludwigshafen am Rhein.",
       pricingTitle: "Grille tarifaire",
