@@ -1,6 +1,12 @@
-import { useI18n } from "@/lib/i18n";
+import { useI18n, type Lang } from "@/lib/i18n";
 
 type Variant = "default" | "header";
+
+const LANGS: { code: Lang; label: string; aria: string }[] = [
+  { code: "de", label: "DE", aria: "Deutsch" },
+  { code: "en", label: "EN", aria: "English" },
+  { code: "fr", label: "FR", aria: "Français" },
+];
 
 export function LanguageSwitcher({
   className = "",
@@ -20,26 +26,21 @@ export function LanguageSwitcher({
     variant === "header" ? "bg-foreground/20" : "bg-cream/20";
 
   return (
-    <div className={`inline-flex items-center gap-2 ${className}`}>
-      <button
-        type="button"
-        onClick={() => setLang("de")}
-        aria-pressed={lang === "de"}
-        aria-label="Deutsch"
-        className={`${base} ${lang === "de" ? "text-gold" : inactive}`}
-      >
-        DE
-      </button>
-      <span className={`h-3 w-px ${divider}`} />
-      <button
-        type="button"
-        onClick={() => setLang("en")}
-        aria-pressed={lang === "en"}
-        aria-label="English"
-        className={`${base} ${lang === "en" ? "text-gold" : inactive}`}
-      >
-        EN
-      </button>
+    <div className={`inline-flex flex-wrap items-center gap-2 ${className}`}>
+      {LANGS.map((l, i) => (
+        <span key={l.code} className="inline-flex items-center gap-2">
+          {i > 0 && <span className={`h-3 w-px ${divider}`} />}
+          <button
+            type="button"
+            onClick={() => setLang(l.code)}
+            aria-pressed={lang === l.code}
+            aria-label={l.aria}
+            className={`${base} ${lang === l.code ? "text-gold" : inactive}`}
+          >
+            {l.label}
+          </button>
+        </span>
+      ))}
     </div>
   );
 }
