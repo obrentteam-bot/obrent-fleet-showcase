@@ -508,6 +508,8 @@ export const translations = {
       ],
       requestNow: "Request now",
       share: "Share",
+      showMore: "+ Show more ({n})",
+      showLess: "− Show less",
       linkCopied: "Link copied!",
       shareText: "Have a look at this vehicle at OBRENT — luxury car rental in Ludwigshafen am Rhein.",
       pricingTitle: "Pricing tiers",
