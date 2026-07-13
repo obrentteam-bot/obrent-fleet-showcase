@@ -103,6 +103,17 @@ export const translations = {
       invitationLead:
         "Schreiben Sie uns oder rufen Sie an — wir finden gemeinsam das passende Fahrzeug für Ihren Anlass.",
       invitationCta: "Jetzt anfragen",
+      location: "Ludwigshafen am Rhein · Deutschland",
+      trust: {
+        vehicles: "{n}+ Fahrzeuge",
+        vehiclesLabel: "Premium-Flotte",
+        trusted: "100% Seriös",
+        trustedLabel: "Diskret & vertraulich",
+        fast: "Sofort-Reaktion",
+        fastLabel: "Schnelle Rückmeldung",
+        region: "Mannheim & Umgebung",
+        regionLabel: "Persönliche Übergabe",
+      },
     },
     fleet: {
       eyebrow: "Fahrzeuge",
@@ -452,6 +463,17 @@ export const translations = {
       invitationLead:
         "Send us a message or give us a call — we'll find the right vehicle for your occasion together.",
       invitationCta: "Get in touch",
+      location: "Ludwigshafen am Rhein · Germany",
+      trust: {
+        vehicles: "{n}+ vehicles",
+        vehiclesLabel: "Premium fleet",
+        trusted: "100% trusted",
+        trustedLabel: "Discreet & confidential",
+        fast: "Instant response",
+        fastLabel: "Quick reply",
+        region: "Mannheim & surroundings",
+        regionLabel: "Personal handover",
+      },
     },
     fleet: {
       eyebrow: "Vehicles",
@@ -799,6 +821,17 @@ export const translations = {
       invitationLead:
         "Écrivez-nous ou appelez-nous — nous trouverons ensemble le véhicule idéal pour votre occasion.",
       invitationCta: "Faire une demande",
+      location: "Ludwigshafen am Rhein · Allemagne",
+      trust: {
+        vehicles: "{n}+ véhicules",
+        vehiclesLabel: "Flotte premium",
+        trusted: "100% fiable",
+        trustedLabel: "Discret & confidentiel",
+        fast: "Réponse immédiate",
+        fastLabel: "Retour rapide",
+        region: "Mannheim & environs",
+        regionLabel: "Remise en main propre",
+      },
     },
     fleet: {
       eyebrow: "Véhicules",

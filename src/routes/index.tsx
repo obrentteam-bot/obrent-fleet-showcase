@@ -175,7 +175,7 @@ function HomePage() {
           <div className="absolute bottom-10 left-6 md:left-12 right-6 md:right-12 flex items-end justify-between text-cream/50">
             <div className="text-xs tracking-[0.3em] uppercase">{t.home.scroll}</div>
             <div className="hidden md:block text-xs tracking-[0.3em] uppercase">
-              Ludwigshafen am Rhein · Deutschland
+              {t.home.location}
             </div>
           </div>
         </div>
@@ -185,10 +185,10 @@ function HomePage() {
       <section className="border-y border-cream/10 bg-onyx/60 py-14 md:py-16 px-6 md:px-12">
         <div className="max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
           {[
-            { Icon: Car, value: `${vehicles.length}+ Fahrzeuge`, label: "Premium-Flotte" },
-            { Icon: ShieldCheck, value: "100% Seriös", label: "Diskret & vertraulich" },
-            { Icon: Zap, value: "Sofort-Reaktion", label: "Schnelle Rückmeldung" },
-            { Icon: MapPin, value: "Mannheim & Umgebung", label: "Persönliche Übergabe" },
+            { Icon: Car, value: t.home.trust.vehicles.replace("{n}", String(vehicles.length)), label: t.home.trust.vehiclesLabel },
+            { Icon: ShieldCheck, value: t.home.trust.trusted, label: t.home.trust.trustedLabel },
+            { Icon: Zap, value: t.home.trust.fast, label: t.home.trust.fastLabel },
+            { Icon: MapPin, value: t.home.trust.region, label: t.home.trust.regionLabel },
           ].map(({ Icon, value, label }) => (
             <div key={label} className="flex flex-col items-center text-center">
               <Icon className="w-7 h-7 text-gold mb-4" strokeWidth={1.5} />
@@ -198,6 +198,7 @@ function HomePage() {
           ))}
         </div>
       </section>
+
 
       {/* FEATURED FLEET */}
       <section className="py-32 md:py-40 px-6 md:px-12">
