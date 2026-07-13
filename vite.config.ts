@@ -16,6 +16,8 @@ export default defineConfig(({ command }) => {
     : [];
   const sharedNoExternal = [
     ...reactBundle,
+    "isbot",
+
     "h3-v2",
     "rou3",
     "srvx",
