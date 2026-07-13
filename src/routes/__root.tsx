@@ -72,7 +72,12 @@ export const Route = createRootRoute({
         href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap",
       },
       { rel: "stylesheet", href: appCss },
+      { rel: "alternate", hrefLang: "de", href: "https://obrent-fleet-showcase.lovable.app/" },
+      { rel: "alternate", hrefLang: "en", href: "https://obrent-fleet-showcase.lovable.app/" },
+      { rel: "alternate", hrefLang: "fr", href: "https://obrent-fleet-showcase.lovable.app/" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://obrent-fleet-showcase.lovable.app/" },
     ],
+
   }),
   shellComponent: RootShell,
   component: RootComponent,

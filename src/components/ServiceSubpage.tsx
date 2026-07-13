@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Bilingual = { de: string; en: string };
+type Bilingual = { de: string; en: string; fr?: string };
 
 type SelectFieldDef = {
   type: "select";
@@ -106,14 +106,23 @@ const PAGE_LABELS = {
     success: "Thank you — we will personally get back to you shortly.",
     sending: "Sending…",
   },
+  fr: {
+    services: "Services",
+    back: "Retour aux services",
+    success: "Merci — nous revenons vers vous personnellement très rapidement.",
+    sending: "Envoi…",
+  },
 };
+
 
 const TOTAL_SECTIONS = 4;
 
 export function ServiceSubpage(props: ServiceSubpageProps) {
   const { lang } = useI18n();
   const { settings } = useSettings();
+  const L: "de" | "en" = lang === "de" ? "de" : "en";
   const labels = PAGE_LABELS[lang];
+
 
 
   const [values, setValues] = useState<Record<string, string>>({});
@@ -207,7 +216,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       if (f.type === "select") {
         const merged = [...(props.dynamicOptions?.[f.key] ?? []), ...f.options];
         const opt = merged.find((o) => o.value === v);
-        return opt ? opt.label[lang] : v;
+        return opt ? opt.label[L] : v;
       }
       return v;
     };
@@ -230,7 +239,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       .map((f) => {
         const v = values[f.key];
         if (!v) return null;
-        return `${f.label[lang]}: ${resolveLabel(f, v)}`;
+        return `${f.label[L]}: ${resolveLabel(f, v)}`;
       })
       .filter(Boolean)
       .join("\n");
@@ -271,15 +280,15 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       const opts = dyn.length ? dyn : f.options;
       return (
         <div key={f.key} className={span}>
-          <label className="lux-label">{f.label[lang]}</label>
+          <label className="lux-label">{f.label[L]}</label>
           <Select value={values[f.key] || ""} onValueChange={(v) => setVal(f.key, v)}>
             <SelectTrigger className="lux-input h-auto">
-              <SelectValue placeholder={f.placeholder[lang]} />
+              <SelectValue placeholder={f.placeholder[L]} />
             </SelectTrigger>
             <SelectContent>
               {opts.map((o) => (
                 <SelectItem key={o.value} value={o.value}>
-                  {o.label[lang]}
+                  {o.label[L]}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -292,7 +301,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       const charCount = (values[f.key] || "").length;
       return (
         <div key={f.key} className={span || "md:col-span-2"}>
-          <label className="lux-label">{f.label[lang]}</label>
+          <label className="lux-label">{f.label[L]}</label>
           <textarea
             className="lux-input resize-none"
             rows={4}
@@ -311,7 +320,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
       const dateVal = v ? new Date(v) : undefined;
       return (
         <div key={f.key} className={span}>
-          <label className="lux-label">{f.label[lang]}</label>
+          <label className="lux-label">{f.label[L]}</label>
           <Popover>
             <PopoverTrigger asChild>
               <button
@@ -347,9 +356,9 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
     if (f.type === "time") {
       return (
         <div key={f.key} className={span}>
-          <label className="lux-label">{f.label[lang]}</label>
+          <label className="lux-label">{f.label[L]}</label>
           <Select value={values[f.key] || ""} onValueChange={(v) => setVal(f.key, v)}>
-            <SelectTrigger className="lux-input h-auto" aria-label={f.label[lang]}>
+            <SelectTrigger className="lux-input h-auto" aria-label={f.label[L]}>
               <SelectValue placeholder="--:--" />
             </SelectTrigger>
             <SelectContent className="max-h-72">
@@ -364,14 +373,14 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
 
     return (
       <div key={f.key} className={span}>
-        <label className="lux-label">{f.label[lang]}</label>
+        <label className="lux-label">{f.label[L]}</label>
         <input
           className="lux-input"
           type={f.type}
           required={f.required}
           value={values[f.key] || ""}
           onChange={(e) => setVal(f.key, e.target.value)}
-          placeholder={f.placeholder?.[lang]}
+          placeholder={f.placeholder?.[L]}
         />
       </div>
     );
@@ -398,17 +407,17 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
         </div>
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center">
           <div className="text-[0.7rem] tracking-[0.32em] uppercase text-gold mb-6">
-            {props.hero.eyebrow[lang]}
+            {props.hero.eyebrow[L]}
           </div>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-onyx dark:text-cream leading-[0.95] max-w-4xl">
-            {props.hero.headline[lang]}
+            {props.hero.headline[L]}
           </h1>
           <p className="mt-6 md:mt-8 text-base md:text-lg text-onyx/80 dark:text-cream/75 font-light max-w-2xl leading-relaxed">
-            {props.hero.subline[lang]}
+            {props.hero.subline[L]}
           </p>
           <div className="mt-10">
             <button onClick={() => goTo(3)} className="btn-gold">
-              {props.hero.cta[lang]}
+              {props.hero.cta[L]}
             </button>
           </div>
         </div>
@@ -421,7 +430,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
         <div className="relative h-full max-w-[1280px] mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24 md:py-28">
           <div className="mb-10 md:mb-14">
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground leading-tight inline-block">
-              {props.leistungen.title[lang]}
+              {props.leistungen.title[L]}
               <span className="block h-px w-24 bg-gold/70 mt-4" />
             </h2>
           </div>
@@ -440,7 +449,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                   strokeWidth={1.25}
                 />
                 <h3 className="font-display text-sm sm:text-lg md:text-xl text-foreground leading-tight">
-                  {label[lang]}
+                  {label[L]}
                 </h3>
               </article>
             ))}
@@ -458,7 +467,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
               {lang === "de" ? "Warum OBRENT" : "Why OBRENT"}
             </div>
             <h2 className="font-display text-xl sm:text-2xl md:text-3xl text-foreground leading-tight max-w-3xl mx-auto">
-              {props.why.title[lang]}
+              {props.why.title[L]}
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-7">
@@ -473,9 +482,9 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
               >
                 <Icon className="w-7 h-7 md:w-8 md:h-8 text-gold mb-5" strokeWidth={1.25} />
                 <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight mb-2">
-                  {title[lang]}
+                  {title[L]}
                 </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-light">{body[lang]}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light">{body[L]}</p>
               </article>
             ))}
           </div>
@@ -493,7 +502,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
             </div>
             <div className="text-center mb-10">
               <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground leading-[0.95]">
-                {props.form.title[lang]}
+                {props.form.title[L]}
               </h2>
             </div>
 
@@ -517,7 +526,7 @@ export function ServiceSubpage(props: ServiceSubpageProps) {
                     disabled={submitting}
                     className="btn-gold w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {submitting ? labels.sending : (settings.cta_request_label || props.form.submit[lang])}
+                    {submitting ? labels.sending : (settings.cta_request_label || props.form.submit[L])}
                   </button>
                 </div>
               </form>
