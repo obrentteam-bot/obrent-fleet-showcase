@@ -38,6 +38,7 @@ function NotFound() {
 }
 
 function FeatureList({ features }: { features: string[] }) {
+  const { t } = useI18n();
   const [expanded, setExpanded] = useState(false);
   const PREVIEW = 3;
   const showToggle = features.length > PREVIEW;
@@ -55,7 +56,7 @@ function FeatureList({ features }: { features: string[] }) {
           onClick={() => setExpanded((v) => !v)}
           className="mt-4 text-xs tracking-[0.28em] uppercase text-gold hover:text-gold/70 transition"
         >
-          {expanded ? "− Weniger anzeigen" : `+ Mehr anzeigen (${features.length - PREVIEW})`}
+          {expanded ? t.vehicle.showLess : t.vehicle.showMore.replace("{n}", String(features.length - PREVIEW))}
         </button>
       )}
     </div>
