@@ -147,6 +147,8 @@ export const translations = {
       ],
       requestNow: "Jetzt anfragen",
       share: "Teilen",
+      showMore: "+ Mehr anzeigen ({n})",
+      showLess: "− Weniger anzeigen",
       linkCopied: "Link kopiert!",
       shareText: "Schau dir dieses Fahrzeug bei OBRENT an — Luxus Autovermietung Ludwigshafen am Rhein.",
       pricingTitle: "Mietpreisstaffelung",
