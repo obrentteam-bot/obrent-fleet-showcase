@@ -219,7 +219,7 @@ function VehicleDetailPage() {
                     </div>
                     <div className="price leading-none" style={{ fontSize: "clamp(2rem,3.5vw,3rem)" }}>
                       {settings.show_prices && v.pricePerDay > 0
-                        ? `${formatPrice(v.pricePerDay)} / Tag`
+                        ? `${formatPrice(v.pricePerDay)} ${t.common.perDay}`
                         : t.vehicle.priceOnRequest}
                     </div>
                   </div>
@@ -249,7 +249,7 @@ function VehicleDetailPage() {
                       }}
                     >
                       <Share2 className="w-4 h-4" />
-                      Teilen
+                      {t.vehicle.share}
                     </button>
 
                     <a
