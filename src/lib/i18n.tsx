@@ -463,6 +463,17 @@ export const translations = {
       invitationLead:
         "Send us a message or give us a call — we'll find the right vehicle for your occasion together.",
       invitationCta: "Get in touch",
+      location: "Ludwigshafen am Rhein · Germany",
+      trust: {
+        vehicles: "{n}+ vehicles",
+        vehiclesLabel: "Premium fleet",
+        trusted: "100% trusted",
+        trustedLabel: "Discreet & confidential",
+        fast: "Instant response",
+        fastLabel: "Quick reply",
+        region: "Mannheim & surroundings",
+        regionLabel: "Personal handover",
+      },
     },
     fleet: {
       eyebrow: "Vehicles",
