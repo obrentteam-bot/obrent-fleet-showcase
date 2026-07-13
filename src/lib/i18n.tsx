@@ -821,6 +821,17 @@ export const translations = {
       invitationLead:
         "Écrivez-nous ou appelez-nous — nous trouverons ensemble le véhicule idéal pour votre occasion.",
       invitationCta: "Faire une demande",
+      location: "Ludwigshafen am Rhein · Allemagne",
+      trust: {
+        vehicles: "{n}+ véhicules",
+        vehiclesLabel: "Flotte premium",
+        trusted: "100% fiable",
+        trustedLabel: "Discret & confidentiel",
+        fast: "Réponse immédiate",
+        fastLabel: "Retour rapide",
+        region: "Mannheim & environs",
+        regionLabel: "Remise en main propre",
+      },
     },
     fleet: {
       eyebrow: "Véhicules",
