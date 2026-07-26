@@ -52,7 +52,7 @@ export default defineConfig(({ command }) => {
       tailwindcss(),
       tanstackStart({
         server: {
-          entry: "./src/server.ts",
+          entry: "server",
         },
         spa: {
           enabled: true,
