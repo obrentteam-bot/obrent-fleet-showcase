@@ -17,6 +17,8 @@ export default defineConfig(({ command }) => {
   const sharedNoExternal = [
     ...reactBundle,
     "isbot",
+    "iceberg-js",
+    "tslib",
 
     "@supabase/supabase-js",
     "@supabase/auth-js",
