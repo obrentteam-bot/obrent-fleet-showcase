@@ -3,6 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { useSettings } from "@/lib/useSettings";
 import { FEATURES } from "@/lib/features";
 import logo from "@/assets/obrent-logo.webp";
+import instagramIcon from "@/assets/instagram-icon.png.asset.json";
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -55,9 +56,28 @@ export function SiteFooter() {
           <div className="text-xs tracking-[0.2em] uppercase text-cream/40">
             {t.footer.rights.replace("{year}", String(year))}
           </div>
-          <div className="flex gap-8 text-xs tracking-[0.2em] uppercase text-cream/40">
-            <Link to="/datenschutz" className="hover:text-gold transition-colors">{t.footer.privacy}</Link>
-            <Link to="/impressum" className="hover:text-gold transition-colors">{t.footer.imprint}</Link>
+          <div className="flex items-center gap-8">
+            <div className="flex gap-8 text-xs tracking-[0.2em] uppercase text-cream/40">
+              <Link to="/datenschutz" className="hover:text-gold transition-colors">{t.footer.privacy}</Link>
+              <Link to="/impressum" className="hover:text-gold transition-colors">{t.footer.imprint}</Link>
+            </div>
+            <a
+              href="https://instagram.com/obrent.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="inline-flex items-center justify-center opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-300"
+            >
+              <img
+                src={instagramIcon.url}
+                alt="Instagram"
+                width={24}
+                height={24}
+                className="h-6 w-auto"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
           </div>
         </div>
       </div>
