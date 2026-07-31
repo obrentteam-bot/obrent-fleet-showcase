@@ -68,19 +68,29 @@ export function SiteFooter() {
               aria-label="Instagram"
               className="inline-flex items-center justify-center opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-300"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true" className="h-6 w-6">
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" role="img" aria-hidden="true" className="h-[26px] w-[26px]">
                 <defs>
-                  <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FDCB5C" />
-                    <stop offset="0.35" stopColor="#F7743B" />
-                    <stop offset="0.7" stopColor="#D62976" />
-                    <stop offset="1" stopColor="#7638FA" />
-                  </linearGradient>
+                  <radialGradient id="ig-grad" cx="28%" cy="100%" r="130%">
+                    <stop offset="0%" stopColor="#FFB03A" />
+                    <stop offset="22%" stopColor="#F7802F" />
+                    <stop offset="45%" stopColor="#EE5C52" />
+                    <stop offset="62%" stopColor="#E0417E" />
+                    <stop offset="80%" stopColor="#C32BA0" />
+                    <stop offset="100%" stopColor="#7B2FBE" />
+                  </radialGradient>
                 </defs>
-                <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig-grad)" />
-                <circle cx="12" cy="12" r="4.6" fill="none" stroke="white" strokeWidth="1.7" />
-                <circle cx="17.4" cy="6.7" r="1.2" fill="white" />
+                <path
+                  fill="url(#ig-grad)"
+                  d="M31 2h38c16 0 29 13 29 29v38c0 16-13 29-29 29H31C15 98 2 85 2 69V31C2 15 15 2 31 2Z"
+                />
+                <path
+                  fill="#fff"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M50 16c-9.2 0-10.4 0-14 .2-3.6.2-6.1.7-8.2 1.6-2.3.9-4.2 2-6.1 3.9-1.9 1.9-3 3.8-3.9 6.1-.9 2.1-1.4 4.6-1.6 8.2-.2 3.6-.2 4.8-.2 14s0 10.4.2 14c.2 3.6.7 6.1 1.6 8.2.9 2.3 2 4.2 3.9 6.1 1.9 1.9 3.8 3 6.1 3.9 2.1.9 4.6 1.4 8.2 1.6 3.6.2 4.8.2 14 .2s10.4 0 14-.2c3.6-.2 6.1-.7 8.2-1.6 2.3-.9 4.2-2 6.1-3.9 1.9-1.9 3-3.8 3.9-6.1.9-2.1 1.4-4.6 1.6-8.2.2-3.6.2-4.8.2-14s0-10.4-.2-14c-.2-3.6-.7-6.1-1.6-8.2-.9-2.3-2-4.2-3.9-6.1-1.9-1.9-3.8-3-6.1-3.9-2.1-.9-4.6-1.4-8.2-1.6-3.6-.2-4.8-.2-14-.2Zm0 6.1c9 0 10.1 0 13.7.2 3.3.2 5.1.7 6.3 1.2 1.6.6 2.7 1.3 3.9 2.5 1.2 1.2 1.9 2.3 2.5 3.9.5 1.2 1 3 1.2 6.3.2 3.6.2 4.7.2 13.8 0 9-.1 10.1-.2 13.7-.2 3.3-.7 5.1-1.2 6.3-.6 1.6-1.3 2.7-2.5 3.9-1.2 1.2-2.3 1.9-3.9 2.5-1.2.5-3 1-6.3 1.2-3.6.2-4.7.2-13.7.2s-10.1 0-13.7-.2c-3.3-.2-5.1-.7-6.3-1.2-1.6-.6-2.7-1.3-3.9-2.5-1.2-1.2-1.9-2.3-2.5-3.9-.5-1.2-1-3-1.2-6.3-.2-3.6-.2-4.7-.2-13.7s0-10.2.2-13.8c.2-3.3.7-5.1 1.2-6.3.6-1.6 1.3-2.7 2.5-3.9 1.2-1.2 2.3-1.9 3.9-2.5 1.2-.5 3-1 6.3-1.2 3.6-.2 4.7-.2 13.7-.2Zm0 10.4c-9.4 0-17 7.6-17 17.1 0 9.4 7.6 17 17 17s17-7.6 17-17c0-9.5-7.6-17.1-17-17.1Zm0 28.2c-6.1 0-11.1-5-11.1-11.1 0-6.2 5-11.2 11.1-11.2s11.1 5 11.1 11.2c0 6.1-5 11.1-11.1 11.1Zm21.7-28.9c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4Z"
+                />
               </svg>
+
             </a>
           </div>
         </div>
