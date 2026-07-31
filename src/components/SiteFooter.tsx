@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { useSettings } from "@/lib/useSettings";
 import { FEATURES } from "@/lib/features";
 import logo from "@/assets/obrent-logo.webp";
-import instagramIcon from "@/assets/instagram-icon.png.asset.json";
+
 
 export function SiteFooter() {
   const { t } = useI18n();
