@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { useSettings } from "@/lib/useSettings";
 import { FEATURES } from "@/lib/features";
 import logo from "@/assets/obrent-logo.webp";
-import instagramIcon from "@/assets/instagram-icon.png.asset.json";
+
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -68,15 +68,19 @@ export function SiteFooter() {
               aria-label="Instagram"
               className="inline-flex items-center justify-center opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-300"
             >
-              <img
-                src={instagramIcon.url}
-                alt="Instagram"
-                width={24}
-                height={24}
-                className="h-6 w-auto"
-                loading="lazy"
-                decoding="async"
-              />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true" className="h-6 w-6">
+                <defs>
+                  <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FDCB5C" />
+                    <stop offset="0.35" stopColor="#F7743B" />
+                    <stop offset="0.7" stopColor="#D62976" />
+                    <stop offset="1" stopColor="#7638FA" />
+                  </linearGradient>
+                </defs>
+                <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig-grad)" />
+                <circle cx="12" cy="12" r="4.6" fill="none" stroke="white" strokeWidth="1.7" />
+                <circle cx="17.4" cy="6.7" r="1.2" fill="white" />
+              </svg>
             </a>
           </div>
         </div>
