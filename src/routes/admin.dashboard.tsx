@@ -421,6 +421,7 @@ function AdminDashboard() {
   const [confirmDelete, setConfirmDelete] = useState<{ kind: "vehicle" | "booking"; id: string } | null>(null);
   const [bulkFreeKmLoading, setBulkFreeKmLoading] = useState(false);
   const [bulkFreeKmMsg, setBulkFreeKmMsg] = useState<string | null>(null);
+  const [waClicks, setWaClicks] = useState<string[]>([]);
 
   // Session timeout
   useEffect(() => {
@@ -446,12 +447,19 @@ function AdminDashboard() {
 
   const load = useCallback(async () => {
     setLoadingData(true);
-    const [b, v] = await Promise.all([
+    const [b, v, wa] = await Promise.all([
       supabase.from("bookings").select("*, vehicles(name)").order("created_at", { ascending: false }),
       supabase.from("vehicles").select("*").order("sort_order", { ascending: true, nullsFirst: false }).order("name"),
+      supabase
+        .from("analytics_events")
+        .select("created_at")
+        .eq("event_type", "whatsapp_click")
+        .order("created_at", { ascending: false })
+        .limit(5000),
     ]);
     setBookings((b.data ?? []) as BookingRow[]);
     setVehicles((v.data ?? []) as VehicleRow[]);
+    setWaClicks(((wa.data ?? []) as { created_at: string | null }[]).map((r) => r.created_at ?? "").filter(Boolean));
     setLoadingData(false);
   }, []);
 
@@ -528,6 +536,27 @@ function AdminDashboard() {
     }
     return { todayCount, pending, confirmed, revenue };
   }, [bookings, vehicles]);
+
+  // WhatsApp Klick-Statistik
+  const waStats = useMemo(() => {
+    const now = Date.now();
+    const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+    const dates = waClicks.map((c) => new Date(c).getTime()).filter((t) => !Number.isNaN(t));
+    const today = dates.filter((t) => t >= dayStart.getTime()).length;
+    const week = dates.filter((t) => t >= now - 7 * 86400000).length;
+    const month = dates.filter((t) => t >= now - 30 * 86400000).length;
+    const days: { label: string; count: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(dayStart.getTime() - i * 86400000);
+      const next = d.getTime() + 86400000;
+      days.push({
+        label: d.toLocaleDateString("de-DE", { weekday: "short" }),
+        count: dates.filter((t) => t >= d.getTime() && t < next).length,
+      });
+    }
+    return { total: dates.length, today, week, month, days };
+  }, [waClicks]);
+
 
   const counts = {
     pending: bookings.filter((b) => (b.status ?? "pending") === "pending").length,
@@ -606,6 +635,44 @@ function AdminDashboard() {
                 </div>
               ))}
             </div>
+
+            {/* WhatsApp Klicks */}
+            <div className="bg-jet border border-border p-6">
+              <div className="flex items-baseline justify-between gap-4 flex-wrap mb-6">
+                <div className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">WhatsApp Klicks</div>
+                <div className="font-display text-3xl text-gold">{waStats.total}</div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                {[
+                  { l: "Klicks heute", v: waStats.today },
+                  { l: "Klicks diese Woche", v: waStats.week },
+                  { l: "Klicks diesen Monat", v: waStats.month },
+                ].map((s) => (
+                  <div key={s.l} className="border border-border p-4">
+                    <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/50 mb-2">{s.l}</div>
+                    <div className="font-display text-2xl text-gold">{s.v}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/45 mb-3">Letzte 7 Tage</div>
+              <div className="flex items-end gap-3 h-28">
+                {waStats.days.map((d, i) => {
+                  const max = Math.max(1, ...waStats.days.map((x) => x.count));
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center justify-end gap-2 h-full">
+                      <div className="text-[0.65rem] text-cream/70">{d.count}</div>
+                      <div
+                        className="w-full bg-gold/70"
+                        style={{ height: `${Math.max(2, (d.count / max) * 100)}%` }}
+                        title={`${d.label}: ${d.count}`}
+                      />
+                      <div className="text-[0.55rem] tracking-[0.2em] uppercase text-cream/45">{d.label}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div>
               <div className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/60 mb-3">Letzte Buchungen</div>
               <div className="bg-jet border border-border overflow-x-auto">
