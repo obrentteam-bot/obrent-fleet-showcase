@@ -46,6 +46,7 @@ export function WhatsAppFAB() {
         zIndex: 9999,
         transition: "transform 0.2s ease",
       }}
+      onClick={trackClick}
       onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
       onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
     >
