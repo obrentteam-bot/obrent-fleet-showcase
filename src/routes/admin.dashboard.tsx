@@ -537,6 +537,27 @@ function AdminDashboard() {
     return { todayCount, pending, confirmed, revenue };
   }, [bookings, vehicles]);
 
+  // WhatsApp Klick-Statistik
+  const waStats = useMemo(() => {
+    const now = Date.now();
+    const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+    const dates = waClicks.map((c) => new Date(c).getTime()).filter((t) => !Number.isNaN(t));
+    const today = dates.filter((t) => t >= dayStart.getTime()).length;
+    const week = dates.filter((t) => t >= now - 7 * 86400000).length;
+    const month = dates.filter((t) => t >= now - 30 * 86400000).length;
+    const days: { label: string; count: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(dayStart.getTime() - i * 86400000);
+      const next = d.getTime() + 86400000;
+      days.push({
+        label: d.toLocaleDateString("de-DE", { weekday: "short" }),
+        count: dates.filter((t) => t >= d.getTime() && t < next).length,
+      });
+    }
+    return { total: dates.length, today, week, month, days };
+  }, [waClicks]);
+
+
   const counts = {
     pending: bookings.filter((b) => (b.status ?? "pending") === "pending").length,
     confirmed: bookings.filter((b) => b.status === "confirmed").length,
