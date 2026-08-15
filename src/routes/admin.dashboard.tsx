@@ -421,6 +421,7 @@ function AdminDashboard() {
   const [confirmDelete, setConfirmDelete] = useState<{ kind: "vehicle" | "booking"; id: string } | null>(null);
   const [bulkFreeKmLoading, setBulkFreeKmLoading] = useState(false);
   const [bulkFreeKmMsg, setBulkFreeKmMsg] = useState<string | null>(null);
+  const [waClicks, setWaClicks] = useState<string[]>([]);
 
   // Session timeout
   useEffect(() => {
