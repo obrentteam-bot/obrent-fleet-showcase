@@ -635,6 +635,44 @@ function AdminDashboard() {
                 </div>
               ))}
             </div>
+
+            {/* WhatsApp Klicks */}
+            <div className="bg-jet border border-border p-6">
+              <div className="flex items-baseline justify-between gap-4 flex-wrap mb-6">
+                <div className="text-[0.7rem] tracking-[0.28em] uppercase text-gold">WhatsApp Klicks</div>
+                <div className="font-display text-3xl text-gold">{waStats.total}</div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                {[
+                  { l: "Klicks heute", v: waStats.today },
+                  { l: "Klicks diese Woche", v: waStats.week },
+                  { l: "Klicks diesen Monat", v: waStats.month },
+                ].map((s) => (
+                  <div key={s.l} className="border border-border p-4">
+                    <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/50 mb-2">{s.l}</div>
+                    <div className="font-display text-2xl text-gold">{s.v}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="text-[0.6rem] tracking-[0.28em] uppercase text-cream/45 mb-3">Letzte 7 Tage</div>
+              <div className="flex items-end gap-3 h-28">
+                {waStats.days.map((d, i) => {
+                  const max = Math.max(1, ...waStats.days.map((x) => x.count));
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center justify-end gap-2 h-full">
+                      <div className="text-[0.65rem] text-cream/70">{d.count}</div>
+                      <div
+                        className="w-full bg-gold/70"
+                        style={{ height: `${Math.max(2, (d.count / max) * 100)}%` }}
+                        title={`${d.label}: ${d.count}`}
+                      />
+                      <div className="text-[0.55rem] tracking-[0.2em] uppercase text-cream/45">{d.label}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div>
               <div className="text-[0.7rem] tracking-[0.28em] uppercase text-cream/60 mb-3">Letzte Buchungen</div>
               <div className="bg-jet border border-border overflow-x-auto">
