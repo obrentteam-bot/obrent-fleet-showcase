@@ -1,11 +1,28 @@
 import { useMaintenance } from "@/lib/useMaintenance";
+import { supabase } from "@/lib/supabase";
 
 const PHONE = "4915569459633";
 const HREF = `https://wa.me/${PHONE}`;
 
+/** Fire-and-forget click tracking — never blocks or breaks the link. */
+function trackClick() {
+  try {
+    void supabase
+      .from("analytics_events")
+      .insert({
+        event_type: "whatsapp_click",
+        metadata: { page: typeof window !== "undefined" ? window.location.pathname : null },
+      })
+      .then(() => undefined, () => undefined);
+  } catch {
+    // ignore
+  }
+}
+
 export function WhatsAppFAB() {
   const { enabled: maintenance } = useMaintenance();
   if (maintenance) return null;
+
 
   return (
     <a
