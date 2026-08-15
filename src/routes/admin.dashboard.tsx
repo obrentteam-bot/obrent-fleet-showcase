@@ -447,12 +447,19 @@ function AdminDashboard() {
 
   const load = useCallback(async () => {
     setLoadingData(true);
-    const [b, v] = await Promise.all([
+    const [b, v, wa] = await Promise.all([
       supabase.from("bookings").select("*, vehicles(name)").order("created_at", { ascending: false }),
       supabase.from("vehicles").select("*").order("sort_order", { ascending: true, nullsFirst: false }).order("name"),
+      supabase
+        .from("analytics_events")
+        .select("created_at")
+        .eq("event_type", "whatsapp_click")
+        .order("created_at", { ascending: false })
+        .limit(5000),
     ]);
     setBookings((b.data ?? []) as BookingRow[]);
     setVehicles((v.data ?? []) as VehicleRow[]);
+    setWaClicks(((wa.data ?? []) as { created_at: string | null }[]).map((r) => r.created_at ?? "").filter(Boolean));
     setLoadingData(false);
   }, []);
 
