@@ -35,7 +35,7 @@ function DatenschutzPage() {
               </p>
               <p className="mt-3">
                 OBRENT GmbH<br />
-                vertreten durch den Geschäftsführer Osman Boyraz<br />
+                vertreten durch den Geschäftsführer Ali Boyraz<br />
                 Industriestraße 60<br />
                 67063 Ludwigshafen am Rhein<br />
                 Deutschland<br />
