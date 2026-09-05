@@ -811,7 +811,7 @@ export const WEBSITE_CONTENT_INDEX: PageEntry[] = [
         source: "route_file",
         heading: "1. Verantwortlicher",
         body:
-          "OBRENT GmbH, vertreten durch den Geschäftsführer Osman Boyraz · Industriestraße 60 · 67063 Ludwigshafen am Rhein.",
+          "OBRENT GmbH, vertreten durch den Geschäftsführer Ali Boyraz · Industriestraße 60 · 67063 Ludwigshafen am Rhein.",
         extracted: true,
         unsupportedReason: "Rechtstext — nur mit ausdrücklicher Freigabe ändern.",
       },
