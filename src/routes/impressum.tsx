@@ -40,7 +40,7 @@ function ImpressumPage() {
 
             <div>
               <h2 className="font-display text-2xl text-cream mb-3">Vertreten durch</h2>
-              <p>Geschäftsführer: Osman Boyraz</p>
+              <p>Geschäftsführer: Ali Boyraz</p>
             </div>
 
             <div>
@@ -80,7 +80,7 @@ function ImpressumPage() {
                 Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
               </h2>
               <p>
-                Osman Boyraz<br />
+                Ali Boyraz<br />
                 Industriestraße 60<br />
                 67063 Ludwigshafen am Rhein
               </p>
